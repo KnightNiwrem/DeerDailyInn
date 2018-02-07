@@ -1,0 +1,17 @@
+{
+  "name": "deer_daily_inn",
+  "version": "1.0.0",
+  "description": "Chat Wars Application for Deer Daily Inn",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "KnightNiwrem",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.5.2",
+    "bluebird": "^3.5.1",
+    "express": "^4.16.2",
+    "lodash": "^4.17.5"
+  }
+}
