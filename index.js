@@ -80,6 +80,20 @@ function publishMessage(connection, channel, userMessage = '', userOptions = {})
   channel.publish(`${username}_ex`, `${username}_o`, messageBuffer, options);
 }
 
+function botRouter(chatId, messageText) {
+  const primaryResponse = {
+    chat_id: chatId,
+    text: 'Sorry, this bot is not ready to respond to inputs yet.',
+  };
+  makeTelegramRequest('sendMessage', primaryResponse);
+
+  const secondaryResponse = {
+    chat_id: chatId,
+    text: `On a side note, the text that you sent me was "${messageText}`,
+  };
+  makeTelegramRequest('sendMessage', secondaryResponse);
+}
+
 /*********************
  *      Server
 *********************/
@@ -96,12 +110,7 @@ app.post(`/${botKey}`, (req, res) => {
   if (req.body.message && req.body.message.chat && req.body.message.text) {
     const chatId = req.body.message.chat.id;
     const messageText = req.body.message.text;
-
-    const response = {
-      chat_id: chatId,
-      text: `You sent me ${messageText}`,
-    };
-    makeTelegramRequest('sendMessage', response);
+    botRouter(chatId, messageText);
   }
   res.end();
 });
