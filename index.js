@@ -38,7 +38,7 @@ function makeTelegramRequest(method, body = {}) {
 
   return fetch(url, {
     method: 'POST',
-    body: body,
+    body: JSON.stringify(body),
     headers: headers
   })
   .then((response) => {
@@ -55,9 +55,20 @@ function createRouter(connection, channel, logTitle) {
     // To further modularize: route connection, channel
     // and message elsewhere
 
-    if (!message.fields.redelivered) {
-      console.log(logTitle);
-      console.log(message.content.toString());
+    if (message.fields.redelivered) {
+      return;
+    }
+
+    const content = JSON.parse(message.content.toString());
+    const sellerId = content.sellerId;
+    const listenerId = "85c8421558ec4c0098fda3003b460f0f";
+
+    if (sellerId === listenerId) {
+      const messageBody = {
+        chat_id: 41284431,
+        text: `${content.buyerCastle}${content.buyerName} purchased ${content.qty} ${content.item} from you at ${content.price} each.`,
+      }
+      makeTelegramRequest("sendMessage", messageBody);
     }
   };
 }
@@ -83,6 +94,12 @@ setUpPromise
   //channel.consume(`${username}_i`, inboundRouter, {noAck: true});
   //channel.consume(`${username}_offers`, offersRouter, {noAck: true});
   channel.consume(`${username}_deals`, dealsRouter, {noAck: true});
+
+  const initializationMessage = {
+    chat_id: 41284431,
+    text: "Deer daily inn is ready to notify you of your completed deals!",
+  };
+  makeTelegramRequest("sendMessage", initializationMessage);
 })
 .catch(console.warn);
 
