@@ -93,7 +93,16 @@ const app = express();
 app.use(bodyParser.json());
 
 app.post(`/${botKey}`, (req, res) => {
-  console.log(JSON.stringify(req));
+  if (req.body.message && req.body.message.chat && req.body.message.text) {
+    const chatId = req.body.message.chat.id;
+    const messageText = req.body.message.text;
+
+    const response = {
+      chat_id: chatId,
+      text: `You sent me ${messageText}`,
+    };
+    makeTelegramRequest('sendMessage', response);
+  }
   res.end();
 });
 
