@@ -81,6 +81,31 @@ function publishMessage(connection, channel, userMessage = '', userOptions = {})
 }
 
 /*********************
+ *      Server
+*********************/
+
+const ip = config.get('ip');
+const port = config.get('port');
+const express = require('express');
+const bodyParser = require('body-parser');
+
+const app = express();
+app.use(bodyParser.json());
+
+app.post(`/${botKey}`, (req, res) => {
+  console.log(JSON.stringify(req));
+  res.end();
+});
+
+app.listen(port, () => {
+  const webhookRequest = {
+    url: `https://deerdailyinn.nusreviews.com/${botKey}`,
+  };
+  makeTelegramRequest('setWebhook', webhookRequest);
+  console.log("Telegram bot server has started");
+});
+
+/*********************
  *        Work 
 *********************/
 
