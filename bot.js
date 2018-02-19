@@ -1,6 +1,10 @@
+const Promise = require('bluebird');
 const _ = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
+
+const fetch = require('node-fetch');
+fetch.Promise = Promise;
 
 class Bot {
   constructor(botKey, username, password, ip, port) {
