@@ -100,7 +100,7 @@ class Bot {
     this.app = express();
     this.app.use(bodyParser.json());
 
-    app.post(`/${this.botKey}`, (req, res) => {
+    this.app.post(`/${this.botKey}`, (req, res) => {
       let userId, chatId, messageText;
 
       // If not, then not an update that we care about
