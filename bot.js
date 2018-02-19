@@ -87,7 +87,7 @@ class Bot {
     if (message.fields.redelivered) {
       return;
     }
-    
+
     const content = JSON.parse(message.content.toString());
     const sellerId = content.sellerId;
     const listenerId = '85c8421558ec4c0098fda3003b460f0f';
@@ -213,7 +213,7 @@ class Bot {
   sendSecondaryResponse(chatId, messageText) {
     const secondaryResponse = {
       chat_id: chatId,
-      text: `On a side note, the text that you sent me was "${messageText}`,
+      text: `On a side note, the text that you sent me was "${messageText}"`,
     };
     return this.makeTelegramRequest('sendMessage', secondaryResponse);
   }
