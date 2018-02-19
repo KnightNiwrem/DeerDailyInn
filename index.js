@@ -49,6 +49,7 @@ function makeTelegramRequest(method, body = {}) {
 }
 
 function createRouter(connection, channel, logTitle) {
+  var isOff = false;
   return function(message) {
     // This is where your "attempt" does work
     // has connection, channel and message
@@ -59,16 +60,30 @@ function createRouter(connection, channel, logTitle) {
       return;
     }
 
+    if (isOff) {
+      return;
+    }
+
+    if (logTitle === 'New Inbound Message' || logTitle === 'New Offer!') {
+      isOff = true;
+      const notificationMessage = {
+        chat_id: 41284431,
+        text: `Queue for ${logTitle} has been turned off`
+      };
+      makeTelegramRequest('sendMessage', notificationMessage);
+      return;
+    }
+
     const content = JSON.parse(message.content.toString());
     const sellerId = content.sellerId;
-    const listenerId = "85c8421558ec4c0098fda3003b460f0f";
+    const listenerId = '85c8421558ec4c0098fda3003b460f0f';
 
     if (sellerId === listenerId) {
       const messageBody = {
         chat_id: 41284431,
         text: `${content.buyerCastle}${content.buyerName} purchased ${content.qty} ${content.item} from you at ${content.price} each.`,
       }
-      makeTelegramRequest("sendMessage", messageBody);
+      makeTelegramRequest('sendMessage', messageBody);
     }
   };
 }
@@ -120,7 +135,7 @@ app.listen(port, () => {
     url: `https://deerdailyinn.nusreviews.com/${botKey}`,
   };
   makeTelegramRequest('setWebhook', webhookRequest);
-  console.log("Telegram bot server has started");
+  console.log('Telegram bot server has started');
 });
 
 /*********************
@@ -130,19 +145,19 @@ app.listen(port, () => {
 setUpPromise
 .then((connectionAndChannel) => {
   const [connection, channel] = connectionAndChannel;
-  //const inboundRouter = createRouter(connection, channel, "New Inbound Message");
-  //const offersRouter = createRouter(connection, channel, "New Offer!");
-  const dealsRouter = createRouter(connection, channel, "New Deal!");
+  const inboundRouter = createRouter(connection, channel, 'New Inbound Message');
+  const offersRouter = createRouter(connection, channel, 'New Offer!');
+  const dealsRouter = createRouter(connection, channel, 'New Deal!');
 
-  //channel.consume(`${username}_i`, inboundRouter, {noAck: true});
-  //channel.consume(`${username}_offers`, offersRouter, {noAck: true});
+  channel.consume(`${username}_i`, inboundRouter, {noAck: true});
+  channel.consume(`${username}_offers`, offersRouter, {noAck: true});
   channel.consume(`${username}_deals`, dealsRouter, {noAck: true});
 
   const initializationMessage = {
     chat_id: 41284431,
-    text: "Deer daily inn is ready to notify you of your completed deals!",
+    text: 'Deer daily inn is ready to notify you of your completed deals!',
   };
-  makeTelegramRequest("sendMessage", initializationMessage);
+  makeTelegramRequest('sendMessage', initializationMessage);
 })
 .catch(console.warn);
 
