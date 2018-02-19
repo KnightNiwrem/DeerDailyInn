@@ -7,9 +7,16 @@ const config = require('./config');
 const fetch = require('node-fetch');
 fetch.Promise = Promise;
 
+const redis = require('redis');
+Promise.promisifyAll(redis.RedisClient.prototype);
+Promise.promisifyAll(redis.Multi.prototype);
+const redisClient = redis.createClient();
+
 const botKey = config.get('botKey');
 const username = config.get('username');
 const password = config.get('password');
+const ip = config.get('ip');
+const port = config.get('port');
 
 /*********************
  *      Set Up 
@@ -29,25 +36,6 @@ const setUpPromise = amqp.connect(connectionUrl)
  *      Utility 
 *********************/
 
-function makeTelegramRequest(method, body = {}) {
-  const url = `https://api.telegram.org/bot${botKey}/${method}`;
-
-  const headers = {
-    'Content-Type': 'application/json',
-  };
-
-  return fetch(url, {
-    method: 'POST',
-    body: JSON.stringify(body),
-    headers: headers
-  })
-  .then((response) => {
-    return response.json();
-  })
-  .then(console.log)
-  .catch(console.warn);
-}
-
 function createRouter(connection, channel, logTitle) {
   var isOff = false;
   return function(message) {
@@ -64,7 +52,7 @@ function createRouter(connection, channel, logTitle) {
       return;
     }
 
-    if (logTitle === 'New Inbound Message' || logTitle === 'New Offer!') {
+    if (logTitle === 'New Offer!' || logTitle === 'New Inbound Message') {
       isOff = true;
       const notificationMessage = {
         chat_id: 41284431,
@@ -74,73 +62,28 @@ function createRouter(connection, channel, logTitle) {
       return;
     }
 
-    const content = JSON.parse(message.content.toString());
-    const sellerId = content.sellerId;
-    const listenerId = '85c8421558ec4c0098fda3003b460f0f';
+    if (logTitle === 'New Deal!') {
+      const content = JSON.parse(message.content.toString());
+      const sellerId = content.sellerId;
+      const listenerId = '85c8421558ec4c0098fda3003b460f0f';
 
-    if (sellerId === listenerId) {
-      const messageBody = {
-        chat_id: 41284431,
-        text: `${content.buyerCastle}${content.buyerName} purchased ${content.qty} ${content.item} from you at ${content.price} each.`,
+      if (sellerId === listenerId) {
+        const messageBody = {
+          chat_id: 41284431,
+          text: `${content.buyerCastle}${content.buyerName} purchased ${content.qty} ${content.item} from you at ${content.price} each.`,
+        }
+        makeTelegramRequest('sendMessage', messageBody);
       }
-      makeTelegramRequest('sendMessage', messageBody);
     }
   };
 }
 
-function publishMessage(connection, channel, userMessage = '', userOptions = {}) {
-  const messageBuffer = new Buffer(userMessage);
-  const defaultOptions = { contentType: 'application/json' };
-  const options = _.assign(defaultOptions, userOptions);
-  channel.publish(`${username}_ex`, `${username}_o`, messageBuffer, options);
-}
-
-function botRouter(chatId, messageText) {
-  const primaryResponse = {
-    chat_id: chatId,
-    text: 'Sorry, this bot is not ready to respond to inputs yet.',
-  };
-  makeTelegramRequest('sendMessage', primaryResponse);
-
-  const secondaryResponse = {
-    chat_id: chatId,
-    text: `On a side note, the text that you sent me was "${messageText}`,
-  };
-  makeTelegramRequest('sendMessage', secondaryResponse);
-}
-
-/*********************
- *      Server
-*********************/
-
-const ip = config.get('ip');
-const port = config.get('port');
-const express = require('express');
-const bodyParser = require('body-parser');
-
-const app = express();
-app.use(bodyParser.json());
-
-app.post(`/${botKey}`, (req, res) => {
-  if (req.body.message && req.body.message.chat && req.body.message.text) {
-    const chatId = req.body.message.chat.id;
-    const messageText = req.body.message.text;
-    botRouter(chatId, messageText);
-  }
-  res.end();
-});
-
-app.listen(port, () => {
-  const webhookRequest = {
-    url: `https://deerdailyinn.nusreviews.com/${botKey}`,
-  };
-  makeTelegramRequest('setWebhook', webhookRequest);
-  console.log('Telegram bot server has started');
-});
-
 /*********************
  *        Work 
 *********************/
+
+const Bot = require('./bot');
+const bot = new Bot(botKey, username, password, ip, port);
 
 setUpPromise
 .then((connectionAndChannel) => {
@@ -149,15 +92,14 @@ setUpPromise
   const offersRouter = createRouter(connection, channel, 'New Offer!');
   const dealsRouter = createRouter(connection, channel, 'New Deal!');
 
-  channel.consume(`${username}_i`, inboundRouter, {noAck: true});
-  channel.consume(`${username}_offers`, offersRouter, {noAck: true});
-  channel.consume(`${username}_deals`, dealsRouter, {noAck: true});
+  bot.registerConnection(connection);
+  bot.registerChannel(channel);
+  bot.registerRedisClient(redisClient);
 
-  const initializationMessage = {
-    chat_id: 41284431,
-    text: 'Deer daily inn is ready to notify you of your completed deals!',
-  };
-  makeTelegramRequest('sendMessage', initializationMessage);
+  bot.subscribeToQueue(`${username}_i`, inboundRouter, {noAck: true});
+  bot.subscribeToQueue(`${username}_offers`, offersRouter, {noAck: true});
+  bot.subscribeToQueue(`${username}_deals`, dealsRouter, {noAck: true});
+  bot.sendInitializationMessage();
 })
 .catch(console.warn);
 
