@@ -137,7 +137,7 @@ class Bot {
       this.handleTelegramMessage(req, res, userId, chatId, messageText);
     });
 
-    app.listen(this.port, () => {
+    this.app.listen(this.port, () => {
       const webhookRequest = {
         url: this.pullUrl,
       };
