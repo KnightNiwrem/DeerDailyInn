@@ -33,52 +33,6 @@ const setUpPromise = amqp.connect(connectionUrl)
 });
 
 /*********************
- *      Utility 
-*********************/
-
-function createRouter(connection, channel, logTitle) {
-  var isOff = false;
-  return function(message) {
-    // This is where your "attempt" does work
-    // has connection, channel and message
-    // To further modularize: route connection, channel
-    // and message elsewhere
-
-    if (message.fields.redelivered) {
-      return;
-    }
-
-    if (isOff) {
-      return;
-    }
-
-    if (logTitle === 'New Offer!' || logTitle === 'New Inbound Message') {
-      isOff = true;
-      const notificationMessage = {
-        chat_id: 41284431,
-        text: `Queue for ${logTitle} has been turned off`
-      };
-      makeTelegramRequest('sendMessage', notificationMessage);
-      return;
-    }
-
-    if (logTitle === 'New Deal!') {
-      const content = JSON.parse(message.content.toString());
-      const sellerId = content.sellerId;
-      const listenerId = '85c8421558ec4c0098fda3003b460f0f';
-
-      if (sellerId === listenerId) {
-        const messageBody = {
-          chat_id: 41284431,
-          text: `${content.buyerCastle}${content.buyerName} purchased ${content.qty} ${content.item} from you at ${content.price} each.`,
-        }
-        makeTelegramRequest('sendMessage', messageBody);
-      }
-    }
-  };
-}
-
-/*********************
  *        Work 
 *********************/
 
@@ -88,17 +42,14 @@ const bot = new Bot(botKey, username, password, ip, port);
 setUpPromise
 .then((connectionAndChannel) => {
   const [connection, channel] = connectionAndChannel;
-  const inboundRouter = createRouter(connection, channel, 'New Inbound Message');
-  const offersRouter = createRouter(connection, channel, 'New Offer!');
-  const dealsRouter = createRouter(connection, channel, 'New Deal!');
 
   bot.registerConnection(connection);
   bot.registerChannel(channel);
   bot.registerRedisClient(redisClient);
 
-  bot.subscribeToQueue(`${username}_i`, inboundRouter, {noAck: true});
-  bot.subscribeToQueue(`${username}_offers`, offersRouter, {noAck: true});
-  bot.subscribeToQueue(`${username}_deals`, dealsRouter, {noAck: true});
+  bot.subscribeToInboundQueue();
+  bot.subscribeToOffersQueue();
+  bot.subscribeToDealsQueue();
   bot.sendInitializationMessage();
 })
 .catch(console.warn);

@@ -48,13 +48,57 @@ class Bot {
     return !_.isUndefined(this.redisClient);
   }
 
-  subscribeToQueue(queue, router, options = {}) {
+  subscribeToInboundQueue() {
     if (!this.hasConnection() || !this.hasChannel()) {
       console.warn('Bot does not have a connection or channel to publish to.');
       return;
     }
 
-    this.channel.consume(queue, router, options);
+    this.channel.consume(`${this.username}_i`, this.handleInboundQueue, { noAck: true });
+  }
+
+  subscribeToOffersQueue() {
+    if (!this.hasConnection() || !this.hasChannel()) {
+      console.warn('Bot does not have a connection or channel to publish to.');
+      return;
+    }
+
+    this.channel.consume(`${this.username}_offers`, this.handleOffersQueue, { noAck: true });
+  }
+
+  subscribeToDealsQueue() {
+    if (!this.hasConnection() || !this.hasChannel()) {
+      console.warn('Bot does not have a connection or channel to publish to.');
+      return;
+    }
+
+    this.channel.consume(`${this.username}_deals`, this.handleDealsQueue, { noAck: true });
+  }
+
+  handleInboundQueue(message) {
+    return;
+  }
+
+  handleOffersQueue(message) {
+    return;
+  }
+
+  handleDealsQueue(message) {
+    if (message.fields.redelivered) {
+      return;
+    }
+    
+    const content = JSON.parse(message.content.toString());
+    const sellerId = content.sellerId;
+    const listenerId = '85c8421558ec4c0098fda3003b460f0f';
+
+    if (sellerId === listenerId) {
+      const messageBody = {
+        chat_id: 41284431,
+        text: `${content.buyerCastle}${content.buyerName} purchased ${content.qty} ${content.item} from you at ${content.price} gold each.`,
+      }
+      this.makeTelegramRequest('sendMessage', messageBody);
+    }
   }
 
   publishMessage(userMessage = '', userOptions = {}) {
