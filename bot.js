@@ -126,7 +126,7 @@ class Bot {
           chat_id: chatId,
           text: 'This bot does not work in channels and groups!',
         };
-        makeTelegramRequest('sendMessage', channelResponse);
+        this.makeTelegramRequest('sendMessage', channelResponse);
         return;
       } else if (!req.body.message.from) {
         return;
@@ -141,7 +141,7 @@ class Bot {
       const webhookRequest = {
         url: this.pullUrl,
       };
-      makeTelegramRequest('setWebhook', webhookRequest);
+      this.makeTelegramRequest('setWebhook', webhookRequest);
       console.log('Telegram bot server has started');
     });
   }
@@ -151,7 +151,7 @@ class Bot {
       chat_id: 41284431,
       text: 'Deer daily inn is ready to notify you of your completed deals!',
     };
-    return makeTelegramRequest('sendMessage', initializationMessage);
+    return this.makeTelegramRequest('sendMessage', initializationMessage);
   }
 
   sendPrimaryResponse(chatId) {
@@ -159,7 +159,7 @@ class Bot {
       chat_id: chatId,
       text: 'Sorry, this bot is not ready to respond to inputs yet.',
     };
-    return makeTelegramRequest('sendMessage', primaryResponse);
+    return this.makeTelegramRequest('sendMessage', primaryResponse);
   }
 
   sendSecondaryResponse(chatId, messageText) {
@@ -167,7 +167,7 @@ class Bot {
       chat_id: chatId,
       text: `On a side note, the text that you sent me was "${messageText}`,
     };
-    return makeTelegramRequest('sendMessage', secondaryResponse);
+    return this.makeTelegramRequest('sendMessage', secondaryResponse);
   }
 }
 
