@@ -169,5 +169,6 @@ class Bot {
     };
     return makeTelegramRequest('sendMessage', secondaryResponse);
   }
-
 }
+
+module.exports = Bot;
