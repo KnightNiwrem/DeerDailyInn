@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 const fetch = require('node-fetch');
 fetch.Promise = Promise;
 
+const requests = require('./requests)');
+
 class Bot {
   constructor(botKey, username, password, ip, port) {
     this.connection = undefined;
@@ -36,21 +38,15 @@ class Bot {
     this.redisClient = redisClient;
   }
 
-  hasConnection() {
-    return !_.isUndefined(this.connection);
-  }
-
-  hasChannel() {
-    return !_.isUndefined(this.channel);
-  }
-
-  hasRedisClient() {
-    return !_.isUndefined(this.redisClient);
+  hasResources() {
+    return !_.isUndefined(this.connection) && 
+           !_.isUndefined(this.channel) && 
+           !_.isUndefined(this.redisClient);
   }
 
   subscribeToInboundQueue() {
-    if (!this.hasConnection() || !this.hasChannel()) {
-      console.warn('Bot does not have a connection or channel to publish to.');
+    if (!this.hasResources) {
+      console.warn('Bot tried to subscribed to inbound queue but lacked resources.');
       return;
     }
 
@@ -58,8 +54,8 @@ class Bot {
   }
 
   subscribeToOffersQueue() {
-    if (!this.hasConnection() || !this.hasChannel()) {
-      console.warn('Bot does not have a connection or channel to publish to.');
+    if (!this.hasResources()) {
+      console.warn('Bot tried to subscribed to offers queue but lacked resources.');
       return;
     }
 
@@ -67,8 +63,8 @@ class Bot {
   }
 
   subscribeToDealsQueue() {
-    if (!this.hasConnection() || !this.hasChannel()) {
-      console.warn('Bot does not have a connection or channel to publish to.');
+    if (!this.hasResources()) {
+      console.warn('Bot tried to subscribed to deals queue but lacked resources.');
       return;
     }
 
@@ -131,15 +127,22 @@ class Bot {
   }
 
   handleTelegramMessage(req, res, userId, chatId, messageText) {
-    this.sendPrimaryResponse(chatId)
-    .then(() => {
-      return this.sendSecondaryResponse(chatId, messageText);
-    })
-    .then(() => {
-      res.end();
-    })
-    .catch((err) => {
-      console.warn(err);
+    let requestPromise = Promise.resolve();
+    if (messageText.trim().startsWith('/')) {
+      const [command, ...parameters] = messageText.slice(1).split(' ');
+
+      if (command === 'start') {
+        requestPromise = this.doRegistration(res, userId, chatId);
+      } else {
+        requestPromise = this.sendUnknownResponse(chatId, messageText);
+      }
+    } else {
+      requestPromise = this.sendUnknownResponse(chatId, messageText);
+    }
+
+    requestPromise
+    .catch(console.warn)
+    .finally(() => {
       res.end();
     });
   }
@@ -202,20 +205,25 @@ class Bot {
     return this.makeTelegramRequest('sendMessage', initializationMessage);
   }
 
-  sendPrimaryResponse(chatId) {
+  sendUnknownResponse(chatId, messageText) {
     const primaryResponse = {
       chat_id: chatId,
-      text: 'Sorry, this bot is not ready to respond to inputs yet.',
+      text: `Sorry, I don't quite understand what ${messageText} means.`,
     };
     return this.makeTelegramRequest('sendMessage', primaryResponse);
   }
 
-  sendSecondaryResponse(chatId, messageText) {
-    const secondaryResponse = {
-      chat_id: chatId,
-      text: `On a side note, the text that you sent me was "${messageText}"`,
+  doRegistration(res, userId, chatId) {
+    const authRequest = requests.makeAuthCodeRequest(userId);
+    this.publishMessage(authRequest);
+
+    const registrationMessage = {
+      chatId: chatId,
+      text: `Welcome! Deer Daily Inn is a Chat Wars app brought to you by the Deer Daily team. We hope you enjoy your stay at our inn.
+
+      For the time being, please authenticate Deer Daily Inn by entering the authorization code sent to you via @chtwrsbot.`,
     };
-    return this.makeTelegramRequest('sendMessage', secondaryResponse);
+    return this.makeTelegramRequest('sendMessage', registrationMessage);
   }
 }
 
