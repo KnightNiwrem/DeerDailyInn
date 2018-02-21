@@ -7,7 +7,7 @@ const fetch = require('node-fetch');
 fetch.Promise = Promise;
 
 const requests = require('./requests');
-consts replies = require('./replies');
+const replies = require('./replies');
 
 class Bot {
   constructor(botKey, username, password, ip, port) {
