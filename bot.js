@@ -106,7 +106,7 @@ class Bot {
     const messageBuffer = new Buffer(userMessage);
     const defaultOptions = { contentType: 'application/json' };
     const options = _.assign(defaultOptions, userOptions);
-    channel.publish(`${this.username}_ex`, `${this.username}_o`, messageBuffer, options);
+    this.channel.publish(`${this.username}_ex`, `${this.username}_o`, messageBuffer, options);
   }
 
   makeTelegramRequest(method, body = {}) {
