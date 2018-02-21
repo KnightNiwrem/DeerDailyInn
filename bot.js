@@ -7,6 +7,7 @@ const fetch = require('node-fetch');
 fetch.Promise = Promise;
 
 const requests = require('./requests');
+consts replies = require('./replies');
 
 class Bot {
   constructor(botKey, username, password, ip, port) {
@@ -219,9 +220,7 @@ class Bot {
 
     const registrationMessage = {
       chat_id: chatId,
-      text: `Welcome! Deer Daily Inn is a Chat Wars app brought to you by the Deer Daily team. We hope you enjoy your stay at our inn.
-
-      For the time being, please authenticate Deer Daily Inn by entering the authorization code sent to you via @chtwrsbot.`,
+      text: replies.welcomeMessage,
     };
     return this.makeTelegramRequest('sendMessage', registrationMessage);
   }
