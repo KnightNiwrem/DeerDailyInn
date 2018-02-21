@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const fetch = require('node-fetch');
 fetch.Promise = Promise;
 
-const requests = require('./requests)');
+const requests = require('./requests');
 
 class Bot {
   constructor(botKey, username, password, ip, port) {
