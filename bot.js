@@ -98,7 +98,7 @@ class Bot {
   }
 
   publishMessage(userMessage = '', userOptions = {}) {
-    if (!this.hasConnection() || !this.hasChannel()) {
+    if (!this.hasResources()) {
       console.warn('Bot does not have a connection or channel to publish to.');
       return;
     }
