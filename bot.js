@@ -220,7 +220,7 @@ class Bot {
 
     const registrationMessage = {
       chat_id: chatId,
-      text: replies.welcomeMessage,
+      text: replies.welcomeMessage(),
     };
     return this.makeTelegramRequest('sendMessage', registrationMessage);
   }
