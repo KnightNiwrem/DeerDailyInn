@@ -13,18 +13,18 @@ class Subscription extends Model {
   static get jsonSchema () {
     return {
       type: 'object',
-      required: ['id', 'duration', 'telegramId'],
+      required: ['id', 'expirationDate', 'telegramId'],
       properties: {
         id: {
           type: 'integer'
         },
-        active: {
+        expirationDate: {
+          type: 'string'
+        },
+        isActive: {
           type: 'boolean',
           default: false
-        }
-        duration: {
-          type: 'integer'
-        }
+        },
         paymentInfo: {
           type: 'string'
         }
@@ -39,7 +39,7 @@ class Subscription extends Model {
     return {
       user: {
         relation: Model.BelongsToOneRelation,
-        modelClass: `${__dirname}/cat.js`,
+        modelClass: `${__dirname}/user.js`,
         join: {
           from: 'subscriptions.telegramId',
           to: 'users.id'

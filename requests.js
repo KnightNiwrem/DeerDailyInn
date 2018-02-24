@@ -1,24 +1,3 @@
-const makeAuthCodeRequest = (telegramUserId) => {
-  const message = JSON.stringify({
-    action: 'createAuthCode',
-    payLoad: {
-      userId: telegramUserId,
-    }
-  });
-  return message;
-};
-
-const makeTokenExchangeRequest = (telegramUserId, authCode) => {
-  const message = JSON.stringify({
-    action: 'grantToken',
-    payload: {
-      userId: telegramUserId,
-      authCode: authCode,
-    }
-  });
-  return message;
-};
-
 const makePaymentAuthorizationRequest = (chatwarsUserToken, localTid, pouchQuantity) => {
   const message = JSON.stringify({
     token: chatwarsUserToken,

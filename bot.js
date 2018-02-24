@@ -4,7 +4,8 @@ const bodyParser = require('body-parser');
 const fetch = require('node-fetch');
 fetch.Promise = Promise;
 
-const router = require('./Controllers/router');
+const chtwrsRouter = require('./controllers/chtwrsRouter');
+const telegramRouter = require('./controllers/telegramRouter');
 
 class Bot {
   constructor(botKey, username, password) {
@@ -14,7 +15,6 @@ class Bot {
     this.username = username;
     this.password = password;
     this.botKey = botKey;
-    this.pushUrl = `https://api.telegram.org/bot${this.botKey}`;
   }
 
   registerConnection(connection) {
@@ -35,7 +35,15 @@ class Bot {
       return;
     }
 
-    this.channel.consume(`${this.username}_i`, this.handleInboundQueue.bind(this), { noAck: true });
+    const callbackWrapper = (message) => {
+      const parameters = {
+        bot: this,
+        controllerName: 'inbound',
+        rawMessage: message
+      };
+      return chtwrsRouter(parameters);
+    };
+    this.channel.consume(`${this.username}_i`, callbackWrapper, { noAck: true });
   }
 
   subscribeToOffersQueue() {
@@ -44,7 +52,15 @@ class Bot {
       return;
     }
 
-    this.channel.consume(`${this.username}_offers`, this.handleOffersQueue.bind(this), { noAck: true });
+    const callbackWrapper = (message) => {
+      const parameters = {
+        bot: this,
+        controllerName: 'offers',
+        rawMessage: message
+      };
+      return chtwrsRouter(parameters);
+    };
+    this.channel.consume(`${this.username}_offers`, callbackWrapper, { noAck: true });
   }
 
   subscribeToDealsQueue() {
@@ -53,33 +69,15 @@ class Bot {
       return;
     }
 
-    this.channel.consume(`${this.username}_deals`, this.handleDealsQueue.bind(this), { noAck: true });
-  }
-
-  handleInboundQueue(message) {
-    return;
-  }
-
-  handleOffersQueue(message) {
-    return;
-  }
-
-  handleDealsQueue(message) {
-    if (message.fields.redelivered) {
-      return;
-    }
-
-    const content = JSON.parse(message.content.toString());
-    const sellerId = content.sellerId;
-    const listenerId = '85c8421558ec4c0098fda3003b460f0f';
-
-    if (sellerId === listenerId) {
-      const messageBody = {
-        chat_id: 41284431,
-        text: `${content.buyerCastle}${content.buyerName} purchased ${content.qty} ${content.item} from you at ${content.price} gold each.`,
-      }
-      this.makeTelegramRequest('sendMessage', messageBody);
-    }
+    const callbackWrapper = (message) => {
+      const parameters = {
+        bot: this,
+        controllerName: 'deals',
+        rawMessage: message
+      };
+      return chtwrsRouter(parameters);
+    };
+    this.channel.consume(`${this.username}_deals`, callbackWrapper, { noAck: true });
   }
 
   sendChtwrsMessage(message) {
@@ -96,7 +94,7 @@ class Bot {
   }
 
   sendTelegramMessage(method, message) {
-    const url = `${this.pushUrl}/${method}`;
+    const url = `https://api.telegram.org/bot${this.botKey}/${method}`;
     const headers = {
       'Content-Type': 'application/json'
     };
@@ -133,7 +131,7 @@ class Bot {
       rawMessage: messageText,
       telegramId: userId,
     };
-    return router(parameters);
+    return telegramRouter(parameters);
   }
 }
 

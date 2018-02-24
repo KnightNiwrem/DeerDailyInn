@@ -2,6 +2,28 @@ const Promise = require('bluebird');
 const config = require('./config');
 
 /************************
+ *  Set Up - Database
+************************/
+const dbConfig = config.get('db');
+const { Model } = require('objection');
+const Knex = require('knex');
+
+// Initialize knex.
+const knex = Knex({
+  client: 'pg',
+  connection: {
+    host : dbConfig.host,
+    port: dbConfig.port,
+    user : dbConfig.username,
+    password : dbConfig.password,
+    database : dbConfig.database
+  }
+});
+
+// Give the knex object to objection.
+Model.knex(knex);
+
+/************************
  *  Set Up - RabbitMQ
 ************************/
 const username = config.get('username');
@@ -11,33 +33,11 @@ const amqp = require('amqplib');
 
 const setUpPromise = amqp.connect(connectionUrl)
 .then((connection) => {
-  console.log("Created connection");
   const channelPromise = connection.createChannel();
   return Promise.all([connection, channelPromise]);
 }).then((connectionAndChannel) => {
-  console.log("Created channel");
   return connectionAndChannel;
 });
-
-/************************
- *  Set Up - Database
-************************/
-/*
-const { Model } = require('objection');
-const Knex = require('knex');
-
-// Initialize knex.
-const knex = Knex({
-  client: 'pg',
-  useNullAsDefault: true,
-  connection: {
-    filename: 'example.db'
-  }
-});
-
-// Give the knex object to objection.
-Model.knex(knex);
-*/
 
 /************************
  *     Set Up - Bot
