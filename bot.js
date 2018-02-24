@@ -120,13 +120,31 @@ class Bot {
     const messageText = update.message.text;
     const userId = !_.isNil(update.message.from) ? update.message.from.id : undefined;
 
-    const [controllerName, ...options] = messageText.split(' ');
+    const words = messageText.split(' ');
+    let [controllerName, ...options] = words;
+    let willFetchOptions = false;
+    _.forEach(words, (word) => {
+      if (willFetchOptions) {
+        options.push(word);
+      }
+      if (word.endsWith('@deer_daily_inn_bot')) {
+        controllerName = word.slice(0, -19);
+        options = [];
+        willFetchOptions = true;
+      }
+    });
+
+    // Ignore messages that just do @deer_daily_inn_bot
+    if (_.isEmpty(controllerName)) {
+      return Promise.resolve();
+    }
+    
     const parameters = {
       bot: this,
       chatId: chatId,
       controllerName: controllerName,
-      isChannel: _.isNil(userId) && messageText.includes('@deer_daily_inn_bot'),
-      isCommand: messageText.startsWith('/'),
+      isChannel: _.isNil(userId),
+      isCommand: controllerName.startsWith('/'),
       options: options,
       rawMessage: messageText,
       telegramId: userId,
