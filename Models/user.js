@@ -36,22 +36,11 @@ class User extends Model {
 
   static _construct(userAttributes) {
     const user = new User();
+    const writableFields = _.pull(this.fields, 'id');
     _.forEach(writableFields, (writableField) => {
-      if (writableField === 'id') {
-        return;
-      }
       user[writableField] = userAttributes[writableField];
     });
     return user;
-  }
-
-  static _isValidAttributes(userAttributes) {
-    const requiredFields = this._requiredFields(userAttributes);
-    const missingFields = _.filter(requiredFields, (requiredField) => {
-      return _.isNil(userAttributes) || _.isNil(userAttributes[requiredField]);
-    });
-
-    return missingFields.length === 0;
   }
 
   /*************************** Database Methods ****************************/
