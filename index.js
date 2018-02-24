@@ -1,5 +1,4 @@
 const Promise = require('bluebird');
-const amqp = require('amqplib');
 const config = require('./config');
 
 /************************
@@ -7,6 +6,7 @@ const config = require('./config');
 ************************/
 const username = config.get('username');
 const password = config.get('password');
+const amqp = require('amqplib');
 const connectionUrl = `amqps://${username}:${password}@api.chatwars.me:5673/`
 
 const setUpPromise = amqp.connect(connectionUrl)
@@ -64,6 +64,7 @@ setUpPromise
 ************************/
 const ip = config.get('ip');
 const port = config.get('port');
+const express = require('express');
 const app = express();
 
 app.use(bodyParser.json());
