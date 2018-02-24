@@ -2,11 +2,13 @@ const _ = require('lodash');
 
 const startController = require('./telegram/start');
 const authController = require('./telegram/auth');
+const helpController = require('./telegram/help');
 const defaultController = require('./telegram/unknown');
 
 const controllerRouter = {
   start: startController,
   auth: authController,
+  help: helpController
 };
 
 const telegramRouter = (params) => {
