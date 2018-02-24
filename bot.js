@@ -91,10 +91,8 @@ class Bot {
     const options = { 
       contentType: 'application/json'
     };
-    return this.channel.publish(`${this.username}_ex`, 
-                                `${this.username}_o`, 
-                                messageBuffer, 
-                                options);
+    this.channel.publish(`${this.username}_ex`, `${this.username}_o`, messageBuffer, options);
+    return Promise.resolve();
   }
 
   sendTelegramMessage(method, message) {
