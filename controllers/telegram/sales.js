@@ -58,10 +58,10 @@ const sales = (params) => {
   .then(([isSuccess, sales]) => {
     if (!isSuccess) {
       const unregisteredMessage = makeUnregisteredMessage(chatId);
-      return bot.sendMessage('sendMessage', unregisteredMessage);
+      return bot.sendTelegramMessage('sendMessage', unregisteredMessage);
     } else {
       const salesMessage = makeSalesMessage(chatId, sales);
-      return bot.sendMessage('sendMessage', salesMessage);
+      return bot.sendTelegramMessage('sendMessage', salesMessage);
     }
   });
 };
