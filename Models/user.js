@@ -81,7 +81,7 @@ class User extends Model {
         modelClass: `${__dirname}/subscription.js`,
         join: {
           from: 'users.id',
-          to: 'subscriptions.telegramId'
+          to: 'subscriptions.userId'
         }
       }
     };

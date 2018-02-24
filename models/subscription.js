@@ -41,7 +41,7 @@ class Subscription extends Model {
         relation: Model.BelongsToOneRelation,
         modelClass: `${__dirname}/user.js`,
         join: {
-          from: 'subscriptions.telegramId',
+          from: 'subscriptions.userId',
           to: 'users.id'
         }
       }
