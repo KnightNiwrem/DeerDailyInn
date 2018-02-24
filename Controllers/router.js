@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 const startController = require('./telegram/start');
 const defaultController = require('./telegram/unknown');
 
