@@ -35,7 +35,7 @@ const deals = (params) => {
         buyerId: content.buyerId,
         item: content.item,
         price: content.price,
-        quantity: content.quantity,
+        quantity: content.qty,
         sellerId: content.sellerId
       };
       return Deal.create(dealAttributes).then();
