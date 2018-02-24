@@ -14,9 +14,11 @@
     "body-parser": "^1.18.2",
     "convict": "^4.0.2",
     "express": "^4.16.2",
+    "knex": "^0.14.4",
     "lodash": "^4.17.5",
     "node-fetch": "^2.0.0",
     "node-uuid": "^1.4.8",
-    "redis": "^2.8.0"
+    "objection": "^1.0.0",
+    "pg": "^7.4.1"
   }
 }

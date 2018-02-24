@@ -1,30 +1,20 @@
 const Promise = require('bluebird');
 const _ = require('lodash');
-const express = require('express');
 const bodyParser = require('body-parser');
-
 const fetch = require('node-fetch');
 fetch.Promise = Promise;
 
-const requests = require('./requests');
-const replies = require('./replies');
+const router = require('./Controllers/router');
 
 class Bot {
-  constructor(botKey, username, password, ip, port) {
+  constructor(botKey, username, password) {
     this.connection = undefined;
     this.channel = undefined;
-    this.redisClient = undefined;
 
     this.username = username;
     this.password = password;
     this.botKey = botKey;
-    this.pullUrl = `https://deerdailyinn.nusreviews.com/${this.botKey}`;
     this.pushUrl = `https://api.telegram.org/bot${this.botKey}`;
-
-    this.ip = ip;
-    this.port = port;
-    this.app = undefined;
-    this.setUpTelegramServer();
   }
 
   registerConnection(connection) {
@@ -35,14 +25,8 @@ class Bot {
     this.channel = channel;
   }
 
-  registerRedisClient(redisClient) {
-    this.redisClient = redisClient;
-  }
-
   hasResources() {
-    return !_.isUndefined(this.connection) && 
-           !_.isUndefined(this.channel) && 
-           !_.isUndefined(this.redisClient);
+    return !_.isUndefined(this.connection) && !_.isUndefined(this.channel);
   }
 
   subscribeToInboundQueue() {
@@ -98,131 +82,60 @@ class Bot {
     }
   }
 
-  publishMessage(userMessage = '', userOptions = {}) {
+  sendChtwrsMessage(message) {
     if (!this.hasResources()) {
-      console.warn('Bot does not have a connection or channel to publish to.');
-      return;
+      return Promise.reject('Bot does not have a connection or channel to publish to.');
     }
 
-    const messageBuffer = new Buffer(userMessage);
-    const defaultOptions = { contentType: 'application/json' };
-    const options = _.assign(defaultOptions, userOptions);
-    this.channel.publish(`${this.username}_ex`, `${this.username}_o`, messageBuffer, options);
+    const messageBuffer = new Buffer(message);
+    const options = { 
+      contentType: 'application/json'
+    };
+    return this.channel.publish(`${this.username}_ex`, 
+                                `${this.username}_o`, 
+                                messageBuffer, 
+                                options);
   }
 
-  makeTelegramRequest(method, body = {}) {
-    const url = `${this.pushUrl}/${method}`;
-
+  sendTelegramMessage(message) {
+    const url = `${this.pushUrl}/sendMessage`;
     const headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     };
-
-    return fetch(url, {
+    const options = {
       method: 'POST',
-      body: JSON.stringify(body),
+      body: message,
       headers: headers
-    })
+    };
+    return fetch(url, options)
     .then((response) => {
       return response.json();
     });
   }
 
-  handleTelegramMessage(req, res, userId, chatId, messageText) {
-    let requestPromise = Promise.resolve();
-    if (messageText.trim().startsWith('/')) {
-      const [command, ...parameters] = messageText.slice(1).split(' ');
-
-      if (command === 'start') {
-        requestPromise = this.doRegistration(res, userId, chatId);
-      } else {
-        requestPromise = this.sendUnknownResponse(chatId, messageText);
-      }
-    } else {
-      requestPromise = this.sendUnknownResponse(chatId, messageText);
+  handleTelegramMessage(req, res) {
+    // Ignore response without text messages
+    const update = req.body;
+    if (_.isEmpty(update.message) || _.isEmpty(update.message.text)) {
+      return Promise.resolve();
     }
 
-    requestPromise
-    .catch(console.warn)
-    .finally(() => {
-      res.end();
-    });
-  }
+    const chatId = update.message.chat.id;
+    const messageText = update.message.text;
+    const userId = !_.isEmpty(update.message.from) ? update.message.from.id : undefined;
 
-  setUpTelegramServer() {
-    this.app = express();
-    this.app.use(bodyParser.json());
-
-    this.app.post(`/${this.botKey}`, (req, res) => {
-      let userId, chatId, messageText;
-
-      // If not, then not an update that we care about
-      if (!req.body.message) {
-        return;
-      }
-
-      // Chat is not optional on Message
-      chatId = req.body.message.chat.id;
-
-      // Text is optional on Message
-      // If not text message, definitely not for us
-      if (!req.body.message.text) {
-        return;
-      } else {
-        messageText = req.body.message.text;
-      }
-
-      // From is optional on Message
-      // Will be empty for Channels
-      if (!req.body.message.from && messageText.includes('@deer_daily_inn_bot')) {
-        const channelResponse = {
-          chat_id: chatId,
-          text: 'This bot does not work in channels and groups!',
-        };
-        this.makeTelegramRequest('sendMessage', channelResponse);
-        return;
-      } else if (!req.body.message.from) {
-        return;
-      } else {
-        userId = req.body.message.from.id;
-      }
-      
-      this.handleTelegramMessage(req, res, userId, chatId, messageText);
-    });
-
-    this.app.listen(this.port, () => {
-      const webhookRequest = {
-        url: this.pullUrl,
-      };
-      this.makeTelegramRequest('setWebhook', webhookRequest);
-      console.log('Telegram bot server has started');
-    });
-  }
-
-  sendInitializationMessage() {
-    const initializationMessage = {
-      chat_id: 41284431,
-      text: 'Deer daily inn is ready to notify you of your completed deals!',
+    const [controller, ...options] = messageText.split(' ');
+    const parameters = {
+      bot: this,
+      chatId: chatId,
+      controller: controller,
+      isChannel: _.isEmpty(userId) && messageText.includes('@deer_daily_inn_bot'),
+      isCommand: messageText.startsWith('/'),
+      options: options,
+      rawMessage: messageText,
+      telegramUserId: userId,
     };
-    return this.makeTelegramRequest('sendMessage', initializationMessage);
-  }
-
-  sendUnknownResponse(chatId, messageText) {
-    const primaryResponse = {
-      chat_id: chatId,
-      text: `Sorry, I don't quite understand what ${messageText} means.`,
-    };
-    return this.makeTelegramRequest('sendMessage', primaryResponse);
-  }
-
-  doRegistration(res, userId, chatId) {
-    const authRequest = requests.makeAuthCodeRequest(userId);
-    this.publishMessage(authRequest);
-
-    const registrationMessage = {
-      chat_id: chatId,
-      text: replies.welcomeMessage(),
-    };
-    return this.makeTelegramRequest('sendMessage', registrationMessage);
+    return router(parameters);
   }
 }
 

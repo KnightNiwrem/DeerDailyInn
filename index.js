@@ -1,27 +1,14 @@
 const Promise = require('bluebird');
-const _ = require('lodash');
 const amqp = require('amqplib');
-const uuid = require('node-uuid');
 const config = require('./config');
 
-const fetch = require('node-fetch');
-fetch.Promise = Promise;
-
-const redis = require('redis');
-Promise.promisifyAll(redis.RedisClient.prototype);
-Promise.promisifyAll(redis.Multi.prototype);
-const redisClient = redis.createClient();
-
-const botKey = config.get('botKey');
+/************************
+ *  Set Up - RabbitMQ
+************************/
 const username = config.get('username');
 const password = config.get('password');
-const ip = config.get('ip');
-const port = config.get('port');
-
-/*********************
- *      Set Up 
-*********************/
 const connectionUrl = `amqps://${username}:${password}@api.chatwars.me:5673/`
+
 const setUpPromise = amqp.connect(connectionUrl)
 .then((connection) => {
   console.log("Created connection");
@@ -32,12 +19,32 @@ const setUpPromise = amqp.connect(connectionUrl)
   return connectionAndChannel;
 });
 
-/*********************
- *        Work 
-*********************/
+/************************
+ *  Set Up - Database
+************************/
+/*
+const { Model } = require('objection');
+const Knex = require('knex');
 
+// Initialize knex.
+const knex = Knex({
+  client: 'pg',
+  useNullAsDefault: true,
+  connection: {
+    filename: 'example.db'
+  }
+});
+
+// Give the knex object to objection.
+Model.knex(knex);
+*/
+
+/************************
+ *     Set Up - Bot
+************************/
+const botKey = config.get('botKey');
 const Bot = require('./bot');
-const bot = new Bot(botKey, username, password, ip, port);
+const bot = new Bot(botKey, username, password);
 
 setUpPromise
 .then((connectionAndChannel) => {
@@ -45,12 +52,35 @@ setUpPromise
 
   bot.registerConnection(connection);
   bot.registerChannel(channel);
-  bot.registerRedisClient(redisClient);
 
   bot.subscribeToInboundQueue();
   bot.subscribeToOffersQueue();
   bot.subscribeToDealsQueue();
-  bot.sendInitializationMessage();
 })
 .catch(console.warn);
+
+/************************
+ *   Set Up - Server
+************************/
+const ip = config.get('ip');
+const port = config.get('port');
+const app = express();
+
+app.use(bodyParser.json());
+
+app.post(`/${botKey}`, (req, res) => {
+  return bot.handleTelegramMessage(req, res)
+  .catch(console.warn)
+  .finally(() => {
+    res.end();
+  });
+});
+
+app.listen(port, () => {
+  const webhookRequest = {
+    url: `https://deerdailyinn.nusreviews.com/${botKey}`,
+  };
+  bot.initializeWebhook(webhookRequest);
+  console.log('Telegram bot server has started');
+});
 
