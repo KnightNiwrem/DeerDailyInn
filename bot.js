@@ -133,7 +133,7 @@ class Bot {
       isCommand: messageText.startsWith('/'),
       options: options,
       rawMessage: messageText,
-      telegramUserId: userId,
+      telegramId: userId,
     };
     return router(parameters);
   }

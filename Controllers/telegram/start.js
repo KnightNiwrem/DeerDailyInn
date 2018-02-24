@@ -17,11 +17,11 @@ via @chtwrsbot.`;
   return welcomeMessage;
 };
 
-const makeAuthCodeRequest = (telegramUserId) => {
+const makeAuthCodeRequest = (telegramId) => {
   const message = JSON.stringify({
     action: 'createAuthCode',
     payLoad: {
-      userId: telegramUserId,
+      userId: telegramId,
     }
   });
   return message;
@@ -31,14 +31,14 @@ const start = (params) => {
   if (_.isNil(params.bot)) {
     return Promise.reject('Rejected in start: Bot cannot be missing');
   }
-  if (_.isNil(params.telegramUserId) || _.isNil(params.chatId)) {
+  if (_.isNil(params.telegramId) || _.isNil(params.chatId)) {
     return Promise.reject('Rejected in start: Missing telegram user id or chat id');
   }
 
   const bot = params.bot;
-  const telegramId = params.telegramUserId;
+  const telegramId = params.telegramId;
   const chatId = params.chatId;
-  const authRequest = makeAuthCodeRequest(telegramUserId);
+  const authRequest = makeAuthCodeRequest(telegramId);
   return bot.sendChtwrsMessage(authRequest)
   .then(() => {
     const welcomeMessage = makeWelcomeMessage(chatId);
