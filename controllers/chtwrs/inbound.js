@@ -32,7 +32,7 @@ const respondToUnknown = (content) => {
 
 const inboundResponders = {
   'createAuthCode': respondToAuth,
-  'grantToken', respondToGrant
+  'grantToken': respondToGrant
 };
 
 const inbound = (params) => {
