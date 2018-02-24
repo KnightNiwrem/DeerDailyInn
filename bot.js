@@ -116,20 +116,20 @@ class Bot {
   handleTelegramMessage(req, res) {
     // Ignore response without text messages
     const update = req.body;
-    if (_.isEmpty(update.message) || _.isEmpty(update.message.text)) {
+    if (_.isNil(update.message) || _.isEmpty(update.message.text)) {
       return Promise.resolve();
     }
 
     const chatId = update.message.chat.id;
     const messageText = update.message.text;
-    const userId = !_.isEmpty(update.message.from) ? update.message.from.id : undefined;
+    const userId = !_.isNil(update.message.from) ? update.message.from.id : undefined;
 
     const [controllerName, ...options] = messageText.split(' ');
     const parameters = {
       bot: this,
       chatId: chatId,
       controllerName: controllerName,
-      isChannel: _.isEmpty(userId) && messageText.includes('@deer_daily_inn_bot'),
+      isChannel: _.isNil(userId) && messageText.includes('@deer_daily_inn_bot'),
       isCommand: messageText.startsWith('/'),
       options: options,
       rawMessage: messageText,

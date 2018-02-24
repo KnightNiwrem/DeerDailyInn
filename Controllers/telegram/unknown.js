@@ -10,10 +10,10 @@ const makeUnknownMessage = (chatId) => {
 };
 
 const unknown = (params) => {
-  if (_.isEmpty(params.bot)) {
+  if (_.isNil(params.bot)) {
     return Promise.reject('Rejected in unknown: Bot cannot be missing');
   }
-  if (_.isEmpty(params.chatId)) {
+  if (_.isNil(params.chatId)) {
     return Promise.reject('Rejected in unknown: Missing telegram chat id');
   }
 

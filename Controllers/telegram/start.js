@@ -28,10 +28,10 @@ const makeAuthCodeRequest = (telegramUserId) => {
 };
 
 const start = (params) => {
-  if (_.isEmpty(params.bot)) {
+  if (_.isNil(params.bot)) {
     return Promise.reject('Rejected in start: Bot cannot be missing');
   }
-  if (_.isEmpty(params.telegramUserId) || _.isEmpty(params.chatId)) {
+  if (_.isNil(params.telegramUserId) || _.isNil(params.chatId)) {
     return Promise.reject('Rejected in start: Missing telegram user id or chat id');
   }
 

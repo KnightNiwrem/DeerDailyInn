@@ -10,7 +10,7 @@ const controllerRouter = {
 const router = (params) => {
   const controllerName = params.isCommand ? params.controllerName.slice(1) : params.controllerName;
   const controller = controllerRouter[controllerName];
-  const usableController = !_.isEmpty(controller) ? controller : defaultController;
+  const usableController = !_.isNil(controller) ? controller : defaultController;
   return usableController(params);
 };
 
