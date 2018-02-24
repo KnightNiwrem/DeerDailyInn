@@ -40,22 +40,22 @@ const sales = (params) => {
   let limit = 10;
   if (!_.isEmpty(params.options)) {
     const userLimit = parseInt(params.options[0]);
-    limit = _.isNaN(userLimit) ? limit : Math.max(userLimit, 100);
+    limit = _.isNaN(userLimit) || userLimit < 1 ? limit : Math.max(userLimit, 100);
   }
 
   return User.query().where('telegramId', telegramId).first()
   .then((user) => {
     const isSuccess = !_.isNil(user) && !_.isNil(user.chtwrsId);
-    let deals = [];
+    let sales = [];
     if (isSuccess) {
-      deals = Deal.query()
+      sales = Deal.query()
       .where('sellerId', user.chtwrsId)
       .limit(limit)
       .orderBy('created_at', 'desc');
     }
-    return Promise.all([isSuccess, deals]);
+    return Promise.all([isSuccess, sales]);
   })
-  .then(([isSuccess, deals]) => {
+  .then(([isSuccess, sales]) => {
     if (!isSuccess) {
       const unregisteredMessage = makeUnregisteredMessage(chatId);
       return bot.sendMessage('sendMessage', unregisteredMessage);

@@ -4,6 +4,7 @@ const makeHelpMessage = (chatId) => {
   const helpText = `Here are the currently available commands:
 /start - Gets authorization code from @chtwrsbot for registration
 /auth [authorization code] - Completes registration
+/sales (optional limit, max 100) - Displays your recent sales
 /help - Display this help message`;
   
   const helpMessage = JSON.stringify({
