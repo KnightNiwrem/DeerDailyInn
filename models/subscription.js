@@ -49,4 +49,4 @@ class Subscription extends Model {
   }
 }
 
-module.exports = User;
+module.exports = Subscription;
