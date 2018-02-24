@@ -27,7 +27,7 @@ class Subscription extends Model {
         },
         paymentInfo: {
           type: 'string'
-        }
+        },
         telegramId: {
           type: 'integer'
         },
