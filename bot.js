@@ -35,7 +35,7 @@ class Bot {
       return;
     }
 
-    this.channel.consume(`${this.username}_i`, this.handleInboundQueue, { noAck: true });
+    this.channel.consume(`${this.username}_i`, this.handleInboundQueue.bind(this), { noAck: true });
   }
 
   subscribeToOffersQueue() {
@@ -44,7 +44,7 @@ class Bot {
       return;
     }
 
-    this.channel.consume(`${this.username}_offers`, this.handleOffersQueue, { noAck: true });
+    this.channel.consume(`${this.username}_offers`, this.handleOffersQueue.bind(this), { noAck: true });
   }
 
   subscribeToDealsQueue() {
@@ -53,7 +53,7 @@ class Bot {
       return;
     }
 
-    this.channel.consume(`${this.username}_deals`, this.handleDealsQueue, { noAck: true });
+    this.channel.consume(`${this.username}_deals`, this.handleDealsQueue.bind(this), { noAck: true });
   }
 
   handleInboundQueue(message) {
