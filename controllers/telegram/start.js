@@ -8,7 +8,9 @@ enjoy your stay at our inn.
 
 For the time being, please authenticate Deer Daily \
 Inn by entering the authorization code sent to you \
-via @chtwrsbot.`;
+via @chtwrsbot.
+
+To authenticate, please do \`\`\`/auth [auth code from @chtwrsbot]\`\`\``;
   
   const welcomeMessage = JSON.stringify({
     chat_id: chatId,
