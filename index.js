@@ -6,8 +6,8 @@ const config = require('./config');
 ************************/
 const username = config.get('username');
 const password = config.get('password');
-const amqp = require('amqplib');
 const connectionUrl = `amqps://${username}:${password}@api.chatwars.me:5673/`
+const amqp = require('amqplib');
 
 const setUpPromise = amqp.connect(connectionUrl)
 .then((connection) => {
@@ -65,8 +65,8 @@ setUpPromise
 const ip = config.get('ip');
 const port = config.get('port');
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
-
 app.use(bodyParser.json());
 
 app.post(`/${botKey}`, (req, res) => {
