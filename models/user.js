@@ -30,7 +30,7 @@ class User extends Model {
 
   /*************************** Private Methods ***************************/
 
-  static _requiredFields() {
+  static get _requiredFields() {
     return ['telegramId'];
   }
 
