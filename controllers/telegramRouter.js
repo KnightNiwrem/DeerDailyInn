@@ -6,11 +6,13 @@ const defaultController = require('./telegram/unknown');
 const startController = require('./telegram/start');
 const authController = require('./telegram/auth');
 const helpController = require('./telegram/help');
+const salesController = require('./telegram/sales');
 
 const controllerRouter = {
   start: startController,
   auth: authController,
-  help: helpController
+  help: helpController,
+  sales: salesController
 };
 
 const privateOnlyCommands = new Set(['start', 'auth']);

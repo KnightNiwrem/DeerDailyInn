@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const User = require('../../models/user');
+const Deal = require('../../models/deal');
 
 const deals = (params) => {
   if (_.isNil(params.bot)) {
@@ -23,6 +24,24 @@ const deals = (params) => {
         text: `${content.buyerCastle}${content.buyerName} purchased ${content.qty} ${content.item} from you at ${content.price} gold each.`
       });
       return bot.sendTelegramMessage('sendMessage', dealsMessage);
+    }
+  })
+  .catch(console.warn);
+
+  const dealSearchAttributes = {
+    chtwrsId: [content.buyerId, content.sellerId]
+  };
+  User().query().whereIn(dealSearchAttributes)
+  .then((users) => {
+    if (!_.isEmpty(users)) {
+      const dealAttributes = {
+        buyerId: content.buyerId,
+        item: content.item,
+        price: content.price,
+        quantity: content.quantity,
+        sellerId: content.sellerId
+      };
+      return Deal.create(dealAttributes).then();
     }
   })
   .catch(console.warn);

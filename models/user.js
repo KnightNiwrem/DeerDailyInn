@@ -3,17 +3,17 @@ const { Model } = require('objection');
 
 class User extends Model {
   
-  static findOrCreate(userAttributes) {
+  static findOrCreate(attributes) {
     const missingAttributes = this._requiredFields.filter((requiredField) => {
-      return _.isNil(userAttributes) || _.isNil(userAttributes[requiredField]);
+      return _.isNil(attributes) || _.isNil(attributes[requiredField]);
     });
     if (!_.isEmpty(missingAttributes)) {
       return Promise.reject(`User.findOrCreate expects: ${missingAttributes.join(', ')}`);
     }
 
     // Try to find user, create if not found
-    const user = this._construct(userAttributes);
-    const userPromise = this.query().where('telegramId', userAttributes.telegramId)
+    const user = this._construct(attributes);
+    const userPromise = this.query().where('telegramId', attributes.telegramId)
     .then((users) => {
       let returnedUser = null;
       if (_.isEmpty(users)) {
@@ -34,11 +34,11 @@ class User extends Model {
     return ['telegramId'];
   }
 
-  static _construct(userAttributes) {
+  static _construct(attributes) {
     const user = new User();
     const writableFields = _.pull(this.fields, 'id');
     _.forEach(writableFields, (writableField) => {
-      user[writableField] = userAttributes[writableField];
+      user[writableField] = attributes[writableField];
     });
     return user;
   }
@@ -75,8 +75,25 @@ class User extends Model {
   }
 
   static get relationMappings() {
+    const Deal = require('./deal');
     const Subscription = require('./subscription');
     return {
+      purchases: {
+        relation: Model.HasManyRelation,
+        modelClass: Deal,
+        join: {
+          from: 'users.chtwrsId',
+          to: 'deals.buyerId'
+        }
+      },
+      sales: {
+        relation: Model.HasManyRelation,
+        modelClass: Deal,
+        join: {
+          from: 'users.chtwrsId',
+          to: 'deals.sellerId'
+        }
+      },
       subscriptions: {
         relation: Model.HasManyRelation,
         modelClass: Subscription,

@@ -5,7 +5,9 @@ const respondToAuth = (content, bot) => {
   const userAttributes = {
     telegramId: content.payload.userId
   };
-  User.findOrCreate(userAttributes).catch(console.warn);
+  User.findOrCreate(userAttributes)
+  .then()
+  .catch(console.warn);
 };
 
 const respondToGrant = (content, bot) => {
