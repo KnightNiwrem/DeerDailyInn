@@ -10,6 +10,7 @@ exports.up = function(knex, Promise) {
         table.string('paymentInfo');
         table.integer('telegramId');
         table.integer('userId');
+        table.timestamps(true, true);
 
         table.foreign('userId').references('users.id');
       });

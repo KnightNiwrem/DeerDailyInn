@@ -8,7 +8,7 @@ exports.up = function(knex, Promise) {
         table.string('chtwrsId');
         table.string('chtwrsToken');
         table.integer('telegramId');
-        table.timestamps();
+        table.timestamps(true, true);
 
         table.unique('telegramId');
       });
