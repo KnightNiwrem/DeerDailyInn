@@ -97,8 +97,8 @@ class Bot {
                                 options);
   }
 
-  sendTelegramMessage(message) {
-    const url = `${this.pushUrl}/sendMessage`;
+  sendTelegramMessage(method, message) {
+    const url = `${this.pushUrl}/${method}`;
     const headers = {
       'Content-Type': 'application/json'
     };
@@ -124,11 +124,11 @@ class Bot {
     const messageText = update.message.text;
     const userId = !_.isEmpty(update.message.from) ? update.message.from.id : undefined;
 
-    const [controller, ...options] = messageText.split(' ');
+    const [controllerName, ...options] = messageText.split(' ');
     const parameters = {
       bot: this,
       chatId: chatId,
-      controller: controller,
+      controllerName: controllerName,
       isChannel: _.isEmpty(userId) && messageText.includes('@deer_daily_inn_bot'),
       isCommand: messageText.startsWith('/'),
       options: options,

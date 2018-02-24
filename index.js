@@ -78,10 +78,10 @@ app.post(`/${botKey}`, (req, res) => {
 });
 
 app.listen(port, () => {
-  const webhookRequest = {
+  const webhookRequest = JSON.stringify({
     url: `https://deerdailyinn.nusreviews.com/${botKey}`,
-  };
-  bot.initializeWebhook(webhookRequest);
+  });
+  bot.sendTelegramMessage('setWebhook', webhookRequest);
   console.log('Telegram bot server has started');
 });
 

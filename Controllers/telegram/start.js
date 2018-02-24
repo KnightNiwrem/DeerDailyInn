@@ -29,10 +29,10 @@ const makeAuthCodeRequest = (telegramUserId) => {
 
 const start = (params) => {
   if (_.isEmpty(params.bot)) {
-    return Promise.reject('Rejected /start: Bot cannot be missing');
+    return Promise.reject('Rejected in start: Bot cannot be missing');
   }
   if (_.isEmpty(params.telegramUserId) || _.isEmpty(params.chatId)) {
-    return Promise.reject('Rejected /start: Missing telegram user id or chat id');
+    return Promise.reject('Rejected in start: Missing telegram user id or chat id');
   }
 
   const bot = params.bot;
@@ -42,7 +42,7 @@ const start = (params) => {
   return bot.sendChtwrsMessage(authRequest)
   .then(() => {
     const welcomeMessage = makeWelcomeMessage(chatId);
-    return bot.sendTelegramMessage(welcomeMessage);
+    return bot.sendTelegramMessage('sendMessage', welcomeMessage);
   });
 };
 
