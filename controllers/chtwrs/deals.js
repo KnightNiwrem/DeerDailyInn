@@ -28,10 +28,7 @@ const deals = (params) => {
   })
   .catch(console.warn);
 
-  const dealSearchAttributes = {
-    chtwrsId: [content.buyerId, content.sellerId]
-  };
-  User.query().whereIn(dealSearchAttributes)
+  User.query().whereIn('chtwrsId', [content.buyerId, content.sellerId])
   .then((users) => {
     if (!_.isEmpty(users)) {
       const dealAttributes = {
