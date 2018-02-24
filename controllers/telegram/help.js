@@ -1,9 +1,9 @@
 const _ = require('lodash');
 
 const makeHelpMessage = (chatId) => {
-  const helpText = `Here are the currently available commands:\
-/start - Gets authorization code from @chtwrsbot for registration\
-/auth [authorization code] - Completes registration\
+  const helpText = `Here are the currently available commands:
+/start - Gets authorization code from @chtwrsbot for registration
+/auth [authorization code] - Completes registration
 /help - Display this help message`;
   
   const helpMessage = JSON.stringify({
