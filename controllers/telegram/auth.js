@@ -40,14 +40,15 @@ const auth = (params) => {
   if (_.isNil(params.telegramId) || _.isNil(params.chatId)) {
     return Promise.reject('Rejected in auth: Missing telegram user id or chat id');
   }
+
+  const bot = params.bot;
+  const chatId = params.chatId;
   if (_.isEmpty(params.options)) {
-    const missingArgumentMessage = makeMissingArgumentMessage(params.chatId);
+    const missingArgumentMessage = makeMissingArgumentMessage(chatId);
     return bot.sendTelegramMessage('sendMessage', missingArgumentMessage);
   }
 
-  const bot = params.bot;
   const telegramId = params.telegramId;
-  const chatId = params.chatId;
   const authCode = params.options[0];
   const tokenExchangeRequest = makeTokenExchangeRequest(telegramId, authCode);
   return bot.sendChtwrsMessage(tokenExchangeRequest)
