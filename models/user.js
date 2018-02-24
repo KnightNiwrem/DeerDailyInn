@@ -75,10 +75,11 @@ class User extends Model {
   }
 
   static get relationMappings() {
+    const Subscription = require('./subscription');
     return {
       subscriptions: {
         relation: Model.HasManyRelation,
-        modelClass: `${__dirname}/subscription.js`,
+        modelClass: Subscription,
         join: {
           from: 'users.id',
           to: 'subscriptions.userId'
