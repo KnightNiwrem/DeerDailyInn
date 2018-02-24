@@ -41,7 +41,7 @@ const auth = (params) => {
     return Promise.reject('Rejected in auth: Missing telegram user id or chat id');
   }
   if (_.isEmpty(params.options)) {
-    const missingArgumentMessage = makeMissingArgumentMessage(chatId);
+    const missingArgumentMessage = makeMissingArgumentMessage(params.chatId);
     return bot.sendTelegramMessage('sendMessage', missingArgumentMessage);
   }
 
