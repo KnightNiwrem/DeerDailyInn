@@ -13,57 +13,59 @@ be registered yet! Do /start to register first!`;
   return unregisteredMessage;
 };
 
-const makeSalesMessage = (chatId, sales) => {
-  let salesText = 'Here are your last recorded sales:\n\n';
-  sales.forEach((sale, index) => {
-    salesText += `${index + 1}. ${sale.quantity} ${sale.item} at ${sale.price} gold each\n`;
+const makeDealsMessage = (chatId, deals) => {
+  let dealsText = 'Here are your last recorded deals:\n\n';
+  deals.forEach((deal, index) => {
+    console.log(`${index + 1}: ${deal._created_at}`);
+    dealsText += `${index + 1}. ${deal.quantity} ${deal.item} at ${deal.price} gold each\n`;
   });
   
-  const salesMessage = JSON.stringify({
+  const dealsMessage = JSON.stringify({
     chat_id: chatId,
-    text: salesText
+    text: dealsText
   });
-  return salesMessage;
+  return dealsMessage;
 };
 
-const sales = (params) => {
+const deals = (params) => {
   if (_.isNil(params.bot)) {
-    return Promise.reject('Rejected in sales: Bot cannot be missing');
+    return Promise.reject('Rejected in deals: Bot cannot be missing');
   }
   if (_.isNil(params.telegramId) || _.isNil(params.chatId)) {
-    return Promise.reject('Rejected in sales: Missing telegram user id or chat id');
+    return Promise.reject('Rejected in deals: Missing telegram user id or chat id');
   }
 
   const bot = params.bot;
   const chatId = params.chatId;
   const telegramId = params.telegramId;
-  let limit = 10;
+  let limit = 20;
   if (!_.isEmpty(params.options)) {
     const userLimit = parseInt(params.options[0]);
-    limit = _.isNaN(userLimit) || userLimit < 1 ? limit : Math.max(userLimit, 100);
+    limit = _.isNaN(userLimit) || userLimit < 1 ? limit : Math.max(userLimit, 200);
   }
 
   return User.query().where('telegramId', telegramId).first()
   .then((user) => {
     const isSuccess = !_.isNil(user) && !_.isNil(user.chtwrsId);
-    let sales = [];
+    let deals = [];
     if (isSuccess) {
-      sales = Deal.query()
-      .where('sellerId', user.chtwrsId)
+      deals = Deal.query()
+      .where('buyerId', user.chtwrsId)
+      .orWhere('sellerId', user.chtwrsId)
       .limit(limit)
       .orderBy('created_at', 'desc');
     }
-    return Promise.all([isSuccess, sales]);
+    return Promise.all([isSuccess, deals]);
   })
-  .then(([isSuccess, sales]) => {
+  .then(([isSuccess, deals]) => {
     if (!isSuccess) {
       const unregisteredMessage = makeUnregisteredMessage(chatId);
       return bot.sendTelegramMessage('sendMessage', unregisteredMessage);
     } else {
-      const salesMessage = makeSalesMessage(chatId, sales.reverse());
-      return bot.sendTelegramMessage('sendMessage', salesMessage);
+      const dealsMessage = makeDealsMessage(chatId, deals.reverse());
+      return bot.sendTelegramMessage('sendMessage', dealsMessage);
     }
   });
 };
 
-module.exports = sales;
+module.exports = deals;

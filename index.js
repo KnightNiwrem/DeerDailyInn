@@ -33,6 +33,7 @@ const amqp = require('amqplib');
 
 const setUpPromise = amqp.connect(connectionUrl)
 .then((connection) => {
+  process.once('SIGINT', connection.close.bind(connection));
   const channelPromise = connection.createChannel();
   return Promise.all([connection, channelPromise]);
 }).then((connectionAndChannel) => {

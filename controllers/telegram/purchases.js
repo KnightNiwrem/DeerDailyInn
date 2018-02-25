@@ -13,25 +13,25 @@ be registered yet! Do /start to register first!`;
   return unregisteredMessage;
 };
 
-const makeSalesMessage = (chatId, sales) => {
-  let salesText = 'Here are your last recorded sales:\n\n';
-  sales.forEach((sale, index) => {
-    salesText += `${index + 1}. ${sale.quantity} ${sale.item} at ${sale.price} gold each\n`;
+const makePurchasesMessage = (chatId, purchases) => {
+  let purchasesText = 'Here are your last recorded purchases:\n\n';
+  purchases.forEach((purchase, index) => {
+    purchasesText += `${index + 1}. ${purchase.quantity} ${purchase.item} at ${purchase.price} gold each\n`;
   });
   
-  const salesMessage = JSON.stringify({
+  const purchasesMessage = JSON.stringify({
     chat_id: chatId,
-    text: salesText
+    text: purchasesText
   });
-  return salesMessage;
+  return purchasesMessage;
 };
 
-const sales = (params) => {
+const purchases = (params) => {
   if (_.isNil(params.bot)) {
-    return Promise.reject('Rejected in sales: Bot cannot be missing');
+    return Promise.reject('Rejected in purchases: Bot cannot be missing');
   }
   if (_.isNil(params.telegramId) || _.isNil(params.chatId)) {
-    return Promise.reject('Rejected in sales: Missing telegram user id or chat id');
+    return Promise.reject('Rejected in purchases: Missing telegram user id or chat id');
   }
 
   const bot = params.bot;
@@ -46,24 +46,24 @@ const sales = (params) => {
   return User.query().where('telegramId', telegramId).first()
   .then((user) => {
     const isSuccess = !_.isNil(user) && !_.isNil(user.chtwrsId);
-    let sales = [];
+    let purchases = [];
     if (isSuccess) {
-      sales = Deal.query()
-      .where('sellerId', user.chtwrsId)
+      purchases = Deal.query()
+      .where('buyerId', user.chtwrsId)
       .limit(limit)
       .orderBy('created_at', 'desc');
     }
-    return Promise.all([isSuccess, sales]);
+    return Promise.all([isSuccess, purchases]);
   })
-  .then(([isSuccess, sales]) => {
+  .then(([isSuccess, purchases]) => {
     if (!isSuccess) {
       const unregisteredMessage = makeUnregisteredMessage(chatId);
       return bot.sendTelegramMessage('sendMessage', unregisteredMessage);
     } else {
-      const salesMessage = makeSalesMessage(chatId, sales.reverse());
-      return bot.sendTelegramMessage('sendMessage', salesMessage);
+      const purchasesMessage = makePurchasesMessage(chatId, purchases.reverse());
+      return bot.sendTelegramMessage('sendMessage', purchasesMessage);
     }
   });
 };
 
-module.exports = sales;
+module.exports = purchases;
