@@ -102,8 +102,7 @@ const deals = (params) => {
   if (!_.isEmpty(params.options)) {
     let userLimit = parseInt(params.options[0]);
     userLimit = _.isNaN(userLimit) || userLimit < 1 ? limit : userLimit;
-    userLimit = Math.max(userLimit, 200);
-    limit = Math.min(userLimit, limit);
+    userLimit = Math.min(userLimit, 200);
   }
 
   return User.query().where('telegramId', telegramId).first()
