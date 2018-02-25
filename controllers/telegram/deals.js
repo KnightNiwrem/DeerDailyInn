@@ -56,8 +56,6 @@ const makeDealsMessage = (chatId, chtwrsId, deals) => {
   return dealsMessage;
 };
 
-
-
 const deals = (params) => {
   if (_.isNil(params.bot)) {
     return Promise.reject('Rejected in deals: Bot cannot be missing');
