@@ -134,6 +134,10 @@ class Bot {
       }
     });
 
+    if (controllerName.startsWith('/')) {
+      controllerName = controllerName.slice(1);
+    }
+
     // Ignore messages that just do @deer_daily_inn_bot
     if (_.isEmpty(controllerName)) {
       return Promise.resolve();
@@ -143,8 +147,7 @@ class Bot {
       bot: this,
       chatId: chatId,
       controllerName: controllerName,
-      isChannel: _.isNil(userId),
-      isCommand: controllerName.startsWith('/'),
+      isChannel: _.isNil(userId) || userId !== chatId,
       options: options,
       rawMessage: messageText,
       telegramId: userId,
