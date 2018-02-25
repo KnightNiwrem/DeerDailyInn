@@ -9,22 +9,26 @@ const helpController = require('./telegram/help');
 const dealsController = require('./telegram/deals');
 
 const controllerRouter = {
-  start: startController,
   auth: authController,
+  deals: dealsController,
   help: helpController,
-  sales: dealsController,
   purchases: dealsController,
-  deals: dealsController
+  sales: dealsController,
+  start: startController,
 };
 
-const privateOnlyCommands = new Set(['start', 'auth']);
+const usableCommandsInChannel = new Set(['deals', 'help', 'purchases', 'sales']);
+const definedCommands = new Set(_.keys(controllerRouter));
 
 const telegramRouter = (params) => {
   let controllerName = params.controllerName;
   const controller = controllerRouter[controllerName];
   const usableController = !_.isNil(controller) ? controller : defaultController;
 
-  if (params.isChannel && privateOnlyCommands.has(controllerName)) {
+  // If command is not understood in channel, we assume it is not for us
+  if (params.isChannel && !definedCommands.has(controllerName)) {
+    return Promise.resolve();
+  } else if (params.isChannel && !usableCommandsInChannel.has(controllerName)) {
     return channelController(params);
   } else {
     return usableController(params);

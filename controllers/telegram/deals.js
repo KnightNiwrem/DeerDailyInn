@@ -98,13 +98,7 @@ const deals = (params) => {
   const chatId = params.chatId;
   const controllerName = params.controllerName;
   const telegramId = params.telegramId;
-  let limit = 20;
-  if (!_.isEmpty(params.options)) {
-    let userLimit = parseInt(params.options[0]);
-    userLimit = _.isNaN(userLimit) || userLimit < 1 ? limit : userLimit;
-    userLimit = Math.min(userLimit, 200);
-    limit = userLimit;
-  }
+  const limit = 20;
 
   return User.query().where('telegramId', telegramId).first()
   .then((user) => {
