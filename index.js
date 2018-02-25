@@ -46,7 +46,7 @@ const setUpPromise = amqp.connect(connectionOptions)
   const closeConnection = connection.close.bind(connection);
   process.once('SIGINT', () => {
     closeConnection();
-    console.log('Connection has been closed.');
+    console.log('\nConnection has been closed.');
   });
   const channelPromise = connection.createChannel();
   return Promise.all([connection, channelPromise]);
