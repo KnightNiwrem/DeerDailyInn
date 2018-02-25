@@ -28,10 +28,20 @@ Model.knex(knex);
 ************************/
 const username = config.get('username');
 const password = config.get('password');
-const connectionUrl = `amqps://${username}:${password}@api.chatwars.me:5673/`
+const connectionOptions = {
+  protocol: 'amqps',
+  hostname: 'api.chatwars.me',
+  port: 5673,
+  username: username,
+  password, password,
+  locale: 'en_US',
+  frameMax: 0,
+  heartbeat: 60,
+  vhost: '/'
+};
 const amqp = require('amqplib');
 
-const setUpPromise = amqp.connect(connectionUrl)
+const setUpPromise = amqp.connect(connectionOptions)
 .then((connection) => {
   const closeConnection = connection.close.bind(connection);
   process.once('SIGINT', () => {
