@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const Promise = require('bluebird');
 
 const makeWelcomeMessage = (chatId) => {
   const welcomeText = `\

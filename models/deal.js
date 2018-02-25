@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const Promise = require('bluebird');
 const { Model } = require('objection');
 
 class Deal extends Model {

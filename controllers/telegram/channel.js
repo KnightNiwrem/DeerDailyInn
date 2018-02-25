@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const Promise = require('bluebird');
 
 const makePrivateonlyMessage = (chatId) => {
   const privateOnlyText = `Sorry, this command only works in private chats!`;

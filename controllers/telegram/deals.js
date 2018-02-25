@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const Promise = require('bluebird');
 const User = require('../../models/user');
 const Deal = require('../../models/deal');
 

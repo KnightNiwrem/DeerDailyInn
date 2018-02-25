@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const Promise = require('bluebird');
 
 const makeMissingArgumentMessage = (chatId) => {
   const missingArgumentText = `Sorry, I think you might have \

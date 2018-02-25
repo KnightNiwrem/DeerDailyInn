@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const Promise = require('bluebird');
 
 const makeHelpMessage = (chatId) => {
   const helpText = `Here are the currently available commands:

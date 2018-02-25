@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const Promise = require('bluebird');
 
 const makeUnknownMessage = (chatId) => {
   const unknownText = `Sorry, I couldn't quite understand that.`;
