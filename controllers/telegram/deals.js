@@ -40,13 +40,19 @@ const makeSalesMessage = (chatId, sales) => {
 };
 
 const makeDealsMessage = (chatId, chtwrsId, deals) => {
+  const dealsByDate = _.groupBy(deals, (deal) => {
+    const date = deal.created_at;
+    return `${date.getUTCDate()}/${date.getUTCMonth() + 1}/${date.getUTCFullYear()}`;
+  });
+
   let dealsText = 'Here are your last recorded deals:\n\n';
-  deals.forEach((deal) => {
-    if (deal.buyerId === chtwrsId) {
-      dealsText += `${deal.created_at.toUTCString()}: BOUGHT ${deal.quantity} ${deal.item} at ${deal.price} gold each\n`;
-    } else {
-      dealsText += `${deal.created_at.toUTCString()}: SOLD ${deal.quantity} ${deal.item} at ${deal.price} gold each\n`;
-    }
+  _.forEach(dealsByDate, (deals, date) => {
+    dealsText += `${date}:\n`;
+    _.forEach(deals, (deal) => {
+      const action = (deal.buyerId === chtwrsId) ? 'BOUGHT' : 'SOLD';
+      dealsText += `${deal.created_at.toUTCString()}: ${action} ${deal.quantity} ${deal.item} at ${deal.price} gold each\n`;
+    });
+    dealsText += '\n';
   });
   
   const dealsMessage = JSON.stringify({
