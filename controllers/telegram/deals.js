@@ -14,9 +14,20 @@ be registered yet! Do /start to register first!`;
 };
 
 const makePurchasesMessage = (chatId, purchases) => {
+  const purchasesByDate = _.groupBy(purchases, (purchase) => {
+    const date = purchase.created_at;
+    return `${date.getUTCDate()}/${date.getUTCMonth() + 1}/${date.getUTCFullYear()}`;
+  });
+
   let purchasesText = 'Here are your last recorded purchases:\n\n';
-  purchases.forEach((purchase) => {
-    purchasesText += `${purchase.created_at.toUTCString()}. ${purchase.quantity} ${purchase.item} at ${purchase.price} gold each\n`;
+  _.forEach(purchasesByDate, (purchases, date) => {
+    purchasesText += `${date}:\n`;
+    _.forEach(purchases, (purchase) => {
+      const time = purchase.created_at;
+      const timeString = `${time.getUTCHours()}:${time.getUTCMinutes()}`;
+      purchasesText += `${timeString}: ${purchase.quantity} ${purchase.item} at ${purchase.price} gold each\n`;
+    });
+    purchasesText += '\n';
   });
   
   const purchasesMessage = JSON.stringify({
@@ -27,9 +38,20 @@ const makePurchasesMessage = (chatId, purchases) => {
 };
 
 const makeSalesMessage = (chatId, sales) => {
+  const salesByDate = _.groupBy(sales, (sale) => {
+    const date = sale.created_at;
+    return `${date.getUTCDate()}/${date.getUTCMonth() + 1}/${date.getUTCFullYear()}`;
+  });
+
   let salesText = 'Here are your last recorded sales:\n\n';
-  sales.forEach((sale) => {
-    salesText += `${sale.created_at.toUTCString()}. ${sale.quantity} ${sale.item} at ${sale.price} gold each\n`;
+  _.forEach(salesByDate, (sales, date) => {
+    salesText += `${date}:\n`;
+    _.forEach(sales, (sale) => {
+      const time = sale.created_at;
+      const timeString = `${time.getUTCHours()}:${time.getUTCMinutes()}`;
+      salesText += `${timeString}: ${sale.quantity} ${sale.item} at ${sale.price} gold each\n`;
+    });
+    salesText += '\n';
   });
   
   const salesMessage = JSON.stringify({
@@ -50,7 +72,9 @@ const makeDealsMessage = (chatId, chtwrsId, deals) => {
     dealsText += `${date}:\n`;
     _.forEach(deals, (deal) => {
       const action = (deal.buyerId === chtwrsId) ? 'BOUGHT' : 'SOLD';
-      dealsText += `${deal.created_at.toUTCString()}: ${action} ${deal.quantity} ${deal.item} at ${deal.price} gold each\n`;
+      const time = deal.created_at;
+      const timeString = `${time.getUTCHours()}:${time.getUTCMinutes()}`;
+      dealsText += `${timeString}: ${action} ${deal.quantity} ${deal.item} at ${deal.price} gold each\n`;
     });
     dealsText += '\n';
   });
