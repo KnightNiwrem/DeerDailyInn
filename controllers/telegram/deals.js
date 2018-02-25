@@ -15,9 +15,8 @@ be registered yet! Do /start to register first!`;
 
 const makeDealsMessage = (chatId, deals) => {
   let dealsText = 'Here are your last recorded deals:\n\n';
-  deals.forEach((deal, index) => {
-    console.log(`${index + 1}: ${deal.created_at instanceof Date}\n\n`);
-    dealsText += `${index + 1}. ${deal.quantity} ${deal.item} at ${deal.price} gold each\n`;
+  deals.forEach((deal) => {
+    dealsText += `${deal.created_at.toUTCString()}: ${deal.quantity} ${deal.item} at ${deal.price} gold each\n`;
   });
   
   const dealsMessage = JSON.stringify({
