@@ -1,3 +1,4 @@
+const Promise = require('bluebird');
 const _ = require('lodash');
 
 const channelController = require('./telegram/channel');
