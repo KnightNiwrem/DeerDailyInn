@@ -2,7 +2,7 @@ exports.up = function(knex, Promise) {
   const hasDealTable = knex.schema.hasTable('deals');
   const changeDealTable = hasDealTable.then((hasTable) => {
     let tableChanges = Promise.resolve();
-    if (!hasTable) {
+    if (hasTable) {
       tableChanges = knex.schema.alterTable('deals', (table) => {
         table.index('buyerId');
         table.index('sellerId');
@@ -17,7 +17,7 @@ exports.down = function(knex, Promise) {
   const hasDealTable = knex.schema.hasTable('deals');
   const changeDealTable = hasDealTable.then((hasTable) => {
     let tableChanges = Promise.resolve();
-    if (!hasTable) {
+    if (hasTable) {
       tableChanges = knex.schema.alterTable('deals', (table) => {
         table.dropIndex('buyerId');
         table.dropIndex('sellerId');
