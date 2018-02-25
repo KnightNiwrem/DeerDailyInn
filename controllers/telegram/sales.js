@@ -15,8 +15,8 @@ be registered yet! Do /start to register first!`;
 
 const makeSalesMessage = (chatId, sales) => {
   let salesText = 'Here are your last recorded sales:\n\n';
-  sales.forEach((sale, index) => {
-    salesText += `${index + 1}. ${sale.quantity} ${sale.item} at ${sale.price} gold each\n`;
+  sales.forEach((sale) => {
+    salesText += `${sale.created_at.toUTCString()}. ${sale.quantity} ${sale.item} at ${sale.price} gold each\n`;
   });
   
   const salesMessage = JSON.stringify({

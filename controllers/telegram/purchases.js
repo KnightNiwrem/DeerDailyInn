@@ -15,8 +15,8 @@ be registered yet! Do /start to register first!`;
 
 const makePurchasesMessage = (chatId, purchases) => {
   let purchasesText = 'Here are your last recorded purchases:\n\n';
-  purchases.forEach((purchase, index) => {
-    purchasesText += `${index + 1}. ${purchase.quantity} ${purchase.item} at ${purchase.price} gold each\n`;
+  purchases.forEach((purchase) => {
+    purchasesText += `${purchase.created_at.toUTCString()}. ${purchase.quantity} ${purchase.item} at ${purchase.price} gold each\n`;
   });
   
   const purchasesMessage = JSON.stringify({
