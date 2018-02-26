@@ -103,8 +103,31 @@ class Bot {
       body: message,
       headers: headers
     };
+    const deferredSendMessage = () => {
+      return fetch(url, options)
+      .then((response) => {
+        if (response.status === 429) {
+          console.warn('Hitting rate limit. Will retry later...');
+        }
+        return response.json();
+      });
+    };
+    return Promise.resolve();
+
     return fetch(url, options)
     .then((response) => {
+      const bot = this;
+      if (response.status === 429) {
+        console.warn('Hitting rate limits. Will retry...');
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve(bot.sendTelegramMessage(method, message));
+          }, 2000);
+        })
+        .then((deferredResult) => {
+          return deferredResult;
+        });
+      }
       return response.json();
     });
   }
