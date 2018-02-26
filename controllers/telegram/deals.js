@@ -14,6 +14,17 @@ be registered yet! Do /start to register first!`;
   return unregisteredMessage;
 };
 
+const makeNotFoundMessage = (chatId) => {
+  const notFoundText = `Hmm... I couldn't find any anything. \
+Perhaps you have no trade history that matches your search criteria yet.`;
+
+  const notFoundMessage = JSON.stringify({
+    chat_id: chatId,
+    text: notFoundText
+  });
+  return notFoundText;
+};
+
 const makePurchasesMessage = (chatId, purchases) => {
   const purchasesByDate = _.groupBy(purchases, (purchase) => {
     const date = purchase.created_at;
@@ -87,6 +98,11 @@ const makeDealsMessage = (chatId, chtwrsId, deals) => {
   return dealsMessage;
 };
 
+const specialSearchMap = new Map([
+  ['Scroll of rage', '📕Scroll of Rage'],
+  ['Scroll of peace', '📕Scroll of Peace']
+]);
+
 const deals = (params) => {
   if (_.isNil(params.bot)) {
     return Promise.reject('Rejected in deals: Bot cannot be missing');
@@ -100,6 +116,11 @@ const deals = (params) => {
   const controllerName = params.controllerName;
   const telegramId = params.telegramId;
   const limit = 20;
+  const searchTerm = _.capitalize(params.options.join(' ').replace(/[^\x00-\x7F]/g, "").toLowerCase());
+
+  if (specialSearchMap.has(searchTerm)) {
+    searchTerm = specialSearchMap.get(searchTerm);
+  }
 
   return User.query().where('telegramId', telegramId).first()
   .then((user) => {
@@ -107,13 +128,17 @@ const deals = (params) => {
     let dealsQuery = [];
     if (isSuccess) {
       dealsQuery = Deal.query();
-      if (controllerName === 'purchases') {
-        dealsQuery = dealsQuery.where('buyerId', user.chtwrsId);
-      } else if (controllerName === 'sales') {
-        dealsQuery = dealsQuery.where('sellerId', user.chtwrsId);
-      } else {
-        dealsQuery = dealsQuery.where('buyerId', user.chtwrsId)
-                               .orWhere('sellerId', user.chtwrsId);
+      dealsQuery = dealsQuery.where(function() {
+        if (controllerName === 'purchases') {
+          this.where('buyerId', user.chtwrsId);
+        } else if (controllerName === 'sales') {
+          this.where('sellerId', user.chtwrsId);
+        } else {
+          this.where('buyerId', user.chtwrsId).orWhere('sellerId', user.chtwrsId);
+        }
+      });
+      if (!_.isEmpty(searchTerm)) {
+        dealsQuery = dealsQuery.andWhere('item', searchTerm);
       }
       dealsQuery = dealsQuery.limit(limit).orderBy('created_at', 'desc');
     }
@@ -123,6 +148,8 @@ const deals = (params) => {
     let message = 'This is a default message. If you see this, please notify the developer.';
     if (!isSuccess) {
       message = makeUnregisteredMessage(chatId);
+    } else if (_.isEmpty(deals)) {
+      message = makeNotFoundMessage(chatId);
     } else if (controllerName === 'purchases') {
       message = makePurchasesMessage(chatId, deals.reverse());
     } else if (controllerName === 'sales') {
