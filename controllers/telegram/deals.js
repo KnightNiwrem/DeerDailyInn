@@ -99,8 +99,8 @@ const makeDealsMessage = (chatId, chtwrsId, deals) => {
 };
 
 const specialSearchMap = new Map([
-  ['scroll of rage', '📕Scroll of Rage'],
-  ['scroll of peace', '📕Scroll of Peace']
+  ['Scroll of rage', '📕Scroll of Rage'],
+  ['Scroll of peace', '📕Scroll of Peace']
 ]);
 
 const deals = (params) => {
@@ -117,7 +117,7 @@ const deals = (params) => {
   const telegramId = params.telegramId;
   const limit = 20;
   
-  let searchTerm = params.options.join(' ').replace(/[^\x00-\x7F]/g, "").trim();
+  let searchTerm = _.capitalize(params.options.join(' ').replace(/[^\x00-\x7F]/g, "").trim());
   if (specialSearchMap.has(searchTerm)) {
     searchTerm = specialSearchMap.get(searchTerm);
   }
