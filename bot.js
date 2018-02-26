@@ -103,16 +103,6 @@ class Bot {
       body: message,
       headers: headers
     };
-    const deferredSendMessage = () => {
-      return fetch(url, options)
-      .then((response) => {
-        if (response.status === 429) {
-          console.warn('Hitting rate limit. Will retry later...');
-        }
-        return response.json();
-      });
-    };
-    return Promise.resolve();
 
     return fetch(url, options)
     .then((response) => {
