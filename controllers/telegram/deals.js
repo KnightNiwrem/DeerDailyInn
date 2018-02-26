@@ -116,8 +116,8 @@ const deals = (params) => {
   const controllerName = params.controllerName;
   const telegramId = params.telegramId;
   const limit = 20;
-  const searchTerm = _.capitalize(params.options.join(' ').replace(/[^\x00-\x7F]/g, "").toLowerCase());
-
+  
+  let searchTerm = _.capitalize(params.options.join(' ').replace(/[^\x00-\x7F]/g, "").toLowerCase());
   if (specialSearchMap.has(searchTerm)) {
     searchTerm = specialSearchMap.get(searchTerm);
   }
