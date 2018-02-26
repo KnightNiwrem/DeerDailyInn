@@ -46,6 +46,7 @@ const inbound = (params) => {
   const content = JSON.parse(params.rawMessage.content.toString());
   if (content.result.toLowerCase() !== 'ok') {
     console.warn(`Inbound queue: ${content.action} returned status code ${content.result}`);
+    console.log(content);
     return;
   }
 

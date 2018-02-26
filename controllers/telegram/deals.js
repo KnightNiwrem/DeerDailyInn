@@ -124,7 +124,7 @@ const deals = (params) => {
 
   return User.query().where('telegramId', telegramId).first()
   .then((user) => {
-    const isSuccess = !_.isNil(user) && !_.isNil(user.chtwrsId);
+    const isSuccess = !_.isNil(user) && !_.isEmpty(user.chtwrsId);
     let dealsQuery = [];
     if (isSuccess) {
       dealsQuery = Deal.query();
@@ -142,9 +142,9 @@ const deals = (params) => {
       }
       dealsQuery = dealsQuery.limit(limit).orderBy('created_at', 'desc');
     }
-    return Promise.all([isSuccess, user.chtwrsId, dealsQuery]);
+    return Promise.all([isSuccess, user, dealsQuery]);
   })
-  .then(([isSuccess, chtwrsId, deals]) => {
+  .then(([isSuccess, user, deals]) => {
     let message = 'This is a default message. If you see this, please notify the developer.';
     if (!isSuccess) {
       message = makeUnregisteredMessage(chatId);
@@ -155,7 +155,7 @@ const deals = (params) => {
     } else if (controllerName === 'sales') {
       message = makeSalesMessage(chatId, deals.reverse());
     } else {
-      message = makeDealsMessage(chatId, chtwrsId, deals.reverse());
+      message = makeDealsMessage(chatId, user.chtwrsId, deals.reverse());
     }
     return bot.sendTelegramMessage('sendMessage', message);
   });
