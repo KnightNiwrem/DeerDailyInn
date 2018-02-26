@@ -113,9 +113,6 @@ class Bot {
           setTimeout(() => {
             resolve(bot.sendTelegramMessage(method, message));
           }, 2000);
-        })
-        .then((deferredResult) => {
-          return deferredResult;
         });
       }
       return response.json();
