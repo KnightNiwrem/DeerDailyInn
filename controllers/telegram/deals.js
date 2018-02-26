@@ -22,7 +22,7 @@ Perhaps you have no trade history that matches your search criteria yet.`;
     chat_id: chatId,
     text: notFoundText
   });
-  return notFoundText;
+  return notFoundMessage;
 };
 
 const makePurchasesMessage = (chatId, purchases) => {
