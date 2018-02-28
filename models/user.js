@@ -13,18 +13,17 @@ class User extends Model {
     }
 
     // Try to find user, create if not found
-    const user = this._construct(attributes);
-    const userPromise = this.query().where('telegramId', attributes.telegramId)
-    .then((users) => {
-      let returnedUser = null;
-      if (_.isEmpty(users)) {
-        returnedUser = this.query().insert(user);
-      } else {
-        returnedUser = Promise.resolve(users[0]);
+    return this.query()
+    .where('telegramId', attributes.telegramId)
+    .first()
+    .then((user) => {
+      let foundUser = user;
+      if (_.isNil(user)) {
+        const newUser = this._construct(attributes)
+        foundUser = this.query().insert(newUser).returning('*');
       }
-      return returnedUser;
+      return foundUser;
     });
-    return userPromise;
   }
 
 

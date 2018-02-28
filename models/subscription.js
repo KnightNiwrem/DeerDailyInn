@@ -2,6 +2,37 @@ const _ = require('lodash');
 const { Model } = require('objection');
 
 class Subscription extends Model {
+
+  static create(attributes) {
+    const missingAttributes = this._requiredFields.filter((requiredField) => {
+      return _.isNil(attributes) || _.isNil(attributes[requiredField]);
+    });
+    if (!_.isEmpty(missingAttributes)) {
+      return Promise.reject(`Subscription.create expects: ${missingAttributes.join(', ')}`);
+    }
+
+    // Try to find user, create if not found
+    const subscription = this._construct(attributes);
+    return this.query().insert(subscription).returning('*');
+  }
+
+  /*************************** Private Methods ***************************/
+
+  static get _requiredFields() {
+    return ['expirationDate', 'telegramId'];
+  }
+
+  static _construct(attributes) {
+    const subscription = new Subscription();
+    const writableFields = _.pull(this.fields, 'id');
+    _.forEach(writableFields, (writableField) => {
+      subscription[writableField] = attributes[writableField];
+    });
+    return subscription;
+  }
+
+  /*************************** Database Methods ****************************/
+
   static get tableName() {
     return 'subscriptions';
   }
@@ -19,7 +50,8 @@ class Subscription extends Model {
           type: 'integer'
         },
         expirationDate: {
-          type: 'string'
+          type: 'string',
+          format: 'date-time'
         },
         isActive: {
           type: 'boolean',

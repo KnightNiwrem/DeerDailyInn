@@ -14,8 +14,7 @@ class Deal extends Model {
 
     // Try to find user, create if not found
     const deal = this._construct(attributes);
-    const dealPromise = this.query().insert(deal);
-    return dealPromise;
+    return this.query().insert(deal).returning('*');
   }
 
   /*************************** Private Methods ***************************/

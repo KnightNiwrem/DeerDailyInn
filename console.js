@@ -2,6 +2,7 @@ const repl = require('repl');
 const r = repl.start('> ');
 
 r.context._ = require('lodash');
+r.context.moment = require('moment');
 r.context.Promise = require('bluebird');
 r.context.nodeEnv = process.env.NODE_ENV;
 
