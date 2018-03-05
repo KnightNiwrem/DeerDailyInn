@@ -58,8 +58,7 @@ const flash = (params) => {
 
   const bot = params.bot;
   const chatId = params.chatId;
-  const flashMessage = makeFlashMessage(chatId);
-
+  
   let options = params.options;
   let willTurnOn = true;
   if (validModifiers.has(options[0])) {
