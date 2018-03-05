@@ -92,6 +92,7 @@ const flash = (params) => {
   } else {
     return Flash.query()
     .where(flashAttributes)
+    .first()
     .then((flash) => {
       if (_.isNil(flash)) {
         return Flash.create(flashAttributes)
