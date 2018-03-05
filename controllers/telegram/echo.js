@@ -27,7 +27,7 @@ const echo = (params) => {
   const echoMessages = _.range(echoCount).map(() => {
     return makeEchoMessage(chatId);
   });
-  return bot.sendBatchedTelegramMessage('sendMessage', echoMessages);
+  return bot.sendBatchedTelegramMessages('sendMessage', echoMessages);
 };
 
 module.exports = echo;
