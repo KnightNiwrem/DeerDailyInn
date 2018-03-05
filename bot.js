@@ -94,7 +94,7 @@ class Bot {
   }
 
   sendBatchedTelegramMessages(method, messages) {
-    const batchSize = 3;
+    const batchSize = 30;
     const bot = this;
     const batchedMessages = _.chunk(messages, batchSize);
 
