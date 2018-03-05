@@ -18,7 +18,7 @@ const offers = (params) => {
     const responses = flashes.map((flash) => {
       const flashMessage = JSON.stringify({
         chat_id: flash.chatId,
-        text: `${content.sellerCastle}${content.sellerName} is selling ${content.qty }${content.item} at ${content.price} each!`
+        text: `${content.sellerCastle}${content.sellerName} is selling ${content.qty} ${content.item} at ${content.price} gold each! (Lag time: ${new Date() - params.startTime} ms)`
       });
       return bot.sendTelegramMessage('sendMessage', flashMessage);
     });

@@ -56,7 +56,8 @@ class Bot {
       const parameters = {
         bot: this,
         controllerName: 'offers',
-        rawMessage: message
+        rawMessage: message,
+        startTime: new Date()
       };
       return chtwrsRouter(parameters);
     };
