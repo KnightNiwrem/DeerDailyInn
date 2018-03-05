@@ -9,6 +9,7 @@ const authController = require('./telegram/auth');
 const helpController = require('./telegram/help');
 const dealsController = require('./telegram/deals');
 
+const echoController = require('./telegram/echo');
 const updateLogController = require('./telegram/updatelog');
 
 const controllerRouter = {
@@ -18,7 +19,8 @@ const controllerRouter = {
   purchases: dealsController,
   sales: dealsController,
   start: startController,
-  updatelog: updateLogController
+  updatelog: updateLogController,
+  echo: echoController
 };
 
 const usableCommandsInChannel = new Set(['deals', 'help', 'purchases', 'sales', 'updatelog']);
