@@ -93,27 +93,6 @@ class Bot {
     return Promise.resolve();
   }
 
-  sendBatchedTelegramMessages(method, messages) {
-    const batchSize = 30;
-    const bot = this;
-    const batchedMessages = _.chunk(messages, batchSize);
-
-    const responses = _.map(batchedMessages, (messagesInBatch, batchIndex) => {
-      const responsesInBatch = _.map(messagesInBatch, (message) => {
-        return new Promise((resolve, reject) => {
-          setTimeout(() => {
-            resolve(bot.sendTelegramMessage(method, message).catch(console.warn));
-          }, 1000 * batchIndex);
-        });
-      });
-      return Promise.all(responsesInBatch);
-    });
-
-    return Promise.all(responses).then((batchedResponses) => {
-      return _.flattenDeep(responses).filter((response) => !_.isNil(response));
-    });
-  }
-
   sendTelegramMessage(method, message) {
     const url = `https://api.telegram.org/bot${this.botKey}/${method}`;
     const headers = {
