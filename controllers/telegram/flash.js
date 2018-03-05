@@ -58,7 +58,7 @@ const flash = (params) => {
 
   const bot = params.bot;
   const chatId = params.chatId;
-  
+
   let options = params.options;
   let willTurnOn = true;
   if (validModifiers.has(options[0])) {
@@ -78,6 +78,7 @@ const flash = (params) => {
 
   if (!willTurnOn) {
     return Flash.query()
+    .delete()
     .where(flashAttributes)
     .then((rowsDeleted) => {
       let message;
