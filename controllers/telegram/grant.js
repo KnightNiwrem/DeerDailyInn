@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const Promise = require('bluebird');
+const User = require('../../models/user');
 
 const makeBadArgumentMessage = (chatId) => {
   const text = `Sorry, I think you have either forgotten to \
