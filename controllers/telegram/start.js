@@ -25,8 +25,8 @@ To authenticate, please do:
 const makeAuthCodeRequest = (telegramId) => {
   const message = JSON.stringify({
     action: 'createAuthCode',
-    requestId: uuid(),
     payLoad: {
+      requestId: uuid(),
       userId: telegramId,
     }
   });
