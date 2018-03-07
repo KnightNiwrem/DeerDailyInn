@@ -68,7 +68,7 @@ const grant = (params) => {
   const chatId = params.chatId;
 
   let operation = params.options[0].toLowerCase();
-  if (!validOperationsMap.has(operation)) {
+  if (validOperationsMap.has(operation)) {
     operation = validOperationsMap.get(operation);
   } else {
     const message = makeBadArgumentMessage(chatId);
