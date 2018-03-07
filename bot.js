@@ -1,6 +1,7 @@
 const Promise = require('bluebird');
 const _ = require('lodash');
 const bodyParser = require('body-parser');
+const uuid = require('uuid/v1');
 const fetch = require('node-fetch');
 fetch.Promise = Promise;
 
@@ -86,6 +87,7 @@ class Bot {
       return Promise.reject('Bot does not have a connection or channel to publish to.');
     }
 
+    message.correlationId = uuid();
     const messageBuffer = new Buffer(message);
     const options = { 
       contentType: 'application/json'

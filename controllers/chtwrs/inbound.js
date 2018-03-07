@@ -50,6 +50,8 @@ const inbound = (params) => {
     return;
   }
 
+  console.log(content);
+
   const bot = params.bot;
   const action = content.action;
   const responder = inboundResponders[action];
