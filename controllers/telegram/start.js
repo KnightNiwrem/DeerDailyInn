@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const Promise = require('bluebird');
+const uuid = require('uuid/v1');
 
 const makeWelcomeMessage = (chatId) => {
   const welcomeText = `\
@@ -24,6 +25,7 @@ To authenticate, please do:
 const makeAuthCodeRequest = (telegramId) => {
   const message = JSON.stringify({
     action: 'createAuthCode',
+    correlationId: uuid(),
     payLoad: {
       userId: telegramId,
     }
