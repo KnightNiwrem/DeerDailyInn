@@ -81,10 +81,6 @@ class Bot {
     this.channel.consume(`${this.username}_deals`, callbackWrapper, { noAck: true });
   }
 
-  generateUUID() {
-    return uuid();
-  }
-
   sendChtwrsMessage(message) {
     if (!this.hasResources()) {
       return Promise.reject('Bot does not have a connection or channel to publish to.');
@@ -92,7 +88,8 @@ class Bot {
 
     const messageBuffer = new Buffer(message);
     const options = { 
-      contentType: 'application/json'
+      contentType: 'application/json',
+      correlationId: uuid()
     };
     this.channel.publish(`${this.username}_ex`, `${this.username}_o`, messageBuffer, options);
     return Promise.resolve();
