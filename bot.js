@@ -111,7 +111,7 @@ class Bot {
     .then((response) => {
       const bot = this;
       if (response.status === 429) {
-        console.warn('Hitting rate limits. Will retry...');
+        console.warn(`${new Date()} | Hitting rate limits. Will retry...`);
         return new Promise((resolve, reject) => {
           setTimeout(() => {
             resolve(bot.sendTelegramMessage(method, message));
