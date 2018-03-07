@@ -67,7 +67,7 @@ const grant = (params) => {
   const telegramId = params.telegramId;
   const chatId = params.chatId;
 
-  const operation = params.options[0].toLowerCase();
+  let operation = params.options[0].toLowerCase();
   if (!validOperationsMap.has(operation)) {
     operation = validOperationsMap.get(operation);
   } else {
