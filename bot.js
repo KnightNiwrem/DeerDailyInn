@@ -1,6 +1,6 @@
 const Promise = require('bluebird');
 const _ = require('lodash');
-const bodyParser = require('body-parser');
+const uuid = require('uuid/v1');
 const fetch = require('node-fetch');
 fetch.Promise = Promise;
 
@@ -79,6 +79,10 @@ class Bot {
       return chtwrsRouter(parameters);
     };
     this.channel.consume(`${this.username}_deals`, callbackWrapper, { noAck: true });
+  }
+
+  generateUUID() {
+    return uuid();
   }
 
   sendChtwrsMessage(message) {
