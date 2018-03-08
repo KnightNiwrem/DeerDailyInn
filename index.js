@@ -86,7 +86,6 @@ app.use(bodyParser.json());
 
 app.post(`/${botKey}`, (req, res) => {
   return bot.handleTelegramMessage(req, res)
-  .catch(console.warn)
   .finally(() => {
     res.end();
   });

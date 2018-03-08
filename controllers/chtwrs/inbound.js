@@ -42,17 +42,18 @@ const inbound = (params) => {
     console.warn('Inbound queue: Bot cannot be missing');
     return;
   }
+  const bot = params.bot;
 
   const content = JSON.parse(params.rawMessage.content.toString());
   if (content.result.toLowerCase() !== 'ok') {
     console.warn(`Inbound queue: ${content.action} returned status code ${content.result}`);
-    console.log(content);
+    console.warn(content);
     return;
   }
 
-  console.log(content);
-
-  const bot = params.bot;
+  if (_.isEmpty(content.action) && !_.isEmpty(content.payload.operation)) {
+    content.action = 'authAdditionalOperation';
+  }
   const action = content.action;
   const responder = inboundResponders[action];
   const usableResponder = !_.isNil(responder) ? responder : respondToUnknown;

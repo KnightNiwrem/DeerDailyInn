@@ -1,6 +1,5 @@
 const Promise = require('bluebird');
 const _ = require('lodash');
-const uuid = require('uuid/v1');
 const fetch = require('node-fetch');
 fetch.Promise = Promise;
 
@@ -88,8 +87,7 @@ class Bot {
 
     const messageBuffer = new Buffer(message);
     const options = { 
-      contentType: 'application/json',
-      correlationId: uuid()
+      contentType: 'application/json'
     };
     this.channel.publish(`${this.username}_ex`, `${this.username}_o`, messageBuffer, options);
     return Promise.resolve();
@@ -118,7 +116,8 @@ class Bot {
         });
       }
       return response.json();
-    });
+    })
+    .catch(console.warn);
   }
 
   handleTelegramMessage(req, res) {
