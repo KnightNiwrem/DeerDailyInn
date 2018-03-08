@@ -112,7 +112,7 @@ class Bot {
         return new Promise((resolve, reject) => {
           setTimeout(() => {
             resolve(bot.sendTelegramMessage(method, message));
-          }, 2000);
+          }, 1000);
         });
       }
       return response.json();
