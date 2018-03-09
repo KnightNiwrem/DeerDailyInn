@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const User = require('../../models/user');
+const Transaction = require('../../models/transaction');
 
 const respondToAuth = (content, bot) => {
   const userAttributes = {
@@ -26,15 +27,30 @@ const respondToGrant = (content, bot) => {
     return bot.sendTelegramMessage('sendMessage', respondToGrantMessage);
   })
   .catch(console.warn);
-}
+};
+
+const respondToAuthorizePayment = (content, bot) => {
+  console.log(content);
+};
+
+const respondToPay = (content, bot) => {
+  console.log(content);
+};
+
+const respondToPayout = (content, bot) => {
+  console.log(content);
+};
 
 const respondToUnknown = (content) => {
   console.warn(`Inbound queue: received unknown action '${content.action}'`);
 };
 
 const inboundResponders = {
+  'authorizePayment': respondToAuthorizePayment,
   'createAuthCode': respondToAuth,
-  'grantToken': respondToGrant
+  'grantToken': respondToGrant,
+  'pay': respondToPay,
+  'payout': respondToPayout
 };
 
 const inbound = (params) => {

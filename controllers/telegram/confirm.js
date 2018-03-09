@@ -97,7 +97,9 @@ const confirm = (params) => {
     .where({
       fromId: user.id,
       isCommitted: false
-    });
+    })
+    .orderBy('id', 'desc')
+    .first();
     return Promise.all([user, transaction]);
   })
   .then(([user, transaction]) => {
