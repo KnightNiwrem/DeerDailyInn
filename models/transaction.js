@@ -62,7 +62,7 @@ class Transaction extends Model {
         },
         status: {
           type: 'string',
-          enum: ['cancelled', 'completed', 'started']
+          enum: ['cancelled', 'completed', 'pending', 'started']
         },
         toId: {
           type: 'integer',
