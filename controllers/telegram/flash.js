@@ -42,6 +42,16 @@ const makeFlashDoesNotExistsMessage = (chatId, item) => {
   return message;
 };
 
+const makeFlashArgumentMissingMessage = (chatId) => {
+  const text = `You need to specify the item name for the flash alert!`;
+
+  const message = JSON.stringify({
+    chat_id: chatId,
+    text: text
+  });
+  return message;
+};
+
 const validModifiers = new Set(['on', 'off']);
 const specialSearchMap = new Map([
   ['Scroll of rage', '📕Scroll of Rage'],
@@ -67,6 +77,10 @@ const flash = (params) => {
   }
 
   let searchTerm = _.capitalize(options.join(' ').replace(/[^\x00-\x7F]/g, "").trim());
+  if (_.isEmpty(searchTerm)) {
+    const message = makeFlashArgumentMissingMessage(chatId);
+    return bot.sendTelegramMessage('sendMessage', message);
+  }
   if (specialSearchMap.has(searchTerm)) {
     searchTerm = specialSearchMap.get(searchTerm);
   }
