@@ -82,7 +82,7 @@ const withdraw = (params) => {
     return bot.sendTelegramMessage('sendMessage', message);
   }
 
-  const withdrawalTransaction = transaction(knex, async(transactionObject) => {
+  const withdrawalTransaction = transaction(knex, async (transactionObject) => {
     const user = User.query(transactionObject).where('telegramId', telegramId).first();
     if (_.isNil(user) || _.isEmpty(user.chtwrsToken)) {
       const message = makeUnregisteredMessage(chatId);
