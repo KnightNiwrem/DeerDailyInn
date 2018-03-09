@@ -61,6 +61,10 @@ class User extends Model {
         id: {
           type: 'integer'
         },
+        balance: {
+          type: 'integer',
+          default: 0
+        },
         chtwrsId: {
           type: ['string', 'null']
         },

@@ -60,10 +60,10 @@ const specialSearchMap = new Map([
 
 const flash = (params) => {
   if (_.isNil(params.bot)) {
-    return Promise.reject('Rejected in help: Bot cannot be missing');
+    return Promise.reject('Rejected in flash: Bot cannot be missing');
   }
   if (_.isNil(params.chatId)) {
-    return Promise.reject('Rejected in help: Missing chat id');
+    return Promise.reject('Rejected in flash: Missing chat id');
   }
 
   const bot = params.bot;

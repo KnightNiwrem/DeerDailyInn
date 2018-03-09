@@ -6,6 +6,8 @@ const defaultController = require('./telegram/unknown');
 
 const startController = require('./telegram/start');
 const authController = require('./telegram/auth');
+const depositController = require('./telegram/deposit');
+const withdrawController = require('./telegram/withdraw');
 const helpController = require('./telegram/help');
 const dealsController = require('./telegram/deals');
 const flashController = require('./telegram/flash');
@@ -16,13 +18,15 @@ const updateLogController = require('./telegram/updatelog');
 const controllerRouter = {
   auth: authController,
   deals: dealsController,
+  deposit: depositController,
   flash: flashController,
+  grant: grantController,
   help: helpController,
   purchases: dealsController,
   sales: dealsController,
   start: startController,
-  grant: grantController,
-  updatelog: updateLogController
+  updatelog: updateLogController,
+  withdraw: withdrawController
 };
 
 const usableCommandsInChannel = new Set(['deals', 'flash', 'help', 'purchases', 'sales', 'updatelog']);

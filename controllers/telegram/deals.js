@@ -122,7 +122,9 @@ const deals = (params) => {
     searchTerm = specialSearchMap.get(searchTerm);
   }
 
-  return User.query().where('telegramId', telegramId).first()
+  return User.query()
+  .where('telegramId', telegramId)
+  .first()
   .then((user) => {
     const isSuccess = !_.isNil(user) && !_.isEmpty(user.chtwrsId);
     let dealsQuery = [];
