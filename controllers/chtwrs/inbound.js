@@ -66,8 +66,6 @@ const respondToAuthorizePayment = (content, bot) => {
 const respondToPay = (content, bot) => {
   const transactionId = content.payload.transactionId;
   const hasSuccessfulResult = content.result.toLowerCase() === 'ok';
-  const status = hasSuccessfulResult ? 'completed' : 'pending';
-  const text = hasSuccessfulResult ? `Your deposit request is successful! Your new balance is ${finalBalance} gold.` : contactDeveloperText;
 
   const depositTransaction = transaction(bot.knex, async (transactionObject) => {
     const transaction = await Transaction.query(transactionObject).where('id', transactionId).first();
@@ -82,11 +80,13 @@ const respondToPay = (content, bot) => {
       });
     }
 
+    const status = hasSuccessfulResult ? 'completed' : 'pending';
     await transaction.$query(transactionObject).patch({
       reason: content.result,
       status: status
     });
 
+    const text = hasSuccessfulResult ? `Your deposit request is successful! Your new balance is ${finalBalance} gold.` : contactDeveloperText;
     const message = JSON.stringify({
       chat_id: telegramId,
       text: text
@@ -118,9 +118,10 @@ const respondToPayout = (content, bot) => {
       });
     }
 
+    const text = hasSuccessfulResult ? `Your withdrawal request is successful! Your new balance is ${finalBalance} gold.` : contactDeveloperText;
     const message = JSON.stringify({
       chat_id: telegramId,
-      text: (hasSuccessfulResult ? `Your withdrawal request is successful! Your new balance is ${finalBalance} gold.` : contactDeveloperText)
+      text: text
     });
     return bot.sendTelegramMessage('sendMessage', message);
   });
