@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const Promise = require('bluebird');
 const User = require('../../models/user');
+const Transaction = require('../../models/transaction');
 
 const makeUnregisteredMessage = (chatId) => {
   const text = `Hi, you don't seem to \
@@ -38,13 +39,14 @@ To authenticate, please do:
   return message;
 };
 
-const makeAuthorizationRequest = (chtwrsToken, amount) => {
+const makeAuthorizationRequest = (chtwrsToken, amount, transactionId) => {
   const message = JSON.stringify({
     action: 'authorizePayment',
     payLoad: {
       amount: {
         pouches: amount
-      }
+      },
+      transactionId: transactionId
     },
     token: chtwrsToken
   });
@@ -77,10 +79,22 @@ const deposit = (params) => {
       return bot.sendTelegramMessage('sendMessage', message);
     }
 
-    const request = makeAuthorizationRequest(user.chtwrsToken, depositAmount);
-    const message = makeRequestAuthorizationMessage(chatId);
-    return bot.sendChtwrsMessage(request)
-    .then(() => bot.sendTelegramMessage('sendMessage', message));
+    const attributes = {
+      fromId: user.id,
+      isCommitted: false,
+      quantity: depositAmount * 100,
+      reason: 'User invoked /deposit command',
+      toId: 0
+    };
+    return Transaction.create(attributes)
+    .then((transaction) => {
+      const request = makeAuthorizationRequest(user.chtwrsToken, depositAmount, transaction.id);
+      return bot.sendChtwrsMessage(request);
+    })
+    .then(() => {
+      const message = makeRequestAuthorizationMessage(chatId);
+      return bot.sendTelegramMessage('sendMessage', message);
+    });
   });
 };
 

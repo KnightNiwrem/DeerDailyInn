@@ -2,6 +2,7 @@ const _ = require('lodash');
 const Promise = require('bluebird');
 const { transaction } = require('objection');
 const User = require('../../models/user');
+const Transaction = require('../../models/transaction');
 const knex = User.knex();
 
 const makeUnregisteredMessage = (chatId) => {
@@ -93,6 +94,15 @@ const withdraw = async (params) => {
       const message = makeInsufficientBalanceMessage(chatId, withdrawalAmount, remainingBalance);
       return bot.sendTelegramMessage('sendMessage', message);
     }
+
+    const attributes = {
+      fromId: 0,
+      isCommitted: true,
+      quantity: amountInGold,
+      reason: 'User invoked /withdraw command',
+      toId: user.id
+    };
+    await Transaction.create(attributes);
 
     await user.$query(transactionObject).patch({
       balance: remainingBalance
