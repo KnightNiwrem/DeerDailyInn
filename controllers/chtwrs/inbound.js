@@ -72,6 +72,7 @@ const respondToPay = (content, bot) => {
   const depositTransaction = transaction(bot.knex, async (transactionObject) => {
     const transaction = await Transaction.query(transactionObject).where('id', transactionId).first();
     const user = await User.query(transactionObject).where('id', transaction.toId).first();
+    const telegramId = user.telegramId;
 
     let finalBalance = user.balance;
     if (hasSuccessfulResult) {
