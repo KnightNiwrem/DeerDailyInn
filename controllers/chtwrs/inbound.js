@@ -53,10 +53,10 @@ const respondToAuthorizePayment = (content, bot) => {
   .where('id', transactionId)
   .first()
   .then(() => {
-    const message = {
+    const message = JSON.stringify({
       chat_id: telegramId,
-      text: hasSuccessfulResult ? requestConfirmationText : contactDeveloperText
-    };
+      text: (hasSuccessfulResult ? requestConfirmationText : contactDeveloperText)
+    });
     return bot.sendTelegramMessage('sendMessage', message);
   });
 };
@@ -82,10 +82,10 @@ const respondToPay = (content, bot) => {
       });
     }
 
-    const message = {
+    const message = JSON.stringify({
       chat_id: telegramId,
-      text: hasSuccessfulResult ? `Your deposit request is successful! Your new balance is ${finalBalance} gold.` : contactDeveloperText
-    };
+      text: (hasSuccessfulResult ? `Your deposit request is successful! Your new balance is ${finalBalance} gold.` : contactDeveloperText)
+    });
     return bot.sendTelegramMessage('sendMessage', message);
   });
 
@@ -113,10 +113,10 @@ const respondToPayout = (content, bot) => {
       });
     }
 
-    const message = {
+    const message = JSON.stringify({
       chat_id: telegramId,
-      text: hasSuccessfulResult ? `Your withdrawal request is successful! Your new balance is ${finalBalance} gold.` : contactDeveloperText
-    };
+      text: (hasSuccessfulResult ? `Your withdrawal request is successful! Your new balance is ${finalBalance} gold.` : contactDeveloperText)
+    });
     return bot.sendTelegramMessage('sendMessage', message);
   });
 
