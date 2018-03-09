@@ -64,16 +64,14 @@ const respondToAuthorizePayment = (content, bot) => {
 };
 
 const respondToPay = (content, bot) => {
-  const telegramId = content.payload.userId;
   const transactionId = content.payload.transactionId;
   const hasSuccessfulResult = content.result.toLowerCase() === 'ok';
   const status = hasSuccessfulResult ? 'completed' : 'pending';
   const text = hasSuccessfulResult ? `Your deposit request is successful! Your new balance is ${finalBalance} gold.` : contactDeveloperText;
 
-  console.log(content);
   const depositTransaction = transaction(bot.knex, async (transactionObject) => {
     const transaction = await Transaction.query(transactionObject).where('id', transactionId).first();
-    const user = await User.query(transactionObject).where('telegramId', telegramId).first();
+    const user = await User.query(transactionObject).where('id', transaction.toId).first();
 
     let finalBalance = user.balance;
     if (hasSuccessfulResult) {
