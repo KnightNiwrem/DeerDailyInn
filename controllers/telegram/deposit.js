@@ -25,20 +25,6 @@ pouches that you would like to deposit!`;
   return message;
 };
 
-const makeRequestAuthorizationMessage = (chatId) => {
-  const text = `Great! Please finalize the transaction by \
-sending the authorization code from @chtwrsbot!
-
-To authenticate, please do:
-/confirm [auth code from @chtwrsbot]`;
-
-  const message = JSON.stringify({
-    chat_id: chatId,
-    text: text
-  });
-  return message;
-};
-
 const makeAuthorizationRequest = (chtwrsToken, amount, transactionId) => {
   const message = JSON.stringify({
     action: 'authorizePayment',
@@ -80,20 +66,16 @@ const deposit = (params) => {
     }
 
     const attributes = {
-      fromId: user.id,
-      isCommitted: false,
+      fromId: 0,
       quantity: depositAmount * 100,
       reason: 'User invoked /deposit command',
-      toId: 0
+      status: 'started',
+      toId: user.id
     };
     return Transaction.create(attributes)
     .then((transaction) => {
       const request = makeAuthorizationRequest(user.chtwrsToken, depositAmount, transaction.id);
       return bot.sendChtwrsMessage(request);
-    })
-    .then(() => {
-      const message = makeRequestAuthorizationMessage(chatId);
-      return bot.sendTelegramMessage('sendMessage', message);
     });
   });
 };

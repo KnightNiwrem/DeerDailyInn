@@ -95,10 +95,10 @@ const confirm = (params) => {
 
     const transaction = Transaction.query()
     .where({
-      fromId: user.id,
-      isCommitted: false
+      fromId: 0,
+      status: 'pending',
+      toId: user.id
     })
-    .orderBy('id', 'desc')
     .first();
     return Promise.all([user, transaction]);
   })

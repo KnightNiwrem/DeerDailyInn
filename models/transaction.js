@@ -20,7 +20,7 @@ class Transaction extends Model {
   /*************************** Private Methods ***************************/
 
   static get _requiredFields() {
-    return ['isCommitted', 'quantity', 'reason'];
+    return ['quantity', 'reason', 'status'];
   }
 
   static _construct(attributes) {
@@ -45,7 +45,7 @@ class Transaction extends Model {
   static get jsonSchema () {
     return {
       type: 'object',
-      required: ['id', 'fromId', 'isCommitted', 'quantity', 'reason', 'toId'],
+      required: ['id', 'fromId', 'quantity', 'reason', 'status', 'toId'],
       properties: {
         id: {
           type: 'integer'
@@ -54,14 +54,15 @@ class Transaction extends Model {
           type: 'integer',
           default: 0
         },
-        isCommitted: {
-          type: 'boolean'
-        },
         quantity: {
           type: 'integer'
         },
         reason: {
-          type: 'string'
+          type: 'string',
+        },
+        status: {
+          type: 'string',
+          enum: ['cancelled', 'completed', 'started']
         },
         toId: {
           type: 'integer',

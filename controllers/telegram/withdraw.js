@@ -26,17 +26,6 @@ pouches that you would like to withdraw!`;
   return message;
 };
 
-const makeSuccessMessage = (chatId, amount, balance) => {
-  const text = `Great! You have withdrawn ${amount} \
-gold pouches! Your current balance is ${balance} gold.`;
-
-  const message = JSON.stringify({
-    chat_id: chatId,
-    text: text
-  });
-  return message;
-};
-
 const makeInsufficientBalanceMessage = (chatId, amount, balance) => {
   const text = `Sorry! You don't have sufficient funds to \
 withdraw ${amount} gold pouches! Your current \
@@ -56,7 +45,7 @@ const makePayoutRequest = (chtwrsToken, amount, transactionId) => {
       amount: {
         pouches: amount
       },
-      message: `From Deer Daily Inn: ${amount} gold pouches`,
+      message: `From Deer Daily Inn: ${amount} gold pouch(es)`,
       transactionId: `${transactionId}`
     },
     token: chtwrsToken
@@ -81,8 +70,10 @@ const withdraw = (params) => {
     return bot.sendTelegramMessage('sendMessage', message);
   }
 
-  const withdrawalTransaction = transaction(bot.knex, async (transactionObject) => {
-    const user = await User.query(transactionObject).where('telegramId', telegramId).first();
+  return User.query()
+  .where('telegramId', telegramId)
+  .first()
+  .then((user) => {
     if (_.isNil(user) || _.isEmpty(user.chtwrsToken)) {
       const message = makeUnregisteredMessage(chatId);
       return bot.sendTelegramMessage('sendMessage', message);
@@ -96,26 +87,18 @@ const withdraw = (params) => {
     }
 
     const attributes = {
-      fromId: 0,
-      isCommitted: true,
+      fromId: user.id,
       quantity: amountInGold,
       reason: 'User invoked /withdraw command',
-      toId: user.id
+      status: 'pending',
+      toId: 0
     };
-    const transaction = await Transaction.create(attributes);
-
-    await user.$query(transactionObject).patch({
-      balance: remainingBalance
+    return Transaction.create(attributes)
+    .then((transaction) => {
+      const request = makePayoutRequest(user.chtwrsToken, withdrawalAmount, transaction.id);
+      return bot.sendChtwrsMessage(request);
     });
-
-    const request = makePayoutRequest(user.chtwrsToken, withdrawalAmount, transaction.id);
-    await bot.sendChtwrsMessage(request);
-
-    const message = makeSuccessMessage(chatId, withdrawalAmount, remainingBalance);
-    return bot.sendTelegramMessage('sendMessage', message);
   });
-
-  return Promise.resolve(withdrawalTransaction);
 };
 
 module.exports = withdraw;

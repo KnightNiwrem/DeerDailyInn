@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const { transaction } = require('objection');
 const User = require('../../models/user');
 const Transaction = require('../../models/transaction');
 
@@ -29,20 +30,101 @@ const respondToGrant = (content, bot) => {
   .catch(console.warn);
 };
 
+const requestConfirmationText = `Great! Please confirm the deposit \
+using the confirmation code from @chtwrsbot.
+
+To confirm, please do:
+/confirm [confirmation code from @chtwrsbot]`;
+
+const contactDeveloperText = `Sorry! There seems to be a problem \
+with your request. Please try again. If you believe that this \
+message was sent in error, please contact @knightniwrem instead.`;
+
 const respondToAuthorizePayment = (content, bot) => {
-  console.log(content);
+  const telegramId = content.payload.userId;
+  const transactionId = content.payload.transactionId;
+  const hasSuccessfulResult = content.result.toLowerCase() === 'ok';
+  const attributes = {
+    reason: content.result,
+    status: hasSuccessfulResult ? 'pending' : 'cancelled'
+  };
+  Transaction.query()
+  .patch(attributes)
+  .where('id', transactionId)
+  .first()
+  .then(() => {
+    const message = {
+      chat_id: telegramId,
+      text: hasSuccessfulResult ? requestConfirmationText : contactDeveloperText
+    };
+    return bot.sendTelegramMessage('sendMessage', message);
+  });
 };
 
 const respondToPay = (content, bot) => {
-  console.log(content);
+  const telegramId = content.payload.userId;
+  const transactionId = content.payload.transactionId;
+  const hasSuccessfulResult = content.result.toLowerCase() === 'ok';
+
+  const depositTransaction = transaction(bot.knex, async (transactionObject) => {
+    const attributes = {
+      reason: content.result,
+      status: hasSuccessfulResult ? 'completed' : 'pending'
+    };
+    const transaction = await Transaction.query(transactionObject).patch(attributes).where('id', transactionId);
+    const user = await User.query(transactionObject).where('telegramId', telegramId).first();
+
+    let finalBalance = user.balance;
+    if (hasSuccessfulResult) {
+      finalBalance = user.balance + content.payload.debit.gold;
+      await user.$query(transactionObject).patch({ 
+        balance: finalBalance 
+      });
+    }
+
+    const message = {
+      chat_id: telegramId,
+      text: hasSuccessfulResult ? `Your deposit request is successful! Your new balance is ${finalBalance} gold.` : contactDeveloperText
+    };
+    return bot.sendTelegramMessage('sendMessage', message);
+  });
+
+  return Promise.resolve(depositTransaction);
 };
 
 const respondToPayout = (content, bot) => {
-  console.log(content);
+  const telegramId = content.payload.userId;
+  const transactionId = content.payload.transactionId;
+  const hasSuccessfulResult = content.result.toLowerCase() === 'ok';
+
+  const withdrawalTransaction = transaction(bot.knex, async (transactionObject) => {
+    const attributes = {
+      reason: content.result,
+      status: hasSuccessfulResult ? 'completed' : 'pending'
+    };
+    const transaction = await Transaction.query(transactionObject).patch(attributes).where('id', transactionId);
+    const user = await User.query(transactionObject).where('telegramId', telegramId).first();
+
+    let finalBalance = user.balance;
+    if (hasSuccessfulResult) {
+      finalBalance = user.balance - content.payload.debit.gold;
+      await user.$query(transactionObject).patch({ 
+        balance: finalBalance 
+      });
+    }
+
+    const message = {
+      chat_id: telegramId,
+      text: hasSuccessfulResult ? `Your withdrawal request is successful! Your new balance is ${finalBalance} gold.` : contactDeveloperText
+    };
+    return bot.sendTelegramMessage('sendMessage', message);
+  });
+
+  return Promise.resolve(withdrawalTransaction);
 };
 
 const respondToUnknown = (content) => {
-  console.warn(`Inbound queue: received unknown action '${content.action}'`);
+  console.warn(`Inbound queue: ${content.action} returned status code ${content.result}`);
 };
 
 const inboundResponders = {
@@ -53,25 +135,27 @@ const inboundResponders = {
   'payout': respondToPayout
 };
 
+const inboundErrorResponders = {
+  'authorizePayment': respondToAuthorizePayment,
+  'pay': respondToPay,
+  'payout': respondToPayout
+};
+
 const inbound = (params) => {
   if (_.isNil(params.bot)) {
     console.warn('Inbound queue: Bot cannot be missing');
     return;
   }
+
   const bot = params.bot;
-
   const content = JSON.parse(params.rawMessage.content.toString());
-  if (content.result.toLowerCase() !== 'ok') {
-    console.warn(`Inbound queue: ${content.action} returned status code ${content.result}`);
-    console.warn(content);
-    return;
-  }
-
   if (_.isEmpty(content.action) && !_.isEmpty(content.payload.operation)) {
     content.action = 'authAdditionalOperation';
   }
+
+  const responderMap = content.result.toLowerCase() === 'ok' ? inboundResponders : inboundErrorResponders;
   const action = content.action;
-  const responder = inboundResponders[action];
+  const responder = responderMap[action];
   const usableResponder = !_.isNil(responder) ? responder : respondToUnknown;
   usableResponder(content, bot);
 };
