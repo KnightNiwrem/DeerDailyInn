@@ -91,7 +91,7 @@ const withdraw = (params) => {
     const amountInGold = withdrawalAmount * 100;
     const remainingBalance = user.balance - amountInGold;
     if (remainingBalance < 0) {
-      const message = makeInsufficientBalanceMessage(chatId, withdrawalAmount, remainingBalance);
+      const message = makeInsufficientBalanceMessage(chatId, withdrawalAmount, user.balance);
       return bot.sendTelegramMessage('sendMessage', message);
     }
 
