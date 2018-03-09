@@ -115,7 +115,9 @@ class Bot {
           }, 1000);
         });
       }
-      return response.json();
+      return response.json().tapCatch(() => {
+        console.warn(response)
+      });
     })
     .catch(console.warn);
   }
