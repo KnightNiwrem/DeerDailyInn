@@ -3,7 +3,6 @@ const Promise = require('bluebird');
 const { transaction } = require('objection');
 const User = require('../../models/user');
 const Transaction = require('../../models/transaction');
-const knex = User.knex();
 
 const makeUnregisteredMessage = (chatId) => {
   const text = `Hi, you don't seem to \
@@ -82,7 +81,7 @@ const withdraw = (params) => {
     return bot.sendTelegramMessage('sendMessage', message);
   }
 
-  const withdrawalTransaction = transaction(knex, async (transactionObject) => {
+  const withdrawalTransaction = transaction(bot.knex, async (transactionObject) => {
     const user = User.query(transactionObject).where('telegramId', telegramId).first();
     if (_.isNil(user) || _.isEmpty(user.chtwrsToken)) {
       const message = makeUnregisteredMessage(chatId);

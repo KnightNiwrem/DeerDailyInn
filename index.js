@@ -65,6 +65,7 @@ setUpPromise
 .then((connectionAndChannel) => {
   const [connection, channel] = connectionAndChannel;
 
+  bot.registerKnex(knex);
   bot.registerConnection(connection);
   bot.registerChannel(channel);
 

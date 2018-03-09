@@ -8,12 +8,17 @@ const telegramRouter = require('./controllers/telegramRouter');
 
 class Bot {
   constructor(botKey, username, password) {
+    this.knex = undefined;
     this.connection = undefined;
     this.channel = undefined;
 
     this.username = username;
     this.password = password;
     this.botKey = botKey;
+  }
+
+  registerKnex(knex) {
+    this.knex = knex;
   }
 
   registerConnection(connection) {
