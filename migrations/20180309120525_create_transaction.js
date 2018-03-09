@@ -6,9 +6,9 @@ exports.up = function(knex, Promise) {
       tableCreation = knex.schema.createTable('transactions', (table) => {
         table.increments();
         table.integer('fromId').notNullable();
-        table.boolean('isCommitted').notNullable();
         table.integer('quantity').notNullable();
         table.string('reason').notNullable();
+        table.string('status').notNullable();
         table.integer('toId').notNullable();
         table.timestamps(true, true);
       });
