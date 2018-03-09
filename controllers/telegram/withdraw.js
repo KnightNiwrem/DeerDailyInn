@@ -50,14 +50,15 @@ balance is ${balance} gold.`;
   return message;
 };
 
-const makePayoutRequest = (chtwrsToken, amount) => {
+const makePayoutRequest = (chtwrsToken, amount, transactionId) => {
   const message = JSON.stringify({
     action: 'payout',
-    message: `From Deer Daily Inn: ${amount} gold pouches`,
     payLoad: {
       amount: {
         pouches: amount
-      }
+      },
+      message: `From Deer Daily Inn: ${amount} gold pouches`,
+      transactionId: `${transactionId}`
     },
     token: chtwrsToken
   });
@@ -102,13 +103,13 @@ const withdraw = async (params) => {
       reason: 'User invoked /withdraw command',
       toId: user.id
     };
-    await Transaction.create(attributes);
+    const transaction = await Transaction.create(attributes);
 
     await user.$query(transactionObject).patch({
       balance: remainingBalance
     });
 
-    const request = makePayoutRequest(user.chtwrsToken, withdrawalAmount);
+    const request = makePayoutRequest(user.chtwrsToken, withdrawalAmount, transaction.id);
     await bot.sendChtwrsMessage(request);
 
     const message = makeSuccessMessage(chatId, withdrawalAmount, remainingBalance);

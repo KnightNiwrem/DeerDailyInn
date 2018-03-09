@@ -59,7 +59,7 @@ const makePayRequest = (chtwrsToken, confirmationCode, amount, transactionId) =>
         pouches: amount
       },
       confirmationCode: confirmationCode,
-      transactionId: transactionId
+      transactionId: `${transactionId}`
     },
     token: chtwrsToken
   });

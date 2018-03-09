@@ -46,7 +46,7 @@ const makeAuthorizationRequest = (chtwrsToken, amount, transactionId) => {
       amount: {
         pouches: amount
       },
-      transactionId: transactionId
+      transactionId: `${transactionId}`
     },
     token: chtwrsToken
   });
