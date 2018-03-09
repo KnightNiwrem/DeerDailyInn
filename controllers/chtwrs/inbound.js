@@ -44,9 +44,11 @@ const respondToAuthorizePayment = (content, bot) => {
   const telegramId = content.payload.userId;
   const transactionId = content.payload.transactionId;
   const hasSuccessfulResult = content.result.toLowerCase() === 'ok';
+  const status = hasSuccessfulResult ? 'pending' : 'cancelled';
+  const text = hasSuccessfulResult ? requestConfirmationText : contactDeveloperText;
   const attributes = {
     reason: content.result,
-    status: hasSuccessfulResult ? 'pending' : 'cancelled'
+    status: status
   };
   Transaction.query()
   .patch(attributes)
@@ -55,7 +57,7 @@ const respondToAuthorizePayment = (content, bot) => {
   .then(() => {
     const message = JSON.stringify({
       chat_id: telegramId,
-      text: (hasSuccessfulResult ? requestConfirmationText : contactDeveloperText)
+      text: text
     });
     return bot.sendTelegramMessage('sendMessage', message);
   });
@@ -65,13 +67,12 @@ const respondToPay = (content, bot) => {
   const telegramId = content.payload.userId;
   const transactionId = content.payload.transactionId;
   const hasSuccessfulResult = content.result.toLowerCase() === 'ok';
+  const status = hasSuccessfulResult ? 'completed' : 'pending';
+  const text = hasSuccessfulResult ? `Your deposit request is successful! Your new balance is ${finalBalance} gold.` : contactDeveloperText;
 
+  console.log(content);
   const depositTransaction = transaction(bot.knex, async (transactionObject) => {
-    const attributes = {
-      reason: content.result,
-      status: hasSuccessfulResult ? 'completed' : 'pending'
-    };
-    const transaction = await Transaction.query(transactionObject).patch(attributes).where('id', transactionId);
+    const transaction = await Transaction.query(transactionObject).where('id', transactionId).first();
     const user = await User.query(transactionObject).where('telegramId', telegramId).first();
 
     let finalBalance = user.balance;
@@ -82,9 +83,14 @@ const respondToPay = (content, bot) => {
       });
     }
 
+    await transaction.$query(transactionObject).patch({
+      reason: content.result,
+      status: status
+    });
+
     const message = JSON.stringify({
       chat_id: telegramId,
-      text: (hasSuccessfulResult ? `Your deposit request is successful! Your new balance is ${finalBalance} gold.` : contactDeveloperText)
+      text: text
     });
     return bot.sendTelegramMessage('sendMessage', message);
   });
