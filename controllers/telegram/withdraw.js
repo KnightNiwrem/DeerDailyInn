@@ -65,7 +65,7 @@ const makePayoutRequest = (chtwrsToken, amount, transactionId) => {
   return message;
 };
 
-const withdraw = async (params) => {
+const withdraw = (params) => {
   if (_.isNil(params.bot)) {
     return Promise.reject('Rejected in withdraw: Bot cannot be missing');
   }
@@ -82,7 +82,7 @@ const withdraw = async (params) => {
     return bot.sendTelegramMessage('sendMessage', message);
   }
 
-  const withdrawalTransaction = await transaction(knex, async(transactionObject) => {
+  const withdrawalTransaction = transaction(knex, async(transactionObject) => {
     const user = User.query(transactionObject).where('telegramId', telegramId).first();
     if (_.isNil(user) || _.isEmpty(user.chtwrsToken)) {
       const message = makeUnregisteredMessage(chatId);
@@ -116,7 +116,7 @@ const withdraw = async (params) => {
     return bot.sendTelegramMessage('sendMessage', message);
   });
 
-  return withdrawalTransaction;
+  return Promise.resolve(withdrawalTransaction);
 };
 
 module.exports = withdraw;
