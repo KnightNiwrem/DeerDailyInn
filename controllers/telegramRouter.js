@@ -4,20 +4,21 @@ const _ = require('lodash');
 const channelController = require('./telegram/channel');
 const defaultController = require('./telegram/unknown');
 
-const startController = require('./telegram/start');
 const authController = require('./telegram/auth');
+const balanceController = require('./telegram/balance');
 const confirmController = require('./telegram/confirm');
-const depositController = require('./telegram/deposit');
-const withdrawController = require('./telegram/withdraw');
-const helpController = require('./telegram/help');
 const dealsController = require('./telegram/deals');
+const depositController = require('./telegram/deposit');
 const flashController = require('./telegram/flash');
 const grantController = require('./telegram/grant');
-
+const helpController = require('./telegram/help');
+const startController = require('./telegram/start');
 const updateLogController = require('./telegram/updatelog');
+const withdrawController = require('./telegram/withdraw');
 
 const controllerRouter = {
   auth: authController,
+  balance: balanceController,
   confirm: confirmController,
   deals: dealsController,
   deposit: depositController,

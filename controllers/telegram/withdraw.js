@@ -45,7 +45,7 @@ const makePayoutRequest = (chtwrsToken, amount, transactionId) => {
       amount: {
         pouches: amount
       },
-      message: `From Deer Daily Inn: ${amount} gold pouch(es)`,
+      message: `You have withdrawn ${amount} gold pouch(es)!`,
       transactionId: `${transactionId}`
     },
     token: chtwrsToken
