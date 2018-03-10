@@ -34,7 +34,14 @@ const controllerRouter = {
   withdraw: withdrawController
 };
 
-const usableCommandsInChannel = new Set(['deals', 'flash', 'help', 'purchases', 'sales', 'updatelog']);
+const usableCommandsInChannel = new Set([
+  'deals',
+  'flash',
+  'help',
+  'info',
+  'purchases',
+  'sales',
+  'updatelog']);
 const definedCommands = new Set(_.keys(controllerRouter));
 
 const telegramRouter = (params) => {
