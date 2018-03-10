@@ -11,6 +11,9 @@ exports.up = function(knex, Promise) {
         table.string('status').notNullable();
         table.integer('toId').notNullable();
         table.timestamps(true, true);
+
+        table.foreign('fromId').references('users.id');
+        table.foreign('toId').references('users.id');
       });
     }
     return tableCreation;

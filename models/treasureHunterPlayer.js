@@ -2,40 +2,40 @@ const _ = require('lodash');
 const Promise = require('bluebird');
 const { Model } = require('objection');
 
-class Deal extends Model {
+class TreasureHunterPlayer extends Model {
   
   static create(attributes) {
     const missingAttributes = this._requiredFields.filter((requiredField) => {
       return _.isNil(attributes) || _.isNil(attributes[requiredField]);
     });
     if (!_.isEmpty(missingAttributes)) {
-      return Promise.reject(`Deal.create expects: ${missingAttributes.join(', ')}`);
+      return Promise.reject(`TreasureHunterPlayer.create expects: ${missingAttributes.join(', ')}`);
     }
 
     // Try to find user, create if not found
-    const deal = this._construct(attributes);
-    return this.query().insert(deal).returning('*');
+    const treasureHunterPlayer = this._construct(attributes);
+    return this.query().insert(treasureHunterPlayer).returning('*');
   }
 
   /*************************** Private Methods ***************************/
 
   static get _requiredFields() {
-    return ['buyerId', 'item', 'price', 'quantity', 'sellerId'];
+    return ['userId'];
   }
 
   static _construct(attributes) {
-    const deal = new Deal();
+    const treasureHunterPlayer = new TreasureHunterPlayer();
     const writableFields = _.pull(this.fields, 'id');
     _.forEach(writableFields, (writableField) => {
-      deal[writableField] = attributes[writableField];
+      treasureHunterPlayer[writableField] = attributes[writableField];
     });
-    return deal;
+    return treasureHunterPlayer;
   }
 
   /*************************** Database Methods ****************************/
 
   static get tableName() {
-    return 'deals';
+    return 'treasureHunterPlayers';
   }
 
   static get fields() {
@@ -45,51 +45,46 @@ class Deal extends Model {
   static get jsonSchema () {
     return {
       type: 'object',
-      required: ['id', 'buyerId', 'item', 'price', 'quantity', 'sellerId'],
+      required: ['id', 'gameId', 'outcome', 'userId'],
       properties: {
         id: {
           type: 'integer'
         },
-        buyerId: {
-          type: 'string'
-        },
-        item: {
-          type: 'string'
-        },
-        price: {
+        gameId: {
           type: 'integer'
         },
-        quantity: {
+        outcome: {
           type: 'integer'
         },
-        sellerId: {
-          type: 'string'
+        userId: {
+          type: 'integer'
         }
       }
     };
   }
 
   static get relationMappings() {
+    const TreasureHunterGame = require('./treasureHunterGame');
     const User = require('./user');
     return {
-      buyer: {
+      players: {
         relation: Model.BelongsToOneRelation,
-        modelClass: User,
+        modelClass: TreasureHunterGame,
         join: {
-          from: 'deals.buyerId',
-          to: 'users.chtwrsId'
+          from: 'treasureHunterPlayers.gameId',
+          to: 'treasureHunterGames.id'
         }
       },
-      seller: {
-        relation: Model.BelongsToOneRelation,
+      user: {
+        relation: Model.belongsToOneRelation,
         modelClass: User,
         join: {
-          from: 'deals.sellerId',
-          to: 'users.chtwrsId'
+          from: 'treasureHunterPlayers.userId',
+          to: 'users.id'
         }
       }
     };
   }
 }
 
-module.exports = Deal;
+module.exports = TreasureHunterPlayer;

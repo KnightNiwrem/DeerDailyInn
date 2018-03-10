@@ -14,7 +14,7 @@ exports.up = function(knex, Promise) {
 
 exports.down = function(knex, Promise) {
   const hasTransactionTable = knex.schema.hasTable('transactions');
-  const changeTransactionTable = hasUserTable.then((hasTable) => {
+  const changeTransactionTable = hasTransactionTable.then((hasTable) => {
     let tableChanges = Promise.resolve();
     if (hasTable) {
       tableChanges = knex.schema.alterTable('transactions', (table) => {

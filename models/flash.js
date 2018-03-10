@@ -68,7 +68,7 @@ class Flash extends Model {
         modelClass: User,
         join: {
           from: 'flashes.chatId',
-          to: 'users.id'
+          to: 'users.telegramId'
         }
       }
     };
