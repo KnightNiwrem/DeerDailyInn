@@ -12,6 +12,7 @@ const depositController = require('./telegram/deposit');
 const flashController = require('./telegram/flash');
 const grantController = require('./telegram/grant');
 const helpController = require('./telegram/help');
+const infoController = require('./telegram/info');
 const startController = require('./telegram/start');
 const updateLogController = require('./telegram/updatelog');
 const withdrawController = require('./telegram/withdraw');
@@ -25,6 +26,7 @@ const controllerRouter = {
   flash: flashController,
   grant: grantController,
   help: helpController,
+  info: infoController,
   purchases: dealsController,
   sales: dealsController,
   start: startController,
