@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const Promise = require('bluebird');
+const Transaction = require('../../models/transaction');
 const TreasureHunterGame = require('../../models/treasureHunterGame');
 const TreasureHunterPlayer = require('../../models/treasureHunterPlayer');
 const User = require('../../models/user');
