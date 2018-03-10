@@ -50,7 +50,7 @@ const tryToCancelGame = (chatId, gameId) => {
         status: 'cancelled'
       });
 
-      players.forEach((player) => {
+      players.forEach(async (player) => {
         const user = await User.query().where('id', player.userId).first();
         user.$query().patch({
           balance: user.balance + 20
