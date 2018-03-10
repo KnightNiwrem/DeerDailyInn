@@ -45,6 +45,15 @@ not opened for joining!`;
   return message;
 };
 
+const makeAlreadyInGameMessage = (chatId) => {
+  const text = `You are already in the game.`;
+  const message = JSON.stringify({
+    chat_id: chatId,
+    text: text
+  });
+  return message;
+};
+
 const makeNotEnoughGoldMessage = (chatId) => {
   const text = `You do not have enough gold in your \
 personal Deer Daily Inn balance to join the game now! You \
@@ -99,6 +108,21 @@ const joinhunt = (params) => {
       return Promise.reject('User does not have enough gold.');
     }
 
+    const player = TreasureHunterPlayer.query()
+    .where({
+      gameId: game.id,
+      userId: user.id
+    })
+    .first();
+    return Promise.all([game, user, player]);
+  })
+  .then(([game, user, player]) => {
+    if (!_.isNil(player)) {
+      const message = makeAlreadyInGameMessage(chatId);
+      bot.sendTelegramMessage('sendMessage', message);
+      return Promise.reject('User is already in game');
+    }
+    
     const userAttributes = {
       balance: user.balance - 20
     };

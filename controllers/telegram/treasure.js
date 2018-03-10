@@ -9,7 +9,7 @@ const makeNewGameMessage = (chatId, gameId) => {
   const text = `A new treasure hunter game has been created! \
 Please note the following:
   - Entry fee is 20 gold
-  - You still need to do /hunt even if you started the game
+  - You still need to do /joinhunt even if you started the game
   - Game will be cancelled in 120 seconds if there are not enough players`;
   
   const message = JSON.stringify({
