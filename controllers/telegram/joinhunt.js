@@ -16,7 +16,7 @@ be registered yet! Do /start to register first!`;
   return message;
 };
 
-const makeJoinGameMessage = (chatId, gameId) => {
+const makeJoinGameMessage = (chatId) => {
   const text = `You have successfully joined the game!`;
   const message = JSON.stringify({
     chat_id: chatId,
@@ -54,29 +54,6 @@ will need at least 20 gold to join the game.`;
     text: text
   });
   return message;
-};
-
-const makeTimeoutMessage = (chatId) => {
-  const text = `Not enough players. Game has been cancelled!`;
-  const message = JSON.stringify({
-    chat_id: chatId,
-    text: text
-  });
-  return message;
-};
-
-const tryToCancelGame = (chatId, gameId) => {
-  const timeout = 120 * 1000;
-  setTimeout(() => {
-    TreasureHunterPlayer.query()
-    .where('gameId', gameId)
-    .then((players) => {
-      if (players.length < 2) {
-        const message = makeTimeoutMessage(chatId);
-        return bot.sendTelegramMessage('sendMessage', message);
-      }
-    });
-  }, timeout);
 };
 
 const joinhunt = (params) => {
@@ -144,6 +121,10 @@ const joinhunt = (params) => {
         userId: user.id
       };
       return TreasureHunterPlayer.create(playerAttributes);
+    })
+    .then(() => {
+      const message = makeJoinGameMessage(chatId);
+      return bot.sendTelegramMessage('sendMessage', message);
     });
   });
 };
