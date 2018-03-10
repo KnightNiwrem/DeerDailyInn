@@ -76,7 +76,7 @@ class TreasureHunterPlayer extends Model {
         }
       },
       user: {
-        relation: Model.belongsToOneRelation,
+        relation: Model.BelongsToOneRelation,
         modelClass: User,
         join: {
           from: 'treasureHunterPlayers.userId',
