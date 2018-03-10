@@ -45,9 +45,12 @@ class TreasureHunterPlayer extends Model {
   static get jsonSchema () {
     return {
       type: 'object',
-      required: ['id', 'gameId', 'outcome', 'userId'],
+      required: ['id', 'choice', 'gameId', 'outcome', 'userId'],
       properties: {
         id: {
+          type: 'integer'
+        },
+        choice: {
           type: 'integer'
         },
         gameId: {
