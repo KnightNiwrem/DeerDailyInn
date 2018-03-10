@@ -47,7 +47,7 @@ const respondToAuthorizePayment = (content, bot) => {
   const status = hasSuccessfulResult ? 'pending' : 'cancelled';
   const text = hasSuccessfulResult ? requestConfirmationText : contactDeveloperText;
   const attributes = {
-    reason: content.result,
+    apiStatus: content.result,
     status: status
   };
   Transaction.query()
@@ -82,7 +82,7 @@ const respondToPay = (content, bot) => {
 
     const status = hasSuccessfulResult ? 'completed' : 'pending';
     await transaction.$query(transactionObject).patch({
-      reason: content.result,
+      apiStatus: content.result,
       status: status
     });
 
@@ -104,7 +104,7 @@ const respondToPayout = (content, bot) => {
 
   const withdrawalTransaction = transaction(bot.knex, async (transactionObject) => {
     const attributes = {
-      reason: content.result,
+      apiStatus: content.result,
       status: hasSuccessfulResult ? 'completed' : 'pending'
     };
     const transaction = await Transaction.query(transactionObject).patch(attributes).where('id', transactionId);

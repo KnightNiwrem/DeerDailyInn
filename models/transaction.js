@@ -45,10 +45,13 @@ class Transaction extends Model {
   static get jsonSchema () {
     return {
       type: 'object',
-      required: ['id', 'fromId', 'quantity', 'reason', 'status', 'toId'],
+      required: ['id', 'apiStatus', 'fromId', 'quantity', 'reason', 'status', 'toId'],
       properties: {
         id: {
           type: 'integer'
+        },
+        apiStatus: {
+          type: 'string'
         },
         fromId: {
           type: 'integer',
