@@ -37,7 +37,7 @@ const makeTimeoutMessage = (chatId) => {
   return message;
 };
 
-const tryToCancelGame = (chatId, gameId) => {
+const tryToCancelGame = (bot, chatId, gameId) => {
   const timeout = 120 * 1000;
   setTimeout(async () => {
     const players = await TreasureHunterPlayer.query().where('gameId', gameId);
@@ -97,7 +97,7 @@ const treasure = (params) => {
     };
     return TreasureHunterGame.create(attributes)
     .then((game) => {
-      tryToCancelGame(chatId, game.id);
+      tryToCancelGame(bot, chatId, game.id);
       const message = makeNewGameMessage(chatId, game.id);
       return bot.sendTelegramMessage('sendMessage', message);
     });
