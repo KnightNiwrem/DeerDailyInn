@@ -16,8 +16,8 @@ const info = (params) => {
   if (_.isNil(params.bot)) {
     return Promise.reject('Rejected in info: Bot cannot be missing');
   }
-  if (_.isNil(params.chatId) || _.isEmpty(params.telegramId)) {
-    return Promise.reject('Rejected in info: Missing chat or telegram id');
+  if (_.isNil(params.chatId)) {
+    return Promise.reject('Rejected in info: Missing chat id');
   }
 
   const bot = params.bot;
