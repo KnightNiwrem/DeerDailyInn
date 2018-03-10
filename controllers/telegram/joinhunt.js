@@ -97,11 +97,13 @@ const joinhunt = (params) => {
   .then((game) => {
     if (!_.isNil(game)) {
       const message = makeNoGameMessage(chatId);
-      return bot.sendTelegramMessage('sendMessage', message);
+      bot.sendTelegramMessage('sendMessage', message);
+      return Promise.reject('Game has not started yet.');
     }
     if (game.status === 'pending') {
       const message = makeRunningGameMessage(chatId);
-      return bot.sendTelegramMessage('sendMessage', message);
+      bot.sendTelegramMessage('sendMessage', message);
+      return Promise.reject('Game is already running.');
     }
 
     const user = User.query().where('telegramId', telegramId).first();
@@ -110,11 +112,13 @@ const joinhunt = (params) => {
   .then(([game, user]) => {
     if (_.isNil(user) || _.isNil(user.chtwrsToken)) {
       const message = makeUnregisteredMessage(chatId);
-      return bot.sendTelegramMessage('sendMessage', message);
+      bot.sendTelegramMessage('sendMessage', message);
+      return Promise.reject('User is not registered.');
     }
     if (user.balance < 20) {
       const message = makeNotEnoughGoldMessage(chatId);
-      return bot.sendTelegramMessage('sendMessage', message);
+      bot.sendTelegramMessage('sendMessage', message);
+      return Promise.reject('User does not have enough gold.');
     }
 
     const userAttributes = {
