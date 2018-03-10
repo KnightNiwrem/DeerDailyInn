@@ -95,7 +95,7 @@ const joinhunt = (params) => {
   .andWhere('chatId', chatId)
   .first()
   .then((game) => {
-    if (!_.isNil(game)) {
+    if (_.isNil(game)) {
       const message = makeNoGameMessage(chatId);
       bot.sendTelegramMessage('sendMessage', message);
       return Promise.reject('Game has not started yet.');
