@@ -27,4 +27,4 @@ const info = (params) => {
   return bot.sendTelegramMessage('sendMessage', message);
 };
 
-module.exports = channel;
+module.exports = info;
