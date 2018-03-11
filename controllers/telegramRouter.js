@@ -27,11 +27,9 @@ const controllerRouter = {
   grant: grantController,
   help: helpController,
   info: infoController,
-  joinhunt: joinHuntController,
   purchases: dealsController,
   sales: dealsController,
   start: startController,
-  treasure: treasureController,
   updatelog: updateLogController,
   withdraw: withdrawController
 };
