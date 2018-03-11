@@ -56,23 +56,39 @@ const deposit = async (params) => {
     return bot.sendTelegramMessage('sendMessage', message);
   }
 
-  const user = await User.query().where('telegramId', telegramId).first();
-  if (_.isNil(user) || _.isEmpty(user.chtwrsToken)) {
-    const message = makeUnregisteredMessage(chatId);
-    return bot.sendTelegramMessage('sendMessage', message);
-  }
+  const depositTransaction = transaction(bot.knex, async (transactionObject) => {
+    const user = await User.query().where('telegramId', telegramId).first();
+    if (_.isNil(user) || _.isEmpty(user.chtwrsToken)) {
+      const message = makeUnregisteredMessage(chatId);
+      bot.sendTelegramMessage('sendMessage', message);
+      return Promise.reject(`Rejected in deposit: User ${telegramId} is not registered.`);
+    }
 
-  const attributes = {
-    fromId: 0,
-    quantity: depositAmount * 100,
-    reason: 'User invoked /deposit command',
-    status: 'started',
-    toId: user.id
-  };
-  const transaction = await Transaction.create(attributes);
+    const pendingDeposits = Transaction.query(transactionObject)
+    .whereIn('status', ['pending', 'started'])
+    .andWhere({ fromId: 0, toId: user.id });
 
-  const request = makeAuthorizationRequest(user.chtwrsToken, depositAmount, transaction.id);
-  return bot.sendChtwrsMessage(request);
+    const pendingDepositTransactionIds = pendingDeposits.map((pendingDeposit) => pendingDeposit.id);
+    await Transaction.query(transactionObject)
+    .patch({ status: 'cancelled' })
+    .whereIn('id', pendingDepositTransactionIds);
+
+    const transactionAttributes = {
+      fromId: 0,
+      quantity: depositAmount * 100,
+      reason: 'User invoked /deposit command',
+      status: 'started',
+      toId: user.id
+    };
+    const recordedTransaction = await Transaction.create(transactionAttributes);
+    return Promise.all([user, recordedTransaction]);
+  });
+
+  return Promise.resolve(depositTransaction)
+  .then(([user, transaction]) => {
+    const request = makeAuthorizationRequest(user.chtwrsToken, depositAmount, transaction.id);
+    return bot.sendChtwrsMessage(request);
+  });
 };
 
 module.exports = deposit;
