@@ -128,12 +128,11 @@ const respondToPayout = (content, bot) => {
 };
 
 const respondToGetInfo = (content, bot) => {
-  const text = `${content}`;
   const message = JSON.stringify({
     chat_id: 41284431,
-    text: text
+    text: `${content}`
   });
-  return message;
+  return bot.sendTelegramMessage('sendMessage', message);
 };
 
 const respondToUnknown = (content) => {
