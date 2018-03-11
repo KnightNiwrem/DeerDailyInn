@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const Promise = require('bluebird');
+const { transaction } = require('objection');
 const User = require('../../models/user');
 const Transaction = require('../../models/transaction');
 
