@@ -99,7 +99,7 @@ const confirm = async (params) => {
       toId: user.id
     };
     const transaction =  await Transaction.query(transactionObject)
-    .where(attributes)
+    .where(transactionAttributes)
     .orderBy('id', 'desc')
     .first();
     if (_.isNil(transaction)) {
