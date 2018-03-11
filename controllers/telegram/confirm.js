@@ -95,7 +95,7 @@ const confirm = async (params) => {
 
     const transactionAttributes = {
       fromId: 0,
-      status: 'pending',
+      status: 'pending', // need more statuses
       toId: user.id
     };
     const transaction =  await Transaction.query(transactionObject)
