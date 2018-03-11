@@ -116,7 +116,7 @@ const respondToPayout = (content, bot) => {
       });
     }
 
-    const text = hasSuccessfulResult ? `Your withdrawal request is successful! Your new balance is ${finalBalance} gold.` : contactDeveloperText;
+    const text = hasSuccessfulResult ? `Your withdrawal request is successful! Your new balance is ${user.balance} gold.` : contactDeveloperText;
     const message = JSON.stringify({
       chat_id: telegramId,
       text: text
