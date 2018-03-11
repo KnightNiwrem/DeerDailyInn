@@ -88,7 +88,7 @@ const withdraw = async (params) => {
     const userAttributes = {
       balance: user.balance - amountInGold
     };
-    const updatedUser = await user.$query(transactionObject).patch(userAttributes);
+    const updatedUser = await user.$query(transactionObject).patch(userAttributes).returning('*');
 
     const transactionAttributes = {
       fromId: user.id,
