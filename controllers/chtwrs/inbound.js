@@ -110,11 +110,9 @@ const respondToPayout = (content, bot) => {
     const transaction = await Transaction.query(transactionObject).patch(attributes).where('id', transactionId);
     const user = await User.query(transactionObject).where('telegramId', telegramId).first();
 
-    let finalBalance = user.balance;
-    if (hasSuccessfulResult) {
-      finalBalance = user.balance - content.payload.debit.gold;
+    if (!hasSuccessfulResult) {
       await user.$query(transactionObject).patch({ 
-        balance: finalBalance 
+        balance: user.balance + content.payload.debit.gold 
       });
     }
 
