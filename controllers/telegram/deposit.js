@@ -58,14 +58,14 @@ const deposit = async (params) => {
   }
 
   const depositTransaction = transaction(bot.knex, async (transactionObject) => {
-    const user = await User.query().where('telegramId', telegramId).first();
+    const user = await User.query(transactionObject).where('telegramId', telegramId).first();
     if (_.isNil(user) || _.isEmpty(user.chtwrsToken)) {
       const message = makeUnregisteredMessage(chatId);
       bot.sendTelegramMessage('sendMessage', message);
       return Promise.reject(`Rejected in deposit: User ${telegramId} is not registered.`);
     }
 
-    const pendingDeposits = Transaction.query(transactionObject)
+    const pendingDeposits = await Transaction.query(transactionObject)
     .whereIn('status', ['pending', 'started'])
     .andWhere({ fromId: 0, toId: user.id });
 
@@ -81,7 +81,7 @@ const deposit = async (params) => {
       status: 'started',
       toId: user.id
     };
-    const recordedTransaction = await Transaction.create(transactionAttributes);
+    const recordedTransaction = await Transaction.create(transactionAttributes, transactionObject);
     return Promise.all([user, recordedTransaction]);
   });
 

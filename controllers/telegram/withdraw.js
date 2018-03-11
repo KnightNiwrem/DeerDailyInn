@@ -97,7 +97,7 @@ const withdraw = async (params) => {
       status: 'pending',
       toId: 0
     };
-    const recordedTransaction = await Transaction.create(transactionAttributes);
+    const recordedTransaction = await Transaction.create(transactionAttributes, transactionObject);
     return Promise.all([updatedUser, recordedTransaction]);
   });
 

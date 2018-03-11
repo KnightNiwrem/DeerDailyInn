@@ -4,7 +4,7 @@ const { Model } = require('objection');
 
 class Transaction extends Model {
   
-  static create(attributes) {
+  static create(attributes, transactionObject) {
     const missingAttributes = this._requiredFields.filter((requiredField) => {
       return _.isNil(attributes) || _.isNil(attributes[requiredField]);
     });
@@ -14,7 +14,8 @@ class Transaction extends Model {
 
     // Try to find user, create if not found
     const transaction = this._construct(attributes);
-    return this.query().insert(transaction).returning('*');
+    const queryObject = _.isNil(transactionObject) ? this.query() : this.query(transactionObject);
+    return queryObject.insert(transaction).returning('*');
   }
 
   /*************************** Private Methods ***************************/
