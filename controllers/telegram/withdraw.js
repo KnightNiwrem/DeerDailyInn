@@ -53,7 +53,7 @@ const makePayoutRequest = (chtwrsToken, amount, transactionId) => {
   return message;
 };
 
-const withdraw = (params) => {
+const withdraw = async (params) => {
   if (_.isNil(params.bot)) {
     return Promise.reject('Rejected in withdraw: Bot cannot be missing');
   }
@@ -70,34 +70,41 @@ const withdraw = (params) => {
     return bot.sendTelegramMessage('sendMessage', message);
   }
 
-  return User.query()
-  .where('telegramId', telegramId)
-  .first()
-  .then((user) => {
+  const withdrawTransaction = transaction(bot.knex, async (transactionObject) => {
+    const user = await User.query(transactionObject).where('telegramId', telegramId).first();
     if (_.isNil(user) || _.isEmpty(user.chtwrsToken)) {
       const message = makeUnregisteredMessage(chatId);
-      return bot.sendTelegramMessage('sendMessage', message);
+      bot.sendTelegramMessage('sendMessage', message);
+      return Promise.reject(`Rejected in withdraw: User ${telegramId} is not registered.`);
     }
 
     const amountInGold = withdrawalAmount * 100;
-    const remainingBalance = user.balance - amountInGold;
-    if (remainingBalance < 0) {
+    if (user.balance < amountInGold) {
       const message = makeInsufficientBalanceMessage(chatId, withdrawalAmount, user.balance);
-      return bot.sendTelegramMessage('sendMessage', message);
+      bot.sendTelegramMessage('sendMessage', message);
+      return Promise.reject(`Rejected in withdraw: User ${user.telegramId} tried to withdraw ${amountInGold} gold but only had ${user.balance} gold in balance.`);
     }
 
-    const attributes = {
+    const userAttributes = {
+      balance: user.balance - amountInGold
+    };
+    const updatedUser = await user.$query(transactionObject).patch(userAttributes);
+
+    const transactionAttributes = {
       fromId: user.id,
       quantity: amountInGold,
       reason: 'User invoked /withdraw command',
       status: 'pending',
       toId: 0
     };
-    return Transaction.create(attributes)
-    .then((transaction) => {
-      const request = makePayoutRequest(user.chtwrsToken, withdrawalAmount, transaction.id);
-      return bot.sendChtwrsMessage(request);
-    });
+    const recordedTransaction = await Transaction.create(transactionAttributes);
+    return Promise.all([updatedUser, recordedTransaction]);
+  });
+
+  return Promise.resolve(withdrawTransaction)
+  .then(([user, transaction]) => {
+    const request = makePayoutRequest(user.chtwrsToken, withdrawalAmount, transaction.id);
+    return bot.sendChtwrsMessage(request);
   });
 };
 

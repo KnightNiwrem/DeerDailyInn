@@ -66,7 +66,7 @@ const makePayRequest = (chtwrsToken, confirmationCode, amount, transactionId) =>
   return message;
 };
 
-const confirm = (params) => {
+const confirm = async (params) => {
   if (_.isNil(params.bot)) {
     return Promise.reject('Rejected in confirm: Bot cannot be missing');
   }
@@ -84,36 +84,28 @@ const confirm = (params) => {
   const telegramId = params.telegramId;
   const confirmationCode = params.options[0];
 
-  return User.query()
-  .where('telegramId', telegramId)
-  .first()
-  .then((user) => {
-    if (_.isNil(user) || _.isEmpty(user.chtwrsToken)) {
-      const message = makeUnregisteredMessage(chatId);
-      return bot.sendTelegramMessage('sendMessage', message);
-    }
+  const user = await User.query().where('telegramId', telegramId).first();
+  if (_.isNil(user) || _.isEmpty(user.chtwrsToken)) {
+    const message = makeUnregisteredMessage(chatId);
+    return bot.sendTelegramMessage('sendMessage', message);
+  }
 
-    const transaction = Transaction.query()
-    .where({
-      fromId: 0,
-      status: 'pending',
-      toId: user.id
-    })
-    .first();
-    return Promise.all([user, transaction]);
-  })
-  .then(([user, transaction]) => {
-    if (_.isNil(transaction)) {
-      const message = makeNoPendingDepositMessage(chatId);
-      return bot.sendTelegramMessage('sendMessage', message);
-    }
-
-    const amount = transaction.quantity / 100;
-    const request = makePayRequest(user.chtwrsToken, confirmationCode, amount, transaction.id);
-    const message = makeConfirmationReceiptMessage(chatId);
-    return bot.sendChtwrsMessage(request)
-    .then(() => bot.sendTelegramMessage('sendMessage', message));
-  });
+  const attributes = {
+    fromId: 0,
+    status: 'pending',
+    toId: user.id
+  };
+  const transaction = Transaction.query().where(attributes).first();
+  if (_.isNil(transaction)) {
+    const message = makeNoPendingDepositMessage(chatId);
+    return bot.sendTelegramMessage('sendMessage', message);
+  }
+  
+  const amount = transaction.quantity / 100;
+  const request = makePayRequest(user.chtwrsToken, confirmationCode, amount, transaction.id);
+  const message = makeConfirmationReceiptMessage(chatId);
+  return bot.sendChtwrsMessage(request)
+  .then(() => bot.sendTelegramMessage('sendMessage', message));
 };
 
 module.exports = confirm;

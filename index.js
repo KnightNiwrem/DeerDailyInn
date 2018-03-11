@@ -86,7 +86,7 @@ const app = express();
 app.use(bodyParser.json());
 
 app.post(`/${botKey}`, (req, res) => {
-  return bot.handleTelegramMessage(req, res)
+  return Promise.resolve(bot.handleTelegramMessage(req, res))
   .finally(() => {
     res.end();
   });

@@ -39,7 +39,7 @@ const makeAuthorizationRequest = (chtwrsToken, amount, transactionId) => {
   return message;
 };
 
-const deposit = (params) => {
+const deposit = async (params) => {
   if (_.isNil(params.bot)) {
     return Promise.reject('Rejected in deposit: Bot cannot be missing');
   }
@@ -56,28 +56,23 @@ const deposit = (params) => {
     return bot.sendTelegramMessage('sendMessage', message);
   }
 
-  return User.query()
-  .where('telegramId', telegramId)
-  .first()
-  .then((user) => {
-    if (_.isNil(user) || _.isEmpty(user.chtwrsToken)) {
-      const message = makeUnregisteredMessage(chatId);
-      return bot.sendTelegramMessage('sendMessage', message);
-    }
+  const user = await User.query().where('telegramId', telegramId).first();
+  if (_.isNil(user) || _.isEmpty(user.chtwrsToken)) {
+    const message = makeUnregisteredMessage(chatId);
+    return bot.sendTelegramMessage('sendMessage', message);
+  }
 
-    const attributes = {
-      fromId: 0,
-      quantity: depositAmount * 100,
-      reason: 'User invoked /deposit command',
-      status: 'started',
-      toId: user.id
-    };
-    return Transaction.create(attributes)
-    .then((transaction) => {
-      const request = makeAuthorizationRequest(user.chtwrsToken, depositAmount, transaction.id);
-      return bot.sendChtwrsMessage(request);
-    });
-  });
+  const attributes = {
+    fromId: 0,
+    quantity: depositAmount * 100,
+    reason: 'User invoked /deposit command',
+    status: 'started',
+    toId: user.id
+  };
+  const transaction = await Transaction.create(attributes);
+
+  const request = makeAuthorizationRequest(user.chtwrsToken, depositAmount, transaction.id);
+  return bot.sendChtwrsMessage(request);
 };
 
 module.exports = deposit;

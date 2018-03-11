@@ -13,9 +13,7 @@ const flashController = require('./telegram/flash');
 const grantController = require('./telegram/grant');
 const helpController = require('./telegram/help');
 const infoController = require('./telegram/info');
-const joinHuntController = require('./telegram/joinhunt');
 const startController = require('./telegram/start');
-const treasureController = require('./telegram/treasure');
 const updateLogController = require('./telegram/updatelog');
 const withdrawController = require('./telegram/withdraw');
 
@@ -43,10 +41,8 @@ const usableCommandsInChannel = new Set([
   'flash',
   'help',
   'info',
-  'joinhunt',
   'purchases',
   'sales',
-  'treasure',
   'updatelog']);
 const definedCommands = new Set(_.keys(controllerRouter));
 
