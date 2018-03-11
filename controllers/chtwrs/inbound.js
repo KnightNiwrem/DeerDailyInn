@@ -41,26 +41,28 @@ with your request. Please try again. If you believe that this \
 message was sent in error, please contact @knightniwrem instead.`;
 
 const respondToAuthorizePayment = (content, bot) => {
-  const telegramId = content.payload.userId;
   const transactionId = content.payload.transactionId;
   const hasSuccessfulResult = content.result.toLowerCase() === 'ok';
-  const status = hasSuccessfulResult ? 'pending' : 'cancelled';
-  const text = hasSuccessfulResult ? requestConfirmationText : contactDeveloperText;
-  const attributes = {
-    apiStatus: content.result,
-    status: status
-  };
-  Transaction.query()
-  .patch(attributes)
-  .where('id', transactionId)
-  .first()
-  .then(() => {
+
+  const depositTransaction = transaction(bot.knex, async (transactionObject) => {
+    const transaction = await Transaction.query(transactionObject).where('id', transactionId).first();
+    const user = await User.query(transactionObject).where('id', transaction.toId).first();
+
+    const status = hasSuccessfulResult ? 'pending' : 'cancelled';
+    await transaction.$query(transactionObject).patch({
+      apiStatus: content.result,
+      status: status
+    });
+
+    const text = hasSuccessfulResult ? requestConfirmationText : contactDeveloperText;
     const message = JSON.stringify({
-      chat_id: telegramId,
+      chat_id: user.telegramId,
       text: text
     });
     return bot.sendTelegramMessage('sendMessage', message);
   });
+
+  return Promise.resolve(depositTransaction);
 };
 
 const respondToPay = (content, bot) => {
@@ -70,7 +72,6 @@ const respondToPay = (content, bot) => {
   const depositTransaction = transaction(bot.knex, async (transactionObject) => {
     const transaction = await Transaction.query(transactionObject).where('id', transactionId).first();
     const user = await User.query(transactionObject).where('id', transaction.toId).first();
-    const telegramId = user.telegramId;
 
     let finalBalance = user.balance;
     if (hasSuccessfulResult) {
@@ -88,7 +89,7 @@ const respondToPay = (content, bot) => {
 
     const text = hasSuccessfulResult ? `Your deposit request is successful! Your new balance is ${finalBalance} gold.` : contactDeveloperText;
     const message = JSON.stringify({
-      chat_id: telegramId,
+      chat_id: user.telegramId,
       text: text
     });
     return bot.sendTelegramMessage('sendMessage', message);
@@ -98,7 +99,6 @@ const respondToPay = (content, bot) => {
 };
 
 const respondToPayout = (content, bot) => {
-  const telegramId = content.payload.userId;
   const transactionId = content.payload.transactionId;
   const hasSuccessfulResult = content.result.toLowerCase() === 'ok';
 
@@ -107,8 +107,8 @@ const respondToPayout = (content, bot) => {
       apiStatus: content.result,
       status: hasSuccessfulResult ? 'completed' : 'pending'
     };
-    const transaction = await Transaction.query(transactionObject).patch(attributes).where('id', transactionId);
-    const user = await User.query(transactionObject).where('telegramId', telegramId).first();
+    const transaction = await Transaction.query(transactionObject).where('id', transactionId).first().patch(attributes).returning('*');
+    const user = await User.query(transactionObject).where('id', transaction.fromId).first();
 
     if (!hasSuccessfulResult) {
       await user.$query(transactionObject).patch({ 
@@ -118,7 +118,7 @@ const respondToPayout = (content, bot) => {
 
     const text = hasSuccessfulResult ? `Your withdrawal request is successful! Your new balance is ${user.balance} gold.` : contactDeveloperText;
     const message = JSON.stringify({
-      chat_id: telegramId,
+      chat_id: user.telegramId,
       text: text
     });
     return bot.sendTelegramMessage('sendMessage', message);
