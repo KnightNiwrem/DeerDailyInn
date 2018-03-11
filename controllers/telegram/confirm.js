@@ -95,7 +95,7 @@ const confirm = async (params) => {
     status: 'pending',
     toId: user.id
   };
-  const transaction = Transaction.query().where(attributes).first();
+  const transaction = await Transaction.query().where(attributes).first();
   if (_.isNil(transaction)) {
     const message = makeNoPendingDepositMessage(chatId);
     return bot.sendTelegramMessage('sendMessage', message);
