@@ -127,22 +127,32 @@ const respondToPayout = (content, bot) => {
   return Promise.resolve(withdrawalTransaction);
 };
 
+const respondToGetInfo = (content, bot) => {
+  const text = `${content}`;
+  const message = JSON.stringify({
+    chat_id: 41284431,
+    text: text
+  });
+  return message;
+};
+
 const respondToUnknown = (content) => {
   console.warn(`Inbound queue: ${content.action} returned status code ${content.result}`);
 };
 
 const inboundResponders = {
-  'authorizePayment': respondToAuthorizePayment,
-  'createAuthCode': respondToAuth,
-  'grantToken': respondToGrant,
-  'pay': respondToPay,
-  'payout': respondToPayout
+  authorizePayment: respondToAuthorizePayment,
+  createAuthCode: respondToAuth,
+  getInfo: respondToGetInfo,
+  grantToken: respondToGrant,
+  pay: respondToPay,
+  payout: respondToPayout
 };
 
 const inboundErrorResponders = {
-  'authorizePayment': respondToAuthorizePayment,
-  'pay': respondToPay,
-  'payout': respondToPayout
+  authorizePayment: respondToAuthorizePayment,
+  pay: respondToPay,
+  payout: respondToPayout
 };
 
 const inbound = (params) => {

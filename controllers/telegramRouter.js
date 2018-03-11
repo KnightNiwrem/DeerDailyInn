@@ -10,6 +10,7 @@ const confirmController = require('./telegram/confirm');
 const dealsController = require('./telegram/deals');
 const depositController = require('./telegram/deposit');
 const flashController = require('./telegram/flash');
+const getInfoController = require('./telegram/getinfo');
 const grantController = require('./telegram/grant');
 const helpController = require('./telegram/help');
 const infoController = require('./telegram/info');
@@ -24,6 +25,7 @@ const controllerRouter = {
   deals: dealsController,
   deposit: depositController,
   flash: flashController,
+  getinfo: getInfoController,
   grant: grantController,
   help: helpController,
   info: infoController,
@@ -37,6 +39,7 @@ const controllerRouter = {
 const usableCommandsInChannel = new Set([
   'deals',
   'flash',
+  'getinfo',
   'help',
   'info',
   'purchases',
