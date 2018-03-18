@@ -98,7 +98,7 @@ class Bot {
     return Promise.resolve();
   }
 
-  sendTelegramMessage(method, message) {
+  sendTelegramMessage(method, message, delay=0) {
     const url = `https://api.telegram.org/bot${this.botKey}/${method}`;
     const headers = {
       'Content-Type': 'application/json'
@@ -109,22 +109,22 @@ class Bot {
       headers: headers
     };
 
-    return fetch(url, options)
-    .then((response) => {
-      const bot = this;
-      if (response.status === 429) {
-        console.warn(`${new Date()} | Hitting rate limits. Will retry...`);
-        return new Promise((resolve, reject) => {
-          setTimeout(() => {
-            resolve(bot.sendTelegramMessage(method, message));
-          }, 1000);
-        });
-      }
-      return response.json().tapCatch(() => {
-        console.warn(response)
-      });
-    })
-    .catch(console.warn);
+    const bot = this;
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        fetch(url, options)
+        .then((response) => {
+          if (response.status === 429) {
+            console.warn(`${new Date()} | Hitting rate limits. Will retry...`);
+            resolve(bot.sendTelegramMessage(method, message, 1000));
+          }
+          resolve(response.json().tapCatch(() => {
+            console.warn(response);
+          }));
+        })
+        .catch(reject);
+      }, delay);
+    });
   }
 
   handleTelegramMessage(req, res) {
