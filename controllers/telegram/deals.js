@@ -100,7 +100,35 @@ const makeDealsMessage = (chatId, chtwrsId, deals) => {
 
 const specialSearchMap = new Map([
   ['Scroll of rage', '📕Scroll of Rage'],
-  ['Scroll of peace', '📕Scroll of Peace']
+  ['Scroll of peace', '📕Scroll of Peace'],
+  ['Vial of rage', 'Vial of Rage'],
+  ['Potion of rage', 'Potion of Rage'],
+  ['Bottle of rage', 'Bottle of Rage'],
+  ['Vial of peace', 'Vial of Peace'],
+  ['Potion of peace', 'Potion of Peace'],
+  ['Bottle of peace', 'Bottle of Peace'],
+  ['Vial of greed', 'Vial of Greed'],
+  ['Potion of greed', 'Potion of Greed'],
+  ['Bottle of greed', 'Bottle of Greed'],
+  ['Bottle of remedy', 'Bottle of Remedy'],
+  ['Bottle of poison', 'Bottle of Poison'],
+  ['Stinky sumac', 'Stinky Sumac'],
+  ['Mercy sassafras', 'Mercy Sassafras'],
+  ['Cliff rue', 'Cliff Rue'],
+  ['Love creeper', 'Love Creeper'],
+  ['Wolf root', 'Wolf Root'],
+  ['Swamp lavender', 'Swamp Lavender'],
+  ['White blossom', 'White Blossom'],
+  ['Storm hyssop', 'Storm Hyssop'],
+  ['Cave garlic', 'Cave Garlic'],
+  ['Yellow seed', 'Yellow Seed'],
+  ['Spring bay leaf', 'Spring Bay Leaf'],
+  ['Ash rosemary', 'Ash Rosemary'],
+  ['Sanguine parsley', 'Sanguine Parsley'],
+  ['Sun tarragon', 'Sun Tarragon'],
+  ['Dragon seed', 'Dragon Seed'],
+  ['Queen\'s pepper', 'Queen\'s Pepper'],
+  ['Assassin vine', 'Assassin Vine']
 ]);
 
 const deals = (params) => {
