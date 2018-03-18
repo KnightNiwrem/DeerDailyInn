@@ -21,7 +21,7 @@ const offers = (params) => {
         chat_id: flash.chatId,
         text: `${content.sellerCastle}${content.sellerName} is selling ${content.qty} ${content.item} at ${content.price} gold each! (Lag time: ${new Date() - params.startTime + delay} ms)`
       });
-      return bot.sendTelegramMessage('sendMessage', flashMessage, delay;
+      return bot.sendTelegramMessage('sendMessage', flashMessage, delay);
     });
     return Promise.all(responses);
   });
