@@ -138,7 +138,8 @@ class Bot {
     const messageText = update.message.text;
     const userId = !_.isNil(update.message.from) ? update.message.from.id : undefined;
 
-    const words = messageText.toLowerCase().split(' ');
+    const separator = messageText.includes(' ') ? ' ' : '_';
+    const words = messageText.toLowerCase().split(separator);
     let [controllerName, ...options] = words;
     let willFetchOptions = false;
     _.forEach(words, (word) => {

@@ -2,6 +2,10 @@ const _ = require('lodash');
 const Promise = require('bluebird');
 const Flash = require('../../models/flash');
 
+const normalizeItemName = (itemName) => {
+  return itemName.replace(/[^\x00-\x7F]/g, "").trim().toLowerCase();
+};
+
 const makeFlashOnMessage = (chatId, item) => {
   const text = `Great! We will alert you when we notice a flash offer for ${item}!`;
   
@@ -53,37 +57,69 @@ const makeFlashArgumentMissingMessage = (chatId) => {
 };
 
 const validModifiers = new Set(['on', 'off']);
-const specialSearchMap = new Map([
-  ['Scroll of rage', '📕Scroll of Rage'],
-  ['Scroll of peace', '📕Scroll of Peace'],
-  ['Vial of rage', 'Vial of Rage'],
-  ['Potion of rage', 'Potion of Rage'],
-  ['Bottle of rage', 'Bottle of Rage'],
-  ['Vial of peace', 'Vial of Peace'],
-  ['Potion of peace', 'Potion of Peace'],
-  ['Bottle of peace', 'Bottle of Peace'],
-  ['Vial of greed', 'Vial of Greed'],
-  ['Potion of greed', 'Potion of Greed'],
-  ['Bottle of greed', 'Bottle of Greed'],
-  ['Bottle of remedy', 'Bottle of Remedy'],
-  ['Bottle of poison', 'Bottle of Poison'],
-  ['Stinky sumac', 'Stinky Sumac'],
-  ['Mercy sassafras', 'Mercy Sassafras'],
-  ['Cliff rue', 'Cliff Rue'],
-  ['Love creeper', 'Love Creeper'],
-  ['Wolf root', 'Wolf Root'],
-  ['Swamp lavender', 'Swamp Lavender'],
-  ['White blossom', 'White Blossom'],
-  ['Storm hyssop', 'Storm Hyssop'],
-  ['Cave garlic', 'Cave Garlic'],
-  ['Yellow seed', 'Yellow Seed'],
-  ['Spring bay leaf', 'Spring Bay Leaf'],
-  ['Ash rosemary', 'Ash Rosemary'],
-  ['Sanguine parsley', 'Sanguine Parsley'],
-  ['Sun tarragon', 'Sun Tarragon'],
-  ['Dragon seed', 'Dragon Seed'],
-  ['Queen\'s pepper', 'Queen\'s Pepper'],
-  ['Assassin vine', 'Assassin Vine']
+const itemCodeToNameEntries = [
+  ['01', 'Thread'],
+  ['02', 'Stick'],
+  ['03', 'Pelt'],
+  ['04', 'Bone'],
+  ['05', 'Coal'],
+  ['06', 'Charcoal'],
+  ['07', 'Powder'],
+  ['08', 'Iron ore'],
+  ['09', 'Cloth'],
+  // ['13', 'Magic stone'],
+  ['19', 'Steel'],
+  ['20', 'Leather'],
+  ['21', 'Bone powder'],
+  ['22', 'String'],
+  ['23', 'Coke'],
+  ['39', 'Stinky Sumac'],
+  ['40', 'Mercy Sassafras'],
+  ['41', 'Cliff Rue'],
+  ['42', 'Love Creeper'],
+  ['43', 'Wolf Root'],
+  ['44', 'Swamp Lavender'],
+  ['45', 'White Blossom'],
+  ['46', 'Ilaves'],
+  ['47', 'Ephijora'],
+  ['48', 'Storm Hyssop'],
+  ['49', 'Cave Garlic'],
+  ['50', 'Yellow Seed'],
+  ['51', 'Tecceagrass'],
+  ['52', 'Spring Bay Leaf'],
+  ['53', 'Ash Rosemary'],
+  ['54', 'Sanguine Parsley'],
+  ['55', 'Sun Tarragon'],
+  ['56', 'Maccunut'],
+  ['57', 'Dragon Seed'],
+  ['58', 'Queen\'s Pepper'],
+  ['59', 'Plasma of abyss'],
+  ['60', 'Ultramarine dust'],
+  ['61', 'Ethereal bone'],
+  ['62', 'Itacory'],
+  ['63', 'Assassin Vine'],
+  ['64', 'Kloliarway'],
+  ['501', 'Wrapping'],
+  ['506', 'Bottle of Remedy'],
+  ['508', 'Bottle of Poison'],
+  ['p01', 'Vial of Rage'],
+  ['p02', 'Potion of Rage'],
+  ['p03', 'Bottle of Rage'],
+  ['p04', 'Vial of Peace'],
+  ['p05', 'Potion of Peace'],
+  ['p06', 'Bottle of Peace'],
+  ['p07', 'Vial of Greed'],
+  ['p08', 'Potion of Greed'],
+  ['p09', 'Bottle of Greed'],
+  ['s01', '📕Scroll of Rage'],
+  ['s02', '📕Scroll of Peace'],
+  ['tch', 'Torch']
+];
+
+const itemNames = itemCodeToNameEntries.map(entry => entry[1]);
+const searchTermToNameMap = new Map([
+  ...itemCodeToNameEntries,
+  ...itemNames.map(name => [normalizeItemName(name), name])
 ]);
 
 const flash = (params) => {
@@ -104,13 +140,13 @@ const flash = (params) => {
     options = options.slice(1);
   }
 
-  let searchTerm = _.capitalize(options.join(' ').replace(/[^\x00-\x7F]/g, "").trim());
+  let searchTerm = normalizeItemName(options.join(' '));
   if (_.isEmpty(searchTerm)) {
     const message = makeFlashArgumentMissingMessage(chatId);
     return bot.sendTelegramMessage('sendMessage', message);
   }
-  if (specialSearchMap.has(searchTerm)) {
-    searchTerm = specialSearchMap.get(searchTerm);
+  if (searchTermToNameMap.has(searchTerm)) {
+    searchTerm = searchTermToNameMap.get(searchTerm);
   }
 
   const flashAttributes = {
