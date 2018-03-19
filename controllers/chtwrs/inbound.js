@@ -37,8 +37,8 @@ To confirm, please do:
 /confirm [confirmation code from @chtwrsbot]`;
 
 const contactDeveloperText = `Sorry! There seems to be a problem \
-with your request. Please try again. If you believe that this \
-message was sent in error, please contact @knightniwrem instead.`;
+with your request. Please try again with a new deposit/withdraw request. \
+If you believe that this message was sent in error, please contact @knightniwrem instead.`;
 
 const respondToAuthorizePayment = (content, bot) => {
   const transactionId = content.payload.transactionId;
@@ -81,7 +81,7 @@ const respondToPay = (content, bot) => {
       });
     }
 
-    const status = hasSuccessfulResult ? 'completed' : 'pending';
+    const status = hasSuccessfulResult ? 'completed' : 'cancelled';
     await transaction.$query(transactionObject).patch({
       apiStatus: content.result,
       status: status
@@ -105,7 +105,7 @@ const respondToPayout = (content, bot) => {
   const withdrawalTransaction = transaction(bot.knex, async (transactionObject) => {
     const attributes = {
       apiStatus: content.result,
-      status: hasSuccessfulResult ? 'completed' : 'pending'
+      status: hasSuccessfulResult ? 'completed' : 'cancelled'
     };
     const transaction = await Transaction.query(transactionObject).where('id', transactionId).first().patch(attributes).returning('*');
     const user = await User.query(transactionObject).where('id', transaction.fromId).first();
