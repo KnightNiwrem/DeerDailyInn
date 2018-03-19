@@ -93,6 +93,15 @@ const confirm = async (params) => {
       return Promise.reject(`Rejected in confirm: User ${telegramId} is not registered.`);
     }
 
+    const cancellableDeposits = await Transaction.query(transactionObject)
+    .whereIn('status', ['pending', 'started'])
+    .andWhere({ fromId: 0, toId: user.id }).slice(0, -1);
+
+    const cancellableDepositIds = cancellableDeposits.map((deposit) => deposit.id);
+    await Transaction.query(transactionObject)
+    .patch({ status: 'cancelled' })
+    .whereIn('id', cancellableDepositIds);
+
     const transactionAttributes = {
       fromId: 0,
       status: 'pending',

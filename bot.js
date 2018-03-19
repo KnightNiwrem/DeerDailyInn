@@ -15,6 +15,8 @@ class Bot {
     this.username = username;
     this.password = password;
     this.botKey = botKey;
+
+    this.depositRequests = [];
   }
 
   registerKnex(knex) {
