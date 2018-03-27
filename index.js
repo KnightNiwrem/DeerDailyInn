@@ -97,6 +97,7 @@ app.listen(port, () => {
     url: `https://deerdailyinn.nusreviews.com/${botKey}`,
   });
   bot.sendTelegramMessage('setWebhook', webhookRequest);
+  bot.sendLog('Deer Daily Inn has restarted');
   console.log('Telegram bot server has started');
 });
 

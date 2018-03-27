@@ -15,8 +15,6 @@ class Bot {
     this.username = username;
     this.password = password;
     this.botKey = botKey;
-
-    this.depositRequests = [];
   }
 
   registerKnex(knex) {
@@ -174,6 +172,14 @@ class Bot {
       telegramId: userId,
     };
     return telegramRouter(parameters);
+  }
+
+  sendLog(text) {
+    const message = JSON.stringify({
+      chat_id: -1001279937491,
+      text: `Deer Daily Inn | #info | ${text}`
+    });
+    return this.sendTelegramMessage('sendMessage', message);
   }
 }
 
