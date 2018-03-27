@@ -92,6 +92,7 @@ const respondToPay = (content, bot) => {
       chat_id: user.telegramId,
       text: text
     });
+    bot.sendLog(`${hasSuccessfulResult ? "Success" : "Failure"}: User ${user.telegramId} tried to deposit ${content.payload.debit.gold} gold`);
     return bot.sendTelegramMessage('sendMessage', message);
   });
 
@@ -121,6 +122,7 @@ const respondToPayout = (content, bot) => {
       chat_id: user.telegramId,
       text: text
     });
+    bot.sendLog(`${hasSuccessfulResult ? "Success" : "Failure"}: User ${user.telegramId} tried to withdraw ${content.payload.debit.gold} gold`);
     return bot.sendTelegramMessage('sendMessage', message);
   });
 
