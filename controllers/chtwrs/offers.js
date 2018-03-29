@@ -16,7 +16,7 @@ const offers = (params) => {
 
   Flash.query().where(searchAttribute).then((flashes) => {
     const responses = flashes.map((flash, index) => {
-      const delay = index * 50;
+      const delay = index * 0;
       const flashMessage = JSON.stringify({
         chat_id: flash.chatId,
         text: `${content.sellerCastle}${content.sellerName} is selling ${content.qty} ${content.item} at ${content.price} gold each! (Lag time: ${new Date() - params.startTime + delay} ms)`
