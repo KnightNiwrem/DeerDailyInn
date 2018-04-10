@@ -7,6 +7,7 @@ const defaultController = require('./telegram/unknown');
 const authController = require('./telegram/auth');
 const balanceController = require('./telegram/balance');
 const confirmController = require('./telegram/confirm');
+const cmdController = require('./telegram/cmd');
 const dealsController = require('./telegram/deals');
 const depositController = require('./telegram/deposit');
 const flashController = require('./telegram/flash');
@@ -23,6 +24,7 @@ const controllerRouter = {
   auth: authController,
   balance: balanceController,
   confirm: confirmController,
+  cmd: cmdController,
   deals: dealsController,
   deposit: depositController,
   flash: flashController,

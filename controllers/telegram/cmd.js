@@ -1,3 +1,4 @@
+const { exec } = require('child_process');
 const _ = require('lodash');
 const Promise = require('bluebird');
 
@@ -10,23 +11,15 @@ const makeNoPermissionMessage = (chatId) => {
   return message;
 };
 
-const makeGetInfoMessage = (chatId) => {
-  const text = `Your getInfo request has been sent!`;
+const makeOutputMessage = (chatId, output) => {
   const message = JSON.stringify({
     chat_id: chatId,
-    text: text
+    text: `\`\`\`${output}\`\`\``
   });
   return message;
 };
 
-const makeGetInfoRequest = () => {
-  const request = JSON.stringify({
-    action: 'getInfo'
-  });
-  return request;
-};
-
-const getinfo = (params) => {
+const cmd = (params) => {
   if (_.isNil(params.bot)) {
     return Promise.reject('Rejected in getinfo: Bot cannot be missing');
   }
@@ -43,10 +36,18 @@ const getinfo = (params) => {
     return bot.sendTelegramMessage('sendMessage', message);
   }
   
-  const request = makeGetInfoRequest();
-  const message = makeGetInfoMessage(chatId);
-  return bot.sendChtwrsMessage(request)
-  .then(() => bot.sendTelegramMessage('sendMessage', message));
+  const command = params.options.join(' ');
+  const execPromise = new Promise((resolve, reject) => {
+    exec(command, (error, stdout, stderr) => {
+      const output = `Error: ${error}\nStdout: ${stdout}\nStderr: ${stderr}`;
+      resolve(output);
+    });
+  });
+  execPromise
+  .then((output) => {
+    const message = makeOutputMessage(chatId, output);
+    return bot.sendTelegramMessage('sendMessage', message);
+  });
 };
 
-module.exports = getinfo;
+module.exports = cmd;
