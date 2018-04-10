@@ -14,7 +14,7 @@ const makeNoPermissionMessage = (chatId) => {
 const makeOutputMessage = (chatId, output) => {
   const message = JSON.stringify({
     chat_id: chatId,
-    text: `\`\`\`${output}\`\`\``
+    text: "```" + output + "```"
   });
   return message;
 };
