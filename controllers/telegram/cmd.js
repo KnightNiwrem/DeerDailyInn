@@ -14,7 +14,7 @@ const makeNoPermissionMessage = (chatId) => {
 const makeOutputMessage = (chatId, output) => {
   const message = JSON.stringify({
     chat_id: chatId,
-    text: "```" + output + "```"
+    text: output
   });
   return message;
 };
@@ -39,7 +39,7 @@ const cmd = (params) => {
   const command = params.options.join(' ');
   const execPromise = new Promise((resolve, reject) => {
     exec(command, (error, stdout, stderr) => {
-      const output = `Error: ${error}\nStdout: ${stdout}\nStderr: ${stderr}`;
+      const output = `Error: ${error}\n\nStdout: ${stdout}\n\nStderr: ${stderr}`;
       resolve(output);
     });
   });
