@@ -149,7 +149,7 @@ class Bot {
         options.push(word);
       }
       if (word.endsWith('@deer_daily_inn_bot')) {
-        controllerName = word.slice(0, -19);
+        controllerName = word.slice(0, '@deer_daily_inn_bot'.length);
         options = [];
         willFetchOptions = true;
       }
