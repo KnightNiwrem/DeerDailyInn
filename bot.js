@@ -138,17 +138,16 @@ class Bot {
     const messageText = update.message.text;
     const userId = !_.isNil(update.message.from) ? update.message.from.id : undefined;
 
-    console.log(messageText);
-
-    const separator = messageText.includes(' ') ? ' ' : '_';
-    const words = messageText.toLowerCase().split(separator);
+    const safeText = messageText.replace(/@deer_daily_inn_bot/g, '@ddibot');
+    const separator = safeText.includes(' ') ? ' ' : '_';
+    const words = safeText.toLowerCase().split(separator);
     let [controllerName, ...options] = words;
     let willFetchOptions = false;
     _.forEach(words, (word) => {
       if (willFetchOptions) {
         options.push(word);
       }
-      if (word.endsWith('@deer_daily_inn_bot')) {
+      if (word.endsWith('@ddibot')) {
         [controllerName, discardedResult] = word.split('@');
         options = [];
         willFetchOptions = true;
@@ -158,8 +157,6 @@ class Bot {
     if (controllerName.startsWith('/')) {
       controllerName = controllerName.slice(1);
     }
-
-    console.log(controllerName);
 
     // Ignore messages that just do @deer_daily_inn_bot
     if (_.isEmpty(controllerName)) {
