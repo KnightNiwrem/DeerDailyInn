@@ -141,14 +141,16 @@ class Bot {
     const safeText = messageText.replace(/@deer_daily_inn_bot/g, '@ddibot');
     const separator = safeText.includes(' ') ? ' ' : '_';
     const words = safeText.toLowerCase().split(separator);
+
     let [controllerName, ...options] = words;
+    let discarded = undefined;
     let willFetchOptions = false;
     _.forEach(words, (word) => {
       if (willFetchOptions) {
         options.push(word);
       }
       if (word.endsWith('@ddibot')) {
-        [controllerName, discardedResult] = word.split('@');
+        [controllerName, discarded] = word.split('@');
         options = [];
         willFetchOptions = true;
       }
