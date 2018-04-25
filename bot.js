@@ -138,6 +138,8 @@ class Bot {
     const messageText = update.message.text;
     const userId = !_.isNil(update.message.from) ? update.message.from.id : undefined;
 
+    console.log(messageText);
+
     const separator = messageText.includes(' ') ? ' ' : '_';
     const words = messageText.toLowerCase().split(separator);
     let [controllerName, ...options] = words;
@@ -156,6 +158,8 @@ class Bot {
     if (controllerName.startsWith('/')) {
       controllerName = controllerName.slice(1);
     }
+
+    console.log(controllerName);
 
     // Ignore messages that just do @deer_daily_inn_bot
     if (_.isEmpty(controllerName)) {
