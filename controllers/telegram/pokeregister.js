@@ -58,7 +58,7 @@ updated to ${friendCodeText}!`;
   return message;
 };
 
-const handleRegistration = async (chatId, friendCodeText, telegramId) => {
+const handleRegistration = async (bot, chatId, friendCodeText, telegramId) => {
   const user = await User.query().where({ telegramId: telegramId }).first();
   if (_.isNil(user)) {
     const message = makeUnregisteredMessage(chatId);
@@ -103,7 +103,7 @@ const pokeregister = (params) => {
     return bot.sendTelegramMessage('sendMessage', message);
   }
 
-  return Promise.resolve(handleRegistration(chatId, friendCodeText, telegramId));
+  return Promise.resolve(handleRegistration(bot, chatId, friendCodeText, telegramId));
 };
 
 module.exports = pokeregister;

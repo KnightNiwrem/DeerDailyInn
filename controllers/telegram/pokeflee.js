@@ -36,7 +36,7 @@ have fled from the tournament!`;
   return message;
 };
 
-const handleFlee = async (chatId, telegramId) => {
+const handleFlee = async (bot, chatId, telegramId) => {
   const user = await User.query().where({ telegramId: telegramId }).first();
   if (_.isNil(user)) {
     const message = makeUnregisteredMessage(chatId);
@@ -66,7 +66,7 @@ const pokeflee = (params) => {
   const chatId = params.chatId;
   const telegramId = params.telegramId;
 
-  return Promise.resolve(handleFlee(chatId, telegramId));
+  return Promise.resolve(handleFlee(bot, chatId, telegramId));
 };
 
 module.exports = pokeflee;

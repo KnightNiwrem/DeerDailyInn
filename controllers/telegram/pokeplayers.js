@@ -15,7 +15,7 @@ ${stringifiedPlayerList}`;
   return message;
 };
 
-const constructPlayerList = async (chatId) => {
+const constructPlayerList = async (bot, chatId) => {
   const friendCodes = await FriendCode.query();
   const playerList = friendCodes.map((friendCode) => {
     return `User ${friendCode.telegramId}: ${friendCode.friendCode}`;
@@ -37,7 +37,7 @@ const pokeplayers = (params) => {
   const bot = params.bot;
   const chatId = params.chatId;
 
-  return Promise.resolve(constructPlayerList(chatId));
+  return Promise.resolve(constructPlayerList(bot, chatId));
 };
 
 module.exports = pokeplayers;
