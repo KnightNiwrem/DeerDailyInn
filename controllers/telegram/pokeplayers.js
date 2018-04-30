@@ -18,7 +18,7 @@ ${stringifiedPlayerList}`;
 const constructPlayerList = async (bot, chatId) => {
   const friendCodes = await FriendCode.query();
   const playerList = friendCodes.map((friendCode) => {
-    return `User ${friendCode.telegramId}: ${friendCode.friendCode}`;
+    return `User [${friendCode.telegramId}](tg://user?id=${friendCode.telegramId}): ${friendCode.friendCode}`;
   });
 
   const stringifiedPlayerList = playerList.join('\n');
