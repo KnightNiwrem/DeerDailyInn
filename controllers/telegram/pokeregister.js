@@ -38,7 +38,7 @@ the format xxxx-xxxx-xxxx`;
 
 const makeNewRegistrationMessage = (chatId, friendCodeText) => {
   const text = `Congratulations! You have been registered \
-the friend code ${friendCodeText}!`;
+with the friend code ${friendCodeText}!`;
 
   const message = JSON.stringify({
     chat_id: chatId,
