@@ -48,6 +48,7 @@ const handleFlee = async (bot, chatId, telegramId) => {
     const message = makeNoFriendCodeMessage(chatId);
     return bot.sendTelegramMessage('sendMessage', message);
   } else {
+    const deleteCount = await FriendCode.query().delete().where({ telegramId: telegramId });
     const friendCodeText = friendCode.friendCode;
     const message = makeFleeMessage(chatId, friendCodeText);
     return bot.sendTelegramMessage('sendMessage', message);
