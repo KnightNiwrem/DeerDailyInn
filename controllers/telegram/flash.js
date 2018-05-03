@@ -67,7 +67,7 @@ const itemCodeToNameEntries = [
   ['07', 'Powder'],
   ['08', 'Iron ore'],
   ['09', 'Cloth'],
-  // ['13', 'Magic stone'],
+  ['13', 'Magic stone'],
   ['19', 'Steel'],
   ['20', 'Leather'],
   ['21', 'Bone powder'],
