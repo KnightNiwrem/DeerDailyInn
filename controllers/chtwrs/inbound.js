@@ -137,11 +137,37 @@ const respondToGetInfo = (content, bot) => {
   return bot.sendTelegramMessage('sendMessage', message);
 };
 
-const respondToUnknown = (content) => {
-  console.warn(`Inbound queue: ${content.action} returned status code ${content.result}
+const respondToForbidden = (content, bot) => {
+  const telegramId = content.payload.userId;
+  const requiredOperation = content.payload.requiredOperation;
 
-Full trace:
-${JSON.stringify(content)}`);
+  return User.query()
+  .where({ telegramId })
+  .first()
+  .then((user) => {
+    const request = JSON.stringify({  
+      token: user.chtwrsToken,
+      action: "authAdditionalOperation",  
+      payload: {  
+        operation: requiredOperation
+      }  
+    });
+    const message = JSON.stringify({
+    chat_id: telegramId,
+    text: `Additional permission is required to perform the operation.
+
+Please do:
+/extraAuth {authCode}`
+  });
+    return bot.sendChtwrsMessage(request)
+    .then(() => {
+      return bot.sendTelegramMessage('sendMessage', message);
+    });
+  });
+};
+
+const respondToUnknown = (content) => {
+  console.warn(`Inbound queue: ${content.action} returned status code ${content.result}`);
 };
 
 const inboundResponders = {
@@ -171,9 +197,16 @@ const inbound = (params) => {
     content.action = 'authAdditionalOperation';
   }
 
-  const responderMap = content.result.toLowerCase() === 'ok' ? inboundResponders : inboundErrorResponders;
-  const action = content.action;
-  const responder = responderMap[action];
+  const statusCode = content.result.toLowerCase();
+  let responder = respondToUnknown;
+  if (statusCode === 'ok') {
+    responder = inboundResponders[content.action];
+  } else if (statusCode === 'forbidden') {
+    responder = respondToForbidden;
+  } else {
+    responder = inboundErrorResponders[content.action];
+  }
+
   const usableResponder = !_.isNil(responder) ? responder : respondToUnknown;
   usableResponder(content, bot);
 };
