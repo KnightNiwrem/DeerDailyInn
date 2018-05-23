@@ -146,7 +146,7 @@ const respondToAuthAdditionalOperation = (content, bot) => {
     text: `Additional permission is required to perform the operation.
 
 Please do:
-/authextra_{uuid} {authCode}`
+/authextra_${uuid} {authCode}`
   });
   return bot.sendTelegramMessage('sendMessage', message);
 };
