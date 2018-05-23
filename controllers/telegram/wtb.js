@@ -128,8 +128,8 @@ const wtb = (params) => {
   const price = Number(priceInput);
 
   const isValidItemCode = !_.isEmpty(itemCode) && itemCodes.has(itemCode);
-  const isValidQuantity = !_.isEmpty(quantity) && _.isFinite(quantity) && _.isSafeInteger(quantity) && (quantity > 0);
-  const isValidPrice = !_.isEmpty(price) && _.isFinite(price) && _.isSafeInteger(price) && (price > 0);
+  const isValidQuantity = _.isFinite(quantity) && _.isSafeInteger(quantity) && (quantity > 0);
+  const isValidPrice = _.isFinite(price) && _.isSafeInteger(price) && (price > 0);
   if (!isValidItemCode || !isValidQuantity || !isValidPrice) {
     const message = makeBadArgumentMessage(chatId);
     return bot.sendTelegramMessage('sendMessage', message);
