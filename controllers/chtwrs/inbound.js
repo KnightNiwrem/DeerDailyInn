@@ -141,7 +141,7 @@ const respondToUnknown = (content) => {
   console.warn(`Inbound queue: ${content.action} returned status code ${content.result}
 
 Full trace:
-${content}`);
+${JSON.stringify(content)}`);
 };
 
 const inboundResponders = {
