@@ -2,6 +2,10 @@ const _ = require('lodash');
 const Promise = require('bluebird');
 const User = require('../../models/user');
 
+const normalizeItemName = (itemName) => {
+  return itemName.replace(/[^\x00-\x7F]/g, "").trim().toLowerCase();
+};
+
 const makeUnregisteredMessage = (chatId) => {
   const unregisteredText = `Hi, you don't seem to \
 be registered yet! Do /start to register first!`;
