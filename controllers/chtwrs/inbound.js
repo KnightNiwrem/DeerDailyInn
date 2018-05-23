@@ -151,6 +151,30 @@ Please do:
   return bot.sendTelegramMessage('sendMessage', message);
 };
 
+const respondToWantToBuy = (content, bot) => {
+  const telegramId = content.payload.userId;
+  const hasSuccessfulResult = content.result.toLowerCase() === 'ok';
+  if (!hasSuccessfulResult) {
+    const message = JSON.stringify({
+      chat_id: telegramId,
+      text: `Was not successful
+
+Full trace:
+${JSON.stringify(content)}`
+    });
+    return bot.sendTelegramMessage('sendMessage', message);
+  }
+  
+  const itemName = content.payload.itemName;
+  const quantity = content.payload.quantity;
+
+  const message = JSON.stringify({
+    chat_id: telegramId,
+    text: `Successfully purchased ${quantity} ${itemName}!`
+  });
+  return bot.sendTelegramMessage('sendMessage', message);
+};
+
 const respondToGrantAdditionalOperation = (content, bot) => {
   const telegramId = content.payload.userId;
 
