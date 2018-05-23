@@ -156,20 +156,30 @@ const respondToWantToBuy = (content, bot) => {
   const itemName = content.payload.itemName;
   const quantity = content.payload.quantity;
 
-  const hasSuccessfulResult = content.result.toLowerCase() === 'ok';
+  const statusCode = content.result.toLowerCase();
+  const isBattleNear = statusCode === 'battleisnear';
+  if (isBattleNear) {
+    const message = JSON.stringify({
+      chat_id: telegramId,
+      text: `Could not access exchange: ${content.result}`
+    });
+    return bot.sendTelegramMessage('sendMessage', message);
+  }
+
+  const isSuccessful = statusCode === 'ok';
   if (!hasSuccessfulResult) {
     const message = JSON.stringify({
       chat_id: telegramId,
       text: `Could not buy ${quantity} ${itemName}: ${content.result}`
     });
     return bot.sendTelegramMessage('sendMessage', message);
-  } else {
-    const message = JSON.stringify({
-      chat_id: telegramId,
-      text: `Successfully purchased ${quantity} ${itemName}!`
-    });
-    return bot.sendTelegramMessage('sendMessage', message);
   }
+  
+  const message = JSON.stringify({
+    chat_id: telegramId,
+    text: `Successfully purchased ${quantity} ${itemName}!`
+  });
+  return bot.sendTelegramMessage('sendMessage', message);
 };
 
 const respondToGrantAdditionalOperation = (content, bot) => {
