@@ -137,6 +137,30 @@ const respondToGetInfo = (content, bot) => {
   return bot.sendTelegramMessage('sendMessage', message);
 };
 
+const respondToAuthAdditionalOperation = (content, bot) => {
+  const telegramId = content.payload.userId;
+  const uuid = content.uuid;
+
+  const message = JSON.stringify({
+    chat_id: telegramId,
+    text: `Additional permission is required to perform the operation.
+
+Please do:
+/authextra_{uuid} {authCode}`
+  });
+  return bot.sendTelegramMessage('sendMessage', message);
+};
+
+const respondToGrantAdditionalOperation = (content, bot) => {
+  const telegramId = content.payload.userId;
+
+  const message = JSON.stringify({
+    chat_id: telegramId,
+    text: `Successfully granted extra permissions!`
+  });
+  return bot.sendTelegramMessage('sendMessage', message);
+};
+
 const respondToForbidden = (content, bot) => {
   const telegramId = content.payload.userId;
   const requiredOperation = content.payload.requiredOperation;
@@ -152,17 +176,7 @@ const respondToForbidden = (content, bot) => {
         operation: requiredOperation
       }  
     });
-    const message = JSON.stringify({
-    chat_id: telegramId,
-    text: `Additional permission is required to perform the operation.
-
-Please do:
-/extraAuth {authCode}`
-  });
-    return bot.sendChtwrsMessage(request)
-    .then(() => {
-      return bot.sendTelegramMessage('sendMessage', message);
-    });
+    return bot.sendChtwrsMessage(request);
   });
 };
 
@@ -171,6 +185,7 @@ const respondToUnknown = (content) => {
 };
 
 const inboundResponders = {
+  authAdditionalOperation: respondToAuthAdditionalOperation,
   authorizePayment: respondToAuthorizePayment,
   createAuthCode: respondToAuth,
   getInfo: respondToGetInfo,

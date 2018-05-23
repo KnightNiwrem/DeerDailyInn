@@ -5,6 +5,7 @@ const channelController = require('./telegram/channel');
 const defaultController = require('./telegram/unknown');
 
 const authController = require('./telegram/auth');
+const authExtraController = require('./telegram/authextra');
 const balanceController = require('./telegram/balance');
 const confirmController = require('./telegram/confirm');
 const cmdController = require('./telegram/cmd');
@@ -26,6 +27,7 @@ const wtbController = require('./telegram/wtb');
 
 const controllerRouter = {
   auth: authController,
+  authextra: authExtraController,
   balance: balanceController,
   confirm: confirmController,
   cmd: cmdController,
