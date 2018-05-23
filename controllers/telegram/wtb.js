@@ -99,7 +99,7 @@ const itemCodeToNameEntries = [
   ['tch', 'Torch']
 ];
 
-const itemCodes = Set(itemCodeToNameEntries.map(entry => entry[0]));
+const itemCodes = new Set(itemCodeToNameEntries.map(entry => entry[0]));
 const itemNames = itemCodeToNameEntries.map(entry => entry[1]);
 const searchTermToNameMap = new Map([
   ...itemCodeToNameEntries,
