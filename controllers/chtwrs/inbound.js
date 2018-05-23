@@ -153,26 +153,23 @@ Please do:
 
 const respondToWantToBuy = (content, bot) => {
   const telegramId = content.payload.userId;
+  const itemName = content.payload.itemName;
+  const quantity = content.payload.quantity;
+
   const hasSuccessfulResult = content.result.toLowerCase() === 'ok';
   if (!hasSuccessfulResult) {
     const message = JSON.stringify({
       chat_id: telegramId,
-      text: `Was not successful
-
-Full trace:
-${JSON.stringify(content)}`
+      text: `Could not buy ${quantity} ${itemName}: ${content.result}`
+    });
+    return bot.sendTelegramMessage('sendMessage', message);
+  } else {
+    const message = JSON.stringify({
+      chat_id: telegramId,
+      text: `Successfully purchased ${quantity} ${itemName}!`
     });
     return bot.sendTelegramMessage('sendMessage', message);
   }
-
-  const itemName = content.payload.itemName;
-  const quantity = content.payload.quantity;
-
-  const message = JSON.stringify({
-    chat_id: telegramId,
-    text: `Successfully purchased ${quantity} ${itemName}!`
-  });
-  return bot.sendTelegramMessage('sendMessage', message);
 };
 
 const respondToGrantAdditionalOperation = (content, bot) => {
