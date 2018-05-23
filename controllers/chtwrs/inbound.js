@@ -138,7 +138,10 @@ const respondToGetInfo = (content, bot) => {
 };
 
 const respondToUnknown = (content) => {
-  console.warn(`Inbound queue: ${content.action} returned status code ${content.result}`);
+  console.warn(`Inbound queue: ${content.action} returned status code ${content.result}
+
+Full trace:
+${content}`);
 };
 
 const inboundResponders = {
