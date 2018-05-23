@@ -22,6 +22,7 @@ const pokeRegisterController = require('./telegram/pokeregister');
 const startController = require('./telegram/start');
 const updateLogController = require('./telegram/updatelog');
 const withdrawController = require('./telegram/withdraw');
+const wtbController = require('./telegram/wtb');
 
 const controllerRouter = {
   auth: authController,
@@ -43,7 +44,8 @@ const controllerRouter = {
   sales: dealsController,
   start: startController,
   updatelog: updateLogController,
-  withdraw: withdrawController
+  withdraw: withdrawController,
+  wtb: wtbController
 };
 
 const usableCommandsInChannel = new Set([
