@@ -164,7 +164,7 @@ ${JSON.stringify(content)}`
     });
     return bot.sendTelegramMessage('sendMessage', message);
   }
-  
+
   const itemName = content.payload.itemName;
   const quantity = content.payload.quantity;
 
@@ -216,13 +216,15 @@ const inboundResponders = {
   grantAdditionalOperation: respondToGrantAdditionalOperation,
   grantToken: respondToGrant,
   pay: respondToPay,
-  payout: respondToPayout
+  payout: respondToPayout,
+  wantToBuy: respondToWantToBuy
 };
 
 const inboundErrorResponders = {
   authorizePayment: respondToAuthorizePayment,
   pay: respondToPay,
-  payout: respondToPayout
+  payout: respondToPayout,
+  wantToBuy: respondToWantToBuy
 };
 
 const inbound = (params) => {
