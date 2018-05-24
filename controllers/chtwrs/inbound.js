@@ -167,7 +167,7 @@ const respondToWantToBuy = (content, bot) => {
   }
 
   const isSuccessful = statusCode === 'ok';
-  if (!hasSuccessfulResult) {
+  if (!isSuccessful) {
     const message = JSON.stringify({
       chat_id: telegramId,
       text: `Could not buy ${quantity} ${itemName}: ${content.result}`
