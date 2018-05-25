@@ -6,9 +6,13 @@ const normalizeItemName = (itemName) => {
   return itemName.replace(/[^\x00-\x7F]/g, "").trim().toLowerCase();
 };
 
-const makeManageFlashMessage = (chatId, flashes) => {
+const makeManageFlashMessage = (chatId, flashes, searchTerm) => {
   const existingFlashNames = new Set(flashes.map(flash => normalizeItemName(flash.item)));
-  const flashStatuses = sortedItemNames.map((name) => {
+  const flashStatuses = sortedItemNames
+  .filter((name) => {
+    return name.toLowerCase().includes(searchTerm.toLowerCase());
+  })
+  .map((name) => {
     const itemCode = itemNameToCodeMap.get(name);
     const normalizedName = normalizeItemName(name);
 
@@ -96,6 +100,8 @@ const itemCodeToNameEntries = [
   ['p07', 'Vial of Greed'],
   ['p08', 'Potion of Greed'],
   ['p09', 'Bottle of Greed'],
+  ['p11', 'Potion of Nature'],
+  ['p12', 'Bottle of Nature'],
   ['s01', '📕Scroll of Rage'],
   ['s02', '📕Scroll of Peace'],
   ['tch', 'Torch']
@@ -107,6 +113,10 @@ const itemNameToCodeMap = new Map(itemCodeToNameEntries.map(entry => [...entry].
 const itemCodes = new Set(itemCodeToNameMap.keys());
 const itemNames = new Set(itemNameToCodeMap.keys());
 const sortedItemNames = itemCodeToNameEntries.map(entry => entry[1]);
+const searchTermToNameMap = new Map([
+  ...itemCodeToNameEntries,
+  ...sortedItemNames.map(name => [normalizeItemName(name), name])
+]);
 
 const manageflash = (params) => {
   if (_.isNil(params.bot)) {
@@ -118,13 +128,19 @@ const manageflash = (params) => {
 
   const bot = params.bot;
   const chatId = params.chatId;
+  const options = params.options;
+  let searchTerm = normalizeItemName(options.join(' '));
+  if (searchTermToNameMap.has(searchTerm)) {
+    searchTerm = searchTermToNameMap.get(searchTerm);
+  }
+  searchTerm = searchTerm.trim();
 
   return Flash.query()
   .where({
     chatId: chatId
   })
   .then((flashes) => {
-    const message = makeManageFlashMessage(chatId, flashes);
+    const message = makeManageFlashMessage(chatId, flashes, searchTerm);
     return bot.sendTelegramMessage('sendMessage', message, 500);
   });
 };
