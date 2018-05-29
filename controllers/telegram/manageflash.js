@@ -100,6 +100,7 @@ const itemCodeToNameEntries = [
   ['p07', 'Vial of Greed'],
   ['p08', 'Potion of Greed'],
   ['p09', 'Bottle of Greed'],
+  ['p10', 'Vial of Nature'],
   ['p11', 'Potion of Nature'],
   ['p12', 'Bottle of Nature'],
   ['s01', '📕Scroll of Rage'],
