@@ -33,13 +33,6 @@ ${orderText}`;
   return message;
 };
 
-const itemCodes = new Set(itemCodeToNameEntries.map(entry => entry[0]));
-const itemNames = itemCodeToNameEntries.map(entry => entry[1]);
-const searchTermToNameMap = new Map([
-  ...itemCodeToNameEntries,
-  ...itemNames.map(name => [normalizeItemName(name), name])
-]);
-
 const orders = (params) => {
   if (_.isNil(params.bot)) {
     return Promise.reject('Rejected in orders: Bot cannot be missing');
