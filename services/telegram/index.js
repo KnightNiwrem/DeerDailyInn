@@ -39,9 +39,10 @@ class TelegramService {
   }
 
   sendMessage({
-    request = {},
+    message = {},
     token = TelegramService.defaultToken,
   } = {}) {
+    const request = message;
     return this._sendRawRequest({ request, token });
   }
 
