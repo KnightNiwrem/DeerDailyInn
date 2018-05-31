@@ -15,7 +15,7 @@ telegramMessageSubject.subscribe((request) => {
 
   const chat_id = update.message.chat.id;
   const text = update.message.text;
-  const request = { chat_id, text };
+  const message = { chat_id, text };
 
-  telegramService.sendMessage({ request });
+  telegramService.sendMessage({ message });
 });
