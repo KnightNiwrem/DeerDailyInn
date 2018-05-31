@@ -8,6 +8,7 @@ const authController = require('./telegram/auth');
 const authExtraController = require('./telegram/authextra');
 const balanceController = require('./telegram/balance');
 const buyController = require('./telegram/buy');
+const cancelController = require('./telegram/cancel');
 const confirmController = require('./telegram/confirm');
 const cmdController = require('./telegram/cmd');
 const dealsController = require('./telegram/deals');
@@ -18,6 +19,7 @@ const grantController = require('./telegram/grant');
 const helpController = require('./telegram/help');
 const infoController = require('./telegram/info');
 const manageFlashController = require('./telegram/manageflash');
+const ordersController = require('./telegram/orders');
 const pokeFleeController = require('./telegram/pokeflee');
 const pokePlayersController = require('./telegram/pokeplayers');
 const pokeRegisterController = require('./telegram/pokeregister');
@@ -31,6 +33,7 @@ const controllerRouter = {
   authextra: authExtraController,
   balance: balanceController,
   buy: buyController,
+  cancel: cancelController,
   confirm: confirmController,
   cmd: cmdController,
   deals: dealsController,
@@ -43,6 +46,7 @@ const controllerRouter = {
   info: infoController,
   manageflash: manageFlashController,
   mf: manageFlashController,
+  orders: ordersController,
   pokeflee: pokeFleeController,
   pokeplayers: pokePlayersController,
   pokeregister: pokeRegisterController,
