@@ -46,7 +46,7 @@ const orders = (params) => {
   const telegramId = params.telegramId;
 
   return BuyOrder.query()
-  .where('amount', '>', 0)
+  .where('amountLeft', '>', 0)
   .andWhere('telegramId', telegramId)
   .then((orders) => {
     const message = makeOrdersMessage(chatId, orders);
