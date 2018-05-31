@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const BuyOrder = require('../../models/buyOrder');
 const Flash = require('../../models/flash');
+const User = require('../../models/user');
 
 const makeWantToBuyRequest = (chtwrsToken, itemCode, quantity, price) => {
   const message = JSON.stringify({  
@@ -109,7 +110,7 @@ const offers = (params) => {
     const itemCode = itemNameToItemCodeMap.get(content.item);
 
     let quantity = content.qty;
-    for (buyOrder in buyOrders) {
+    for (buyOrder of buyOrders) {
       if (quantity <= 0) {
         break;
       }
@@ -117,9 +118,9 @@ const offers = (params) => {
       const amountPurchased = Math.min(quantity, buyOrder.amountLeft);
       quantity = quantity - amountPurchased;
 
-      User.query()
-      .patch('amountLeft', buyOrder.amountLeft - amountPurchased)
-      .where('telegramId', buyOrder.telegramId)
+      BuyOrder.query()
+      .patch({ amountLeft: buyOrder.amountLeft - amountPurchased })
+      .where('id', buyOrder.id)
       .then(() => {
         return;
       });
