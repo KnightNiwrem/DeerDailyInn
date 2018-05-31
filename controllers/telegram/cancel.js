@@ -143,7 +143,7 @@ const cancel = (params) => {
   const itemName = searchTermToNameMap.get(itemCode);
 
   return BuyOrder.query()
-  .patch('amountLeft', 0)
+  .patch({amountLeft: 0})
   .where('amount', '>', 0)
   .andWhere('item', itemName)
   .andWhere('telegramId', telegramId)
