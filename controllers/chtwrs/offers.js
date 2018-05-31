@@ -1,5 +1,20 @@
 const _ = require('lodash');
+const BuyOrder = require('../../models/buyOrder');
 const Flash = require('../../models/flash');
+
+const makeWantToBuyRequest = (chtwrsToken, itemCode, quantity, price) => {
+  const message = JSON.stringify({  
+    token: chtwrsToken,  
+    action: "wantToBuy",  
+    payload: {  
+      itemCode: itemCode, 
+      quantity: quantity,
+      price: price,
+      exactPrice: true
+    }  
+  });
+  return message;
+};
 
 const itemCodeToNameEntries = [
   ['01', 'Thread'],
@@ -84,6 +99,40 @@ const offers = (params) => {
 
   const bot = params.bot;
   const content = JSON.parse(params.rawMessage.content.toString());
+
+  BuyOrder.query()
+  .where('item', content.item)
+  .andWhere('maxPrice', '>=', content.price)
+  .andWhere('amountLeft', '>', 0)
+  .orderBy('id')
+  .then((buyOrders) => {
+    const itemCode = itemNameToItemCodeMap.get(content.item);
+
+    let quantity = content.qty;
+    for (buyOrder in buyOrders) {
+      if (quantity <= 0) {
+        break;
+      }
+
+      const amountPurchased = Math.min(quantity, buyOrder.amountLeft);
+      quantity = quantity - amountPurchased;
+
+      User.query()
+      .patch('amountLeft', buyOrder.amountLeft - amountPurchased)
+      .where('telegramId', buyOrder.telegramId)
+      .then(() => {
+        return;
+      });
+
+      User.query()
+      .where('telegramId', buyOrder.telegramId)
+      .first()
+      .then((user) => {
+        const request = makeWantToBuyRequest(user.chtwrsToken, itemCode, amountPurchased, content.price);
+        return bot.sendChtwrsMessage(request);
+      });
+    }
+  });
 
   const searchAttribute = {
     item: content.item

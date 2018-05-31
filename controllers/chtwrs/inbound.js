@@ -158,7 +158,8 @@ const respondToWantToBuy = (content, bot) => {
 
   const statusCode = content.result.toLowerCase();
   const isBattleNear = statusCode === 'battleisnear';
-  if (isBattleNear) {
+  const isUserBusy = statusCode === 'UserIsBusy';
+  if (isBattleNear || isUserBusy) {
     const message = JSON.stringify({
       chat_id: telegramId,
       text: `Could not access exchange: ${content.result}`
