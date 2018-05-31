@@ -144,7 +144,7 @@ const cancel = (params) => {
 
   return BuyOrder.query()
   .patch({amountLeft: 0})
-  .where('amount', '>', 0)
+  .where('amountLeft', '>', 0)
   .andWhere('item', itemName)
   .andWhere('telegramId', telegramId)
   .then(() => {
