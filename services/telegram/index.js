@@ -1,3 +1,4 @@
+const bodyParser = require('body-parser');
 const express = require('express');
 const fetch = require('node-fetch');
 const { Subject } = require('rxjs');
@@ -14,9 +15,10 @@ class TelegramService {
     this.app = express();
     this.messageSubject = new Subject();
 
+    this.app.use(bodyParser.json());
     this.setWebhook();
     this.subscribeToUpdates();
-    this._connect();
+    this.connect();
   }
 
   connect({
@@ -30,6 +32,10 @@ class TelegramService {
     this.server = this.app.listen(port, () => {
       console.log('Telegram bot server has started');
     });
+  }
+
+  getMessageSubject() {
+    return this.messageSubject;
   }
 
   sendMessage({
