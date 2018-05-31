@@ -1,4 +1,4 @@
-const { isNil, isEmpty } = require('lodash');
+const { isEmpty, isNil } = require('lodash');
 
 //const RabbitMQService = require('./services/rabbitmq');
 const TelegramService = require('./services/telegram');
