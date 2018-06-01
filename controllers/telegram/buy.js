@@ -28,9 +28,34 @@ const makeBadArgumentMessage = (chatId) => {
   return message;
 };
 
+const makeQuantityLimitExceededMessage = (chatId, itemCode, maxLimit, price, quantity) => {
+  const text = `Could not create buy order for ${quantity} ${searchTermToNameMap.get(itemCode)} at ${price} each. A current total buy order limit of ${maxLimit} is enforced for this item.`;
 
-const makeBuyOrderMessage = (chatId, itemCode, quantity, price) => {
-  const text = `Your buy order for ${quantity} ${searchTermToNameMap.get(itemCode)} at ${price} each, has been received!`;
+  const message = JSON.stringify({
+    chat_id: chatId,
+    text: text
+  });
+  return message;
+};
+
+const makeWantToBuyRequest = (chtwrsToken, itemCode, price, quantity) => {
+  const message = JSON.stringify({  
+    token: chtwrsToken,  
+    action: "wantToBuy",  
+    payload: {  
+      itemCode: itemCode, 
+      quantity: quantity,
+      price: price,
+      exactPrice: true
+    }  
+  });
+  return message;
+};
+
+const makeBuyOrderMessage = (chatId, itemCode, price, quantity) => {
+  const text = `Your buy order for ${quantity} ${searchTermToNameMap.get(itemCode)} at ${price} each, has been received!
+
+An impossible /wtb has also been executed to check if you have permissions. If you see a permission request message, please provide extra permissions so that your buy order can work!`;
 
   const message = JSON.stringify({
     chat_id: chatId,
@@ -120,6 +145,123 @@ const searchTermToNameMap = new Map([
   ...itemNames.map(name => [normalizeItemName(name), name])
 ]);
 
+const itemCodeToQuantityLimitEntries = [
+  ['01', 500],
+  ['02', 500],
+  ['03', 500],
+  ['04', 500],
+  ['05', 500],
+  ['06', 500],
+  ['07', 500],
+  ['08', 500],
+  ['09', 500],
+  ['10', 500],
+  ['13', 100],
+  ['14', 100],
+  ['15', 100],
+  ['16', 100],
+  ['17', 100],
+  ['18', 100],
+  ['19', 100],
+  ['20', 100],
+  ['21', 100],
+  ['22', 100],
+  ['23', 100],
+  ['24', 100],
+  ['25', 100],
+  ['27', 100],
+  ['28', 100],
+  ['31', 100],
+  ['33', 100],
+  ['39', 100],
+  ['40', 100],
+  ['41', 100],
+  ['42', 100],
+  ['43', 100],
+  ['44', 100],
+  ['45', 100],
+  ['46', 100],
+  ['47', 100],
+  ['48', 100],
+  ['49', 100],
+  ['50', 100],
+  ['51', 100],
+  ['52', 100],
+  ['53', 100],
+  ['54', 100],
+  ['55', 100],
+  ['56', 100],
+  ['57', 100],
+  ['58', 100],
+  ['59', 100],
+  ['60', 100],
+  ['61', 100],
+  ['62', 100],
+  ['63', 100],
+  ['64', 100],
+  ['501', 100],
+  ['506', 10],
+  ['508', 10],
+  ['p01', 10],
+  ['p02', 10],
+  ['p03', 10],
+  ['p04', 10],
+  ['p05', 10],
+  ['p06', 10],
+  ['p07', 10],
+  ['p08', 10],
+  ['p09', 10],
+  ['p10', 10],
+  ['p11', 10],
+  ['p12', 10],
+  ['s01', 2],
+  ['s02', 2],
+  ['tch', 2]
+];
+
+const itemCodeToQuantityLimits = new Map(itemCodeToQuantityLimitEntries);
+
+const processBuyOrder = async (bot, chatId, itemCode, price, quantity, telegramId) => {
+  const similarBuyOrders = await BuyOrder.query()
+  .where('telegramId', telegramId)
+  .andWhere('item', searchTermToNameMap.get(itemCode))
+  .andWhere('amountLeft', '>', 0);
+
+  const quantityLimit = itemCodeToQuantityLimits.get(itemCode);
+  const currentQuantityRequested = similarBuyOrders.reduce((total, currentBuyOrder) => {
+    return total + currentBuyOrder.amountLeft;
+  }, 0);
+  const hasExceededLimit = (currentQuantityRequested + quantity) > quantityLimit;
+
+  if (hasExceededLimit) {
+    const message = makeQuantityLimitExceededMessage(chatId, itemCode, maxLimit, price, quantity);
+    bot.sendTelegramMessage('sendMessage', message);
+    return Promise.reject(`Rejected in buy: User ${telegramId} limit exceeded for ${searchTermToNameMap.get(itemCode)}`);
+  }
+
+  const user = await User.query().where('telegramId', telegramId).first();
+  const isSuccess = !_.isNil(user) && !_.isEmpty(user.chtwrsId);
+  if (_.isNil(user) || _.isEmpty(user.chtwrsToken)) {
+    const message = makeUnregisteredMessage(chatId);
+    bot.sendTelegramMessage('sendMessage', message);
+    return Promise.reject(`Rejected in buy: User ${telegramId} is not registered.`);
+  }
+
+  const request = makeWantToBuyRequest(user.chtwrsToken, itemCode, price, quantity);
+  bot.sendChtwrsMessage(request);
+
+  const attributes = {
+    amountLeft: quantity,
+    item: searchTermToNameMap.get(itemCode),
+    maxPrice: price,
+    quantity: quantity,
+    telegramId: user.telegramId
+  };
+  const newBuyOrder = await BuyOrder.create(attributes);
+  const message = makeBuyOrderMessage(chatId, itemCode, price, quantity);
+  return bot.sendTelegramMessage('sendMessage', message);
+};
+
 const buy = (params) => {
   if (_.isNil(params.bot)) {
     return Promise.reject('Rejected in buy: Bot cannot be missing');
@@ -145,30 +287,7 @@ const buy = (params) => {
     return bot.sendTelegramMessage('sendMessage', message);
   }
 
-  return User.query()
-  .where({ telegramId })
-  .first()
-  .then((user) => {
-    const isSuccess = !_.isNil(user) && !_.isEmpty(user.chtwrsId);
-    if (_.isNil(user) || _.isEmpty(user.chtwrsToken)) {
-      const message = makeUnregisteredMessage(chatId);
-      bot.sendTelegramMessage('sendMessage', message);
-      return Promise.reject(`Rejected in buy: User ${telegramId} is not registered.`);
-    }
-
-    const attributes = {
-      amountLeft: quantity,
-      item: searchTermToNameMap.get(itemCode),
-      maxPrice: price,
-      quantity: quantity,
-      telegramId: user.telegramId
-    };
-    return BuyOrder.create(attributes)
-    .then(() => {
-      const message = makeBuyOrderMessage(chatId, itemCode, quantity, price);
-      return bot.sendTelegramMessage('sendMessage', message);
-    });
-  });
+  return processBuyOrder(bot, chatId, itemCode, price, quantity, telegramId);
 };
 
 module.exports = buy;
