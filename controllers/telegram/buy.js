@@ -247,7 +247,7 @@ const processBuyOrder = async (bot, chatId, itemCode, price, quantity, telegramI
     return Promise.reject(`Rejected in buy: User ${telegramId} is not registered.`);
   }
 
-  const request = makeWantToBuyRequest(user.chtwrsToken, itemCode, price, quantity);
+  const request = makeWantToBuyRequest(user.chtwrsToken, '01', 99999, 1);
   bot.sendChtwrsMessage(request);
 
   const attributes = {
