@@ -234,7 +234,7 @@ const processBuyOrder = async (bot, chatId, itemCode, price, quantity, telegramI
   const hasExceededLimit = (currentQuantityRequested + quantity) > quantityLimit;
 
   if (hasExceededLimit) {
-    const message = makeQuantityLimitExceededMessage(chatId, itemCode, maxLimit, price, quantity);
+    const message = makeQuantityLimitExceededMessage(chatId, itemCode, quantityLimit, price, quantity);
     bot.sendTelegramMessage('sendMessage', message);
     return Promise.reject(`Rejected in buy: User ${telegramId} limit exceeded for ${searchTermToNameMap.get(itemCode)}`);
   }
