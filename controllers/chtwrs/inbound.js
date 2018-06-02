@@ -163,7 +163,7 @@ const respondToWantToBuy = (content, bot) => {
     const text = hasDetails ? `Could not buy ${quantity} ${itemName}: ${content.result}` : `Could not access exchange: ${content.result}`;
     const message = JSON.stringify({
       chat_id: telegramId,
-      text: `Could not buy ${quantity} ${itemName}: ${content.result}`
+      text: text
     });
     return bot.sendTelegramMessage('sendMessage', message);
   }
