@@ -105,7 +105,6 @@ const offers = (params) => {
   .where('item', content.item)
   .andWhere('maxPrice', '>=', content.price)
   .andWhere('amountLeft', '>', 0)
-  .orderBy('id')
   .first()
   .then((buyOrder) => {
     const itemCode = itemNameToItemCodeMap.get(content.item);
