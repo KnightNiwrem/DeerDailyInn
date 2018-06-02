@@ -107,6 +107,10 @@ const offers = (params) => {
   .andWhere('amountLeft', '>', 0)
   .first('id')
   .then((buyOrder) => {
+    if (_.isNil(buyOrder)) {
+      return;
+    }
+    
     const itemCode = itemNameToItemCodeMap.get(content.item);
     const amountPurchased = Math.min(content.qty, buyOrder.amountLeft);
 
