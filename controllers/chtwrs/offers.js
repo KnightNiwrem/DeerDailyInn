@@ -106,33 +106,25 @@ const offers = (params) => {
   .andWhere('maxPrice', '>=', content.price)
   .andWhere('amountLeft', '>', 0)
   .orderBy('id')
-  .then((buyOrders) => {
+  .first()
+  .then((buyOrder) => {
     const itemCode = itemNameToItemCodeMap.get(content.item);
+    const amountPurchased = Math.min(content.qty, buyOrder.amountLeft);
 
-    let quantity = content.qty;
-    for (buyOrder of buyOrders) {
-      if (quantity <= 0) {
-        break;
-      }
+    BuyOrder.query()
+    .patch({ amountLeft: buyOrder.amountLeft - amountPurchased })
+    .where('id', buyOrder.id)
+    .then(() => {
+      return;
+    });
 
-      const amountPurchased = Math.min(quantity, buyOrder.amountLeft);
-      quantity = quantity - amountPurchased;
-
-      BuyOrder.query()
-      .patch({ amountLeft: buyOrder.amountLeft - amountPurchased })
-      .where('id', buyOrder.id)
-      .then(() => {
-        return;
-      });
-
-      User.query()
-      .where('telegramId', buyOrder.telegramId)
-      .first()
-      .then((user) => {
-        const request = makeWantToBuyRequest(user.chtwrsToken, itemCode, amountPurchased, content.price);
-        return bot.sendChtwrsMessage(request);
-      });
-    }
+    User.query()
+    .where('telegramId', buyOrder.telegramId)
+    .first()
+    .then((user) => {
+      const request = makeWantToBuyRequest(user.chtwrsToken, itemCode, amountPurchased, content.price);
+      return bot.sendChtwrsMessage(request);
+    });
   });
 
   const searchAttribute = {
