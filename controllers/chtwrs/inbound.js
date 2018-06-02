@@ -157,6 +157,7 @@ const respondToWantToBuy = (content, bot) => {
   const quantity = content.payload.quantity;
   const hasDetails = !_.isNil(quantity) && !_.isNil(quantity);
 
+  const statusCode = content.result.toLowerCase();
   const isSuccessful = statusCode === 'ok';
   if (!isSuccessful) {
     const text = hasDetails ? `Could not buy ${quantity} ${itemName}: ${content.result}` : `Could not access exchange: ${content.result}`;
