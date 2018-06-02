@@ -28,6 +28,26 @@ const makeBadArgumentMessage = (chatId) => {
   return message;
 };
 
+const makeBuyOrderLimitExceededMessage = (chatId, itemCode, maxLimit, price, quantity) => {
+  const text = `Could not create buy order for ${quantity} ${searchTermToNameMap.get(itemCode)} at ${price} gold each. You can only have a total of ${maxLimit} active buy orders at any given time.`;
+
+  const message = JSON.stringify({
+    chat_id: chatId,
+    text: text
+  });
+  return message;
+};
+
+const makeHasSimilarBuyOrderLimitMessage = (chatId, itemCode, price, quantity) => {
+  const text = `Could not create buy order for ${quantity} ${searchTermToNameMap.get(itemCode)} at ${price} gold each. You already have an active buy order for this item, and are only allowed one active buy order per item.`;
+
+  const message = JSON.stringify({
+    chat_id: chatId,
+    text: text
+  });
+  return message;
+};
+
 const makeQuantityLimitExceededMessage = (chatId, amountLeft, itemCode, maxLimit, price, quantity) => {
   const text = `Could not create buy order for ${quantity} ${searchTermToNameMap.get(itemCode)} at ${price} gold each. The current buy order limit for this item is ${maxLimit}, and you already have ${amountLeft} in buy order queue.`;
 
@@ -222,21 +242,32 @@ const itemCodeToQuantityLimitEntries = [
 const itemCodeToQuantityLimits = new Map(itemCodeToQuantityLimitEntries);
 
 const processBuyOrder = async (bot, chatId, itemCode, price, quantity, telegramId) => {
-  const similarBuyOrders = await BuyOrder.query()
+  const buyOrderLimit = 5;
+  const pendingBuyOrders = await BuyOrder.query()
   .where('telegramId', telegramId)
-  .andWhere('item', searchTermToNameMap.get(itemCode))
   .andWhere('amountLeft', '>', 0);
+  if (pendingBuyOrders.length > buyOrderLimit) {
+    const message = makeBuyOrderLimitExceededMessage(chatId, itemCode, buyOrderLimit, price, quantity)
+    bot.sendTelegramMessage('sendMessage', message);
+    return Promise.reject(`Rejected in buy: User ${telegramId} pending buy order limit exceeded for ${searchTermToNameMap.get(itemCode)}`);
+  }
+
+  const similarBuyOrders = pendingBuyOrders.filter((buyOrder) => {
+    return buyOrder.item === searchTermToNameMap.get(itemCode);
+  });
+  const hasSimilarBuyOrders = similarBuyOrders.length > 0;
+  if (hasSimilarBuyOrders) {
+    const message = makeHasSimilarBuyOrderLimitMessage(chatId, itemCode, price, quantity);
+    bot.sendTelegramMessage('sendMessage', message);
+    return Promise.reject(`Rejected in buy: User ${telegramId} similar item limit exceeded for ${searchTermToNameMap.get(itemCode)}`);
+  }
 
   const quantityLimit = itemCodeToQuantityLimits.get(itemCode);
-  const currentQuantityRequested = similarBuyOrders.reduce((total, currentBuyOrder) => {
-    return total + currentBuyOrder.amountLeft;
-  }, 0);
-  const hasExceededLimit = (currentQuantityRequested + quantity) > quantityLimit;
-
+  const hasExceededLimit = quantity > quantityLimit;
   if (hasExceededLimit) {
     const message = makeQuantityLimitExceededMessage(chatId, currentQuantityRequested, itemCode, quantityLimit, price, quantity);
     bot.sendTelegramMessage('sendMessage', message);
-    return Promise.reject(`Rejected in buy: User ${telegramId} limit exceeded for ${searchTermToNameMap.get(itemCode)}`);
+    return Promise.reject(`Rejected in buy: User ${telegramId} quantity limit exceeded for ${searchTermToNameMap.get(itemCode)}`);
   }
 
   const user = await User.query().where('telegramId', telegramId).first();
