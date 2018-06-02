@@ -155,7 +155,7 @@ const respondToWantToBuy = (content, bot) => {
   const telegramId = content.payload.userId;
   const itemName = content.payload.itemName;
   const quantity = content.payload.quantity;
-  const hasDetails = !_.isNil(quantity) && !_.isNil(quantity);
+  const hasDetails = !_.isNil(itemName) && !_.isNil(quantity);
 
   const statusCode = content.result.toLowerCase();
   const isSuccessful = statusCode === 'ok';
