@@ -7,6 +7,23 @@ const normalizeItemName = (itemName) => {
   return itemName.replace(/[^\x00-\x7F]/g, "").trim().toLowerCase();
 };
 
+const processOrders = async (orders) => {
+  const ordersToAheadMap = new Map();
+  for (order of orders) {
+    const ordersAhead = await BuyOrder.query()
+    .where('item', order.item)
+    .andWhere('amountLeft', '>', 0)
+    .andWhere('id', '<', order.id);
+
+    const countAheads = ordersAhead.reduce((total, nextOrder) => {
+      return total + nextOrder.amountLeft;
+    }, 0);
+
+    ordersToAheadMap.set(order, countAheads);
+  }
+  return ordersToAheadMap;
+};
+
 const makeUnregisteredMessage = (chatId) => {
   const unregisteredText = `Hi, you don't seem to \
 be registered yet! Do /start to register first!`;
@@ -18,9 +35,9 @@ be registered yet! Do /start to register first!`;
   return unregisteredMessage;
 };
 
-const makeOrdersMessage = (chatId, orders) => {
-  const orderText = orders.map((order) => {
-    return `${order.amountLeft} ${order.item} at ${order.maxPrice} gold or less`;
+const makeOrdersMessage = (chatId, ordersToAheadMap) => {
+  const orderText = [...ordersToAheadMap.entries()].map(([order, countAhead]) => {
+    return `${order.amountLeft} ${order.item} at ${order.maxPrice} gold or less (Est. ${countAhead} ahead of you in buy order queue)`;
   }).join('\n');
   const text = `Your current buy orders are:
 
@@ -49,7 +66,9 @@ const orders = (params) => {
   .where('amountLeft', '>', 0)
   .andWhere('telegramId', telegramId)
   .then((orders) => {
-    const message = makeOrdersMessage(chatId, orders);
+    return processOrders(orders);
+  }).then((ordersToAheadMap) => {
+    const message = makeOrdersMessage(chatId, ordersToAheadMap);
     return bot.sendTelegramMessage('sendMessage', message);
   });
 };

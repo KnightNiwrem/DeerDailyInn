@@ -155,20 +155,11 @@ const respondToWantToBuy = (content, bot) => {
   const telegramId = content.payload.userId;
   const itemName = content.payload.itemName;
   const quantity = content.payload.quantity;
-
-  const statusCode = content.result.toLowerCase();
-  const isBattleNear = statusCode === 'battleisnear';
-  const isUserBusy = statusCode === 'UserIsBusy';
-  if (isBattleNear || isUserBusy) {
-    const message = JSON.stringify({
-      chat_id: telegramId,
-      text: `Could not access exchange: ${content.result}`
-    });
-    return bot.sendTelegramMessage('sendMessage', message);
-  }
+  const hasDetails = !_.isNil(quantity) && !_.isNil(quantity);
 
   const isSuccessful = statusCode === 'ok';
   if (!isSuccessful) {
+    const text = hasDetails ? `Could not buy ${quantity} ${itemName}: ${content.result}` : `Could not access exchange: ${content.result}`;
     const message = JSON.stringify({
       chat_id: telegramId,
       text: `Could not buy ${quantity} ${itemName}: ${content.result}`
