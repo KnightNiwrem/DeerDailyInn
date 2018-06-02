@@ -6,12 +6,15 @@ const makeHelpMessage = (chatId) => {
 
 /auth [authorization code] - Completes registration
 /balance - Fetches gold balance in Deer Daily Inn
+/buy [item code] [quantity] [max price] - Create a buy order
+/cancel [item code] - Cancels active buy orders for that item
 /confirm [confirmation code] - Completes gold deposit
 /deals (optional item name) - Displays your recent sales and purchases
 /deposit [number of pouches] - Deposits gold into personal Deer Daily Inn balance
 /help - Display this help message
 /info - Displays channel and user info
 /purchases (optional item name) - Displays your recent purchases
+/orders - Displays your current active orders
 /sales (optional item name) - Displays your recent sales
 /start - Gets authorization code from @chtwrsbot for registration
 /withdraw [number of pouches] Withdraws gold from personal Deer Daily Inn balance`;
