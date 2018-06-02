@@ -48,8 +48,8 @@ const makeHasSimilarBuyOrderLimitMessage = (chatId, itemCode, price, quantity) =
   return message;
 };
 
-const makeQuantityLimitExceededMessage = (chatId, amountLeft, itemCode, maxLimit, price, quantity) => {
-  const text = `Could not create buy order for ${quantity} ${searchTermToNameMap.get(itemCode)} at ${price} gold each. The current buy order limit for this item is ${maxLimit}, and you already have ${amountLeft} in buy order queue.`;
+const makeQuantityLimitExceededMessage = (chatId, itemCode, maxLimit, price, quantity) => {
+  const text = `Could not create buy order for ${quantity} ${searchTermToNameMap.get(itemCode)} at ${price} gold each. The current buy order limit for this item is ${maxLimit}.`;
 
   const message = JSON.stringify({
     chat_id: chatId,
@@ -265,7 +265,7 @@ const processBuyOrder = async (bot, chatId, itemCode, price, quantity, telegramI
   const quantityLimit = itemCodeToQuantityLimits.get(itemCode);
   const hasExceededLimit = quantity > quantityLimit;
   if (hasExceededLimit) {
-    const message = makeQuantityLimitExceededMessage(chatId, currentQuantityRequested, itemCode, quantityLimit, price, quantity);
+    const message = makeQuantityLimitExceededMessage(chatId, itemCode, quantityLimit, price, quantity);
     bot.sendTelegramMessage('sendMessage', message);
     return Promise.reject(`Rejected in buy: User ${telegramId} quantity limit exceeded for ${searchTermToNameMap.get(itemCode)}`);
   }
