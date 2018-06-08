@@ -20,7 +20,7 @@ class Flash extends Model {
   /*************************** Private Methods ***************************/
 
   static get _requiredFields() {
-    return ['chatId', 'item'];
+    return ['chatId', 'item', 'maxPrice'];
   }
 
   static _construct(attributes) {
@@ -55,6 +55,9 @@ class Flash extends Model {
         },
         item: {
           type: 'string'
+        },
+        maxPrice: {
+          type: 'integer'
         }
       }
     };

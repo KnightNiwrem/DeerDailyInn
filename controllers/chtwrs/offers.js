@@ -134,7 +134,10 @@ const offers = (params) => {
     item: content.item
   };
 
-  Flash.query().where(searchAttribute).then((flashes) => {
+  Flash.query()
+  .where('item', content.item)
+  .andWhere('maxPrice', '>=', content.price)
+  .then((flashes) => {
     const responses = flashes.map((flash, index) => {
       const delay = index * 0;
       const itemCode = itemNameToItemCodeMap.get(content.item);

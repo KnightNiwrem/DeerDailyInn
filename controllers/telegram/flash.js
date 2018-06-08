@@ -155,7 +155,14 @@ const flash = (params) => {
     options = options.slice(1);
   }
 
-  let searchTerm = normalizeItemName(options.join(' '));
+  const optionRegex = /^(.*?)(?: under )?(\d+)?$/;
+  const optionMatches = options.join(' ').trim().match(optionRegex);
+  let [originalOption, itemName, maxPrice] = optionMatches;
+  if (_.isNil(maxPrice)) {
+    maxPrice = 1000;
+  }
+
+  let searchTerm = normalizeItemName(itemName);
   if (_.isEmpty(searchTerm)) {
     const message = makeFlashArgumentMissingMessage(chatId);
     return bot.sendTelegramMessage('sendMessage', message);
@@ -166,7 +173,8 @@ const flash = (params) => {
 
   const flashAttributes = {
     chatId: chatId,
-    item: searchTerm
+    item: searchTerm,
+    maxPrice: maxPrice
   };
 
   if (!willTurnOn) {
