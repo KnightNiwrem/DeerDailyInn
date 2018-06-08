@@ -155,14 +155,20 @@ const flash = (params) => {
     options = options.slice(1);
   }
 
-  const optionRegex = /^(.*?)(?: under )?(\d+)?$/;
-  const optionMatches = options.join(' ').trim().match(optionRegex);
-  let [originalOption, itemName, maxPrice] = optionMatches;
-  if (_.isNil(maxPrice)) {
-    maxPrice = 1000;
+  const optionsText = options.join(' ').trim();
+  const hasMaxPriceOption = / under \d+$/.test(optionsText);
+
+  let rawSearchTerm = optionsText;
+  let maxPrice = 1000;
+  if (hasMaxPriceOption) {
+    const optionsRegex = /^(.*?) under (\d+)$/;
+    const optionsMatches = optionsText.match(optionsRegex);
+    const [originalOptionsText, userSearchTerm, userMaxPrice] = optionMatches;
+    rawSearchTerm = userSearchTerm;
+    maxPrice = parseInt(userMaxPrice);
   }
 
-  let searchTerm = normalizeItemName(itemName);
+  let searchTerm = normalizeItemName(rawSearchTerm);
   if (_.isEmpty(searchTerm)) {
     const message = makeFlashArgumentMissingMessage(chatId);
     return bot.sendTelegramMessage('sendMessage', message);
