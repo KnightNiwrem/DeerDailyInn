@@ -163,7 +163,7 @@ const flash = (params) => {
   if (hasMaxPriceOption) {
     const optionsRegex = /^(.*?) under (\d+)$/;
     const optionsMatches = optionsText.match(optionsRegex);
-    const [originalOptionsText, userSearchTerm, userMaxPrice] = optionMatches;
+    const [originalOptionsText, userSearchTerm, userMaxPrice] = optionsMatches;
     rawSearchTerm = userSearchTerm;
     maxPrice = parseInt(userMaxPrice);
   }
