@@ -186,7 +186,8 @@ const flash = (params) => {
   if (!willTurnOn) {
     return Flash.query()
     .delete()
-    .where(flashAttributes)
+    .where('chatId', chatId)
+    .andWhere('item', searchTerm)
     .then((rowsDeleted) => {
       let message;
       if (rowsDeleted === 0) {
