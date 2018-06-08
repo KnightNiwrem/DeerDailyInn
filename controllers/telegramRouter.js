@@ -68,7 +68,8 @@ const usableCommandsInChannel = new Set([
   'pokeregister',
   'purchases',
   'sales',
-  'updatelog']);
+  'updatelog',
+  'wtb']);
 const definedCommands = new Set(_.keys(controllerRouter));
 
 const telegramRouter = (params) => {
