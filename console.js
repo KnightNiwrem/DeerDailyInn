@@ -116,5 +116,5 @@ r.context.itemCodeToNameEntries = [
   ['pl1', 'Vial of Oblivion'],
   ['pl3', 'Bottle of Oblivion']
 ];
-r.context.itemCodeToNameMap = new Map(itemCodeToNameEntries);
-r.context.itemNameSet = new Set([...itemCodeToNameMap.values()]);
+r.context.itemCodeToNameMap = new Map(r.context.itemCodeToNameEntries);
+r.context.itemNameSet = new Set([...r.context.itemCodeToNameMap.values()]);
