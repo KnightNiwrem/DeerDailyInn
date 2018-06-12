@@ -5,6 +5,7 @@ const makeHelpMessage = (chatId) => {
   const helpText = `Here are the currently available commands:
 
 /auth [authorization code] - Completes registration
+/authextra [secret string] [authorization code] - Grants additional permission to Deer Daily Inn
 /balance - Fetches gold balance in Deer Daily Inn
 /buy [item code] [quantity] [max price] - Create a buy order
 /cancel [item code] - Cancels active buy orders for that item
@@ -17,7 +18,8 @@ const makeHelpMessage = (chatId) => {
 /orders - Displays your current active orders
 /sales (optional item name) - Displays your recent sales
 /start - Gets authorization code from @chtwrsbot for registration
-/withdraw [number of pouches] Withdraws gold from personal Deer Daily Inn balance`;
+/withdraw [number of pouches] - Withdraws gold from personal Deer Daily Inn balance
+/wtb [item code] [quantity] [price] - Executes an immediate exact price wtb command`;
   
   const helpMessage = JSON.stringify({
     chat_id: chatId,

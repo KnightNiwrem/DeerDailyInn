@@ -62,6 +62,9 @@ const itemCodeToNameEntries = [
   ['28', 'Silver mold'],
   ['31', 'Rope'],
   ['33', 'Metal plate'],
+  ['34', 'Metallic fiber'],
+  ['35', 'Crafted leather'],
+
   ['39', 'Stinky Sumac'],
   ['40', 'Mercy Sassafras'],
   ['41', 'Cliff Rue'],
@@ -88,9 +91,7 @@ const itemCodeToNameEntries = [
   ['62', 'Itacory'],
   ['63', 'Assassin Vine'],
   ['64', 'Kloliarway'],
-  ['501', 'Wrapping'],
-  ['506', 'Bottle of Remedy'],
-  ['508', 'Bottle of Poison'],
+
   ['p01', 'Vial of Rage'],
   ['p02', 'Potion of Rage'],
   ['p03', 'Bottle of Rage'],
@@ -103,9 +104,17 @@ const itemCodeToNameEntries = [
   ['p10', 'Vial of Nature'],
   ['p11', 'Potion of Nature'],
   ['p12', 'Bottle of Nature'],
-  ['s01', '📕Scroll of Rage'],
-  ['s02', '📕Scroll of Peace'],
-  ['tch', 'Torch']
+  ['p13', 'Vial of Mana'],
+  ['p14', 'Potion of Mana'],
+  ['p15', 'Bottle of Mana'],
+  ['p16', 'Vial of Twilight'],
+  ['p17', 'Potion of Twilight'],
+  ['p18', 'Bottle of Twilight'],
+  ['p19', 'Vial of Morph'],
+  ['p20', 'Potion of Morph'],
+  ['p21', 'Bottle of Morph'],
+  ['pl1', 'Vial of Oblivion'],
+  ['pl3', 'Bottle of Oblivion']
 ];
 
 const itemCodeToNameMap = new Map(itemCodeToNameEntries);
