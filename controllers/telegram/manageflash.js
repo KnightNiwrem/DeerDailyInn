@@ -91,6 +91,11 @@ const itemCodeToNameEntries = [
   ['62', 'Itacory'],
   ['63', 'Assassin Vine'],
   ['64', 'Kloliarway'],
+  ['65', 'Astrulic'],
+  ['66', 'Flammia Nut'],
+  ['67', 'Plexisop'],
+  ['68', 'Mammoth Dill'],
+  ['69', 'Silver dust'],
 
   ['p01', 'Vial of Rage'],
   ['p02', 'Potion of Rage'],
