@@ -165,7 +165,7 @@ const respondToWantToBuy = (content, bot) => {
       chat_id: telegramId,
       text: text
     });
-    console.warn(`User ${telegramId}: ${text}`);
+    console.log(`${new Date()} | User ${telegramId} | ${text}`);
     return bot.sendTelegramMessage('sendMessage', message);
   }
   
@@ -174,7 +174,7 @@ const respondToWantToBuy = (content, bot) => {
     chat_id: telegramId,
     text: text
   });
-  console.log(`User ${telegramId}: ${text}`);
+  console.log(`${new Date()} | User ${telegramId} | ${text}`);
   return bot.sendTelegramMessage('sendMessage', message);
 };
 
