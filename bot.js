@@ -61,7 +61,7 @@ class Bot {
         bot: this,
         controllerName: 'offers',
         rawMessage: message,
-        startTime: new Date()
+        startTime: new Date(message.properties.timestamp * 1000)
       };
       return chtwrsRouter(parameters);
     };
