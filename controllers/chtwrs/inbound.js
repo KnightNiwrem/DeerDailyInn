@@ -165,13 +165,16 @@ const respondToWantToBuy = (content, bot) => {
       chat_id: telegramId,
       text: text
     });
+    console.warn(`User ${telegramId}: ${text}`);
     return bot.sendTelegramMessage('sendMessage', message);
   }
   
+  const text = `Successfully purchased ${quantity} ${itemName}!`;
   const message = JSON.stringify({
     chat_id: telegramId,
-    text: `Successfully purchased ${quantity} ${itemName}!`
+    text: text
   });
+  console.log(`User ${telegramId}: ${text}`);
   return bot.sendTelegramMessage('sendMessage', message);
 };
 
