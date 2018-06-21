@@ -104,6 +104,7 @@ const itemCodeToNameEntries = [
   ['pl1', 'Vial of Oblivion'],
   ['pl3', 'Bottle of Oblivion']
 ];
+const itemCodeToItemNameMap = new Map(itemCodeToNameEntries.map((e) => [e[0], e[1]]));
 const itemNameToItemCodeMap = new Map(itemCodeToNameEntries.map((e) => [e[1], e[0]]));
 
 const offers = (params) => {
@@ -142,7 +143,7 @@ const offers = (params) => {
       const request = makeWantToBuyRequest(user.chtwrsToken, itemCode, amountPurchased, content.price);
       const response = bot.sendChtwrsMessage(request);
       const now = new Date();
-      console.log(`${now} | User ${user.telegramId} | Bought ${amountPurchased} ${itemNameToItemCodeMap.get(itemCode)} at ${content.price} gold each | Delay: ${now - params.startTime}ms)`);
+      console.log(`${now} | User ${user.telegramId} | Bought ${amountPurchased} ${itemCodeToItemNameMap.get(itemCode)} at ${content.price} gold each | Delay: ${now - params.startTime}ms)`);
       return response;
     });
   });
