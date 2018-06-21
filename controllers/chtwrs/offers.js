@@ -142,7 +142,7 @@ const offers = (params) => {
       const request = makeWantToBuyRequest(user.chtwrsToken, itemCode, amountPurchased, content.price);
       const response = bot.sendChtwrsMessage(request);
       const now = new Date();
-      console.log(`${now} | User ${user.telegramId} | Bought ${amountPurchased} ${itemCode} at ${content.price} gold each | Delay: ${now - params.startTime}ms)`);
+      console.log(`${now} | User ${user.telegramId} | Bought ${amountPurchased} ${itemNameToItemCodeMap.get(itemCode)} at ${content.price} gold each | Delay: ${now - params.startTime}ms)`);
       return response;
     });
   });
