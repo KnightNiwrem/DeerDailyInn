@@ -104,6 +104,9 @@ const itemCodeToNameEntries = [
   ['68', 'Mammoth Dill'],
   ['69', 'Silver dust'],
 
+  ['506', 'Bottle of Remedy'],
+  ['508', 'Bottle of Poison'],
+
   ['p01', 'Vial of Rage'],
   ['p02', 'Potion of Rage'],
   ['p03', 'Bottle of Rage'],
