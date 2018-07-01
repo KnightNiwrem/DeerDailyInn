@@ -28,6 +28,8 @@ const itemCodeToNameEntries = [
   ['08', 'Iron ore'],
   ['09', 'Cloth'],
   ['10', 'Silver ore'],
+  ['11', 'Bauxite'],
+  ['12', 'Cord'],
   ['13', 'Magic stone'],
   ['14', 'Wooden shaft'],
   ['15', 'Sapphire'],
@@ -107,6 +109,7 @@ const itemCodeToNameEntries = [
   ['pl1', 'Vial of Oblivion'],
   ['pl3', 'Bottle of Oblivion']
 ];
+
 const itemCodeToItemNameMap = new Map(itemCodeToNameEntries.map((e) => [e[0], e[1]]));
 const itemNameToItemCodeMap = new Map(itemCodeToNameEntries.map((e) => [e[1], e[0]]));
 

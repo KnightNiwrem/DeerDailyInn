@@ -68,6 +68,8 @@ const itemCodeToNameEntries = [
   ['08', 'Iron ore'],
   ['09', 'Cloth'],
   ['10', 'Silver ore'],
+  ['11', 'Bauxite'],
+  ['12', 'Cord'],
   ['13', 'Magic stone'],
   ['14', 'Wooden shaft'],
   ['15', 'Sapphire'],
