@@ -209,26 +209,25 @@ const respondToForbidden = (content, bot) => {
   });
 };
 
-const respondToInvalidToken = (content, bot) => {
+const respondToInvalidToken = async (content, bot) => {
   const chtwrsToken = content.payload.token;
+  const user = await User.query().where('chtwrsToken', chtwrsToken).first();
 
-  return User.query().where('chtwrsToken', chtwrsToken)
-  .then((user) => {
-    const text = `Revoked token detected. Deregistering you from Deer Daily Inn now - All your settings will be reset. If you would like to register again, please do /start`;
-    const message = JSON.stringify({
-      chat_id: user.telegramId,
-      text: text
-    });
-    bot.sendTelegramMessage('sendMessage', message);
-    return user;
-  })
-  .then((user) => {
-    const updateUser = User.query().patch({ chtwrsToken: null }).where('id', user.id);
-    const deleteBuyOrders = BuyOrder.query().delete().where('telegramId', user.telegramId);
-    const deleteFlashes = Flash.query().delete().where('chatId', user.telegramId);
+  if (_.isNil(user)) {
+    return;
+  }
 
-    return Promise.all([updateUser, deleteBuyOrders, deleteFlashes]);
+  const text = `Revoked token detected. Deregistering you from Deer Daily Inn now - All your settings will be reset. If you would like to register again, please do /start`;
+  const message = JSON.stringify({
+    chat_id: user.telegramId,
+    text: text
   });
+  bot.sendTelegramMessage('sendMessage', message);
+
+  const updateUser = User.query().patch({ chtwrsToken: null }).where('id', user.id);
+  const deleteBuyOrders = BuyOrder.query().delete().where('telegramId', user.telegramId);
+  const deleteFlashes = Flash.query().delete().where('chatId', user.telegramId);
+  return await Promise.all([updateUser, deleteBuyOrders, deleteFlashes]);
 };
 
 const respondToUnknown = (content) => {
