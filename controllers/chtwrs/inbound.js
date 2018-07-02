@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const { transaction } = require('objection');
+const Flash = require('../../models/flash');
 const User = require('../../models/user');
 const Transaction = require('../../models/transaction');
 
@@ -159,6 +160,7 @@ const respondToWantToBuy = (content, bot) => {
 
   const statusCode = content.result.toLowerCase();
   const isSuccessful = statusCode === 'ok';
+
   if (!isSuccessful) {
     const text = hasDetails ? `Could not buy ${quantity} ${itemName}: ${content.result}` : `Could not access exchange: ${content.result}`;
     const message = JSON.stringify({
@@ -207,6 +209,28 @@ const respondToForbidden = (content, bot) => {
   });
 };
 
+const respondToInvalidToken = (content, bot) => {
+  const chtwrsToken = content.payload.token;
+
+  return User.query().where('chtwrsToken', chtwrsToken)
+  .then((user) => {
+    const text = `Revoked token detected. Deregistering you from Deer Daily Inn now - All your settings will be reset. If you would like to register again, please do /start`;
+    const message = JSON.stringify({
+      chat_id: user.telegramId,
+      text: text
+    });
+    bot.sendTelegramMessage('sendMessage', message);
+    return user;
+  })
+  .then((user) => {
+    const updateUser = User.query().patch({ chtwrsToken: null }).where('id', user.id);
+    const deleteBuyOrders = BuyOrder.query().delete().where('telegramId', user.telegramId);
+    const deleteFlashes = Flash.query().delete().where('chatId', user.telegramId);
+
+    return Promise.all([updateUser, deleteBuyOrders, deleteFlashes]);
+  });
+};
+
 const respondToUnknown = (content) => {
   console.warn(`Inbound queue: ${content.action} returned status code ${content.result}`);
 };
@@ -248,6 +272,8 @@ const inbound = (params) => {
     responder = inboundResponders[content.action];
   } else if (statusCode === 'forbidden') {
     responder = respondToForbidden;
+  } else if (statusCode === 'invalidtoken') {
+    responder = respondToInvalidToken;
   } else {
     responder = inboundErrorResponders[content.action];
   }
