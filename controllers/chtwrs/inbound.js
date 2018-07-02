@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const { transaction } = require('objection');
+const BuyOrder = require('../../models/buyOrder');
 const Flash = require('../../models/flash');
 const User = require('../../models/user');
 const Transaction = require('../../models/transaction');
