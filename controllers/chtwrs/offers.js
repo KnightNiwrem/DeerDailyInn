@@ -126,7 +126,8 @@ const offers = (params) => {
   .where('item', content.item)
   .andWhere('maxPrice', '>=', content.price)
   .andWhere('amountLeft', '>', 0)
-  .first('id')
+  .orderBy('id')
+  .first()
   .then((buyOrder) => {
     if (_.isNil(buyOrder)) {
       return;
