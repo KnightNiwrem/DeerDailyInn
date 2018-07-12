@@ -15,7 +15,7 @@ be registered yet! Do /start to register first!`;
   return message;
 };
 
-const makeInsufficientBalanceMessage = (chatId, amount, balance) => {
+const makeInsufficientBalanceMessage = (chatId, cost, balance) => {
   const text = `Sorry! You need at least ${cost} gold to buy a cup of coffee, \ 
 but you only have ${balance} gold now.`;
 
@@ -74,7 +74,7 @@ const coffee = async (params) => {
     }
 
     if (user.balance < coffeeCost) {
-      const message = makeInsufficientBalanceMessage(chatId, withdrawalAmount, user.balance);
+      const message = makeInsufficientBalanceMessage(chatId, coffeeCost, user.balance);
       bot.sendTelegramMessage('sendMessage', message);
       return Promise.reject(`Rejected in coffee: User ${user.telegramId} tried to drink a cup of coffee for ${coffeeCost} gold, but only had ${user.balance} gold in balance.`);
     }
