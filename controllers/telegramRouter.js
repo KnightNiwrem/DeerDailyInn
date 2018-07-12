@@ -9,6 +9,7 @@ const authExtraController = require('./telegram/authextra');
 const balanceController = require('./telegram/balance');
 const buyController = require('./telegram/buy');
 const cancelController = require('./telegram/cancel');
+const coffeeController = require('./telegram/coffee');
 const confirmController = require('./telegram/confirm');
 const cmdController = require('./telegram/cmd');
 const dealsController = require('./telegram/deals');
@@ -34,6 +35,7 @@ const controllerRouter = {
   balance: balanceController,
   buy: buyController,
   cancel: cancelController,
+  coffee: coffeeController,
   confirm: confirmController,
   cmd: cmdController,
   deals: dealsController,
@@ -59,6 +61,7 @@ const controllerRouter = {
 };
 
 const usableCommandsInChannel = new Set([
+  'coffee',
   'deals',
   'flash',
   'help',
