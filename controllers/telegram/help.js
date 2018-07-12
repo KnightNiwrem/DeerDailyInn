@@ -9,6 +9,7 @@ const makeHelpMessage = (chatId) => {
 /balance - Fetches gold balance in Deer Daily Inn
 /buy [item code] [quantity] [max price] - Create a buy order
 /cancel [item code] - Cancels active buy orders for that item
+/coffee - Purchases a cup of coffee for 10 gold
 /confirm [confirmation code] - Completes gold deposit
 /deals (optional item name) - Displays your recent sales and purchases
 /deposit [number of pouches] - Deposits gold into personal Deer Daily Inn balance
