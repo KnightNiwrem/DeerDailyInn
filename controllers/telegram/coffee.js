@@ -76,12 +76,14 @@ const coffee = async (params) => {
     if (user.balance < coffeeCost) {
       const message = makeInsufficientBalanceMessage(chatId, coffeeCost, user.balance);
       bot.sendTelegramMessage('sendMessage', message);
+      bot.sendLog(`Failure: User ${user.telegramId} tried to drink some coffee but did not have enough gold`);
       return Promise.reject(`Rejected in coffee: User ${user.telegramId} tried to drink a cup of coffee for ${coffeeCost} gold, but only had ${user.balance} gold in balance.`);
     }
 
     const currentBuyOrderLimit = user.buyOrderLimit;
     const coffeeSuccessRate = buyOrderLimitToSuccessRate.has(currentBuyOrderLimit) ? buyOrderLimitToSuccessRate.get(currentBuyOrderLimit) : 0;
     const isSuccessfulCoffee = Math.random() < coffeeSuccessRate;
+    bot.sendLog(`Success: User ${user.telegramId} drank some coffee for ${coffeeCost} gold`);
 
     const userAttributes = {
       balance: user.balance - coffeeCost,
