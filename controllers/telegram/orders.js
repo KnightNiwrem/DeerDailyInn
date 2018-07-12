@@ -35,13 +35,13 @@ be registered yet! Do /start to register first!`;
   return unregisteredMessage;
 };
 
-const makeOrdersMessage = (chatId, ordersToAheadMap) => {
-  const orderText = [...ordersToAheadMap.entries()].map(([order, countAhead]) => {
+const makeOrdersMessage = (chatId, buyOrderLimit, ordersToAheadMap) => {
+  const orderLines = [...ordersToAheadMap.entries()].map(([order, countAhead]) => {
     return `${order.amountLeft} ${order.item} at ${order.maxPrice} gold or less (Est. ${countAhead} ahead of you in buy order queue)`;
-  }).join('\n');
-  const text = `Your current buy orders are:
+  });
+  const text = `Active Buy Orders (${orderLines.length}/${buyOrderLimit}):
 
-${orderText}`;
+${orderLines.join('\n')}`;
 
   const message = JSON.stringify({
     chat_id: chatId,
@@ -67,8 +67,13 @@ const orders = (params) => {
   .andWhere('telegramId', telegramId)
   .then((orders) => {
     return processOrders(orders);
-  }).then((ordersToAheadMap) => {
-    const message = makeOrdersMessage(chatId, ordersToAheadMap);
+  })
+  .then((ordersToAheadMap) => {
+    const user = User.query().where('telegramId', telegramId);
+    return Promise.all([ordersToAheadMap, user]);
+  })
+  .then(([ordersToAheadMap, user]) => {
+    const message = makeOrdersMessage(chatId, user.buyOrderLimit, ordersToAheadMap);
     return bot.sendTelegramMessage('sendMessage', message);
   });
 };
