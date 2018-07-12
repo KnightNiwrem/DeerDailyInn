@@ -65,6 +65,10 @@ class User extends Model {
           type: 'integer',
           default: 0
         },
+        buyOrderLimit: {
+          type: 'integer',
+          default: 5
+        },
         chtwrsId: {
           type: ['string', 'null']
         },
