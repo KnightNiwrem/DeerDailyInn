@@ -280,6 +280,13 @@ const itemCodeToQuantityLimits = new Map(itemCodeToQuantityLimitEntries);
 
 const processBuyOrder = async (bot, chatId, itemCode, price, quantity, telegramId) => {
   const user = await User.query().where('telegramId', telegramId);
+  const isSuccess = !_.isNil(user) && !_.isEmpty(user.chtwrsId);
+  if (_.isNil(user) || _.isEmpty(user.chtwrsToken)) {
+    const message = makeUnregisteredMessage(chatId);
+    bot.sendTelegramMessage('sendMessage', message);
+    return Promise.reject(`Rejected in buy: User ${telegramId} is not registered.`);
+  }
+  
   const pendingBuyOrders = await BuyOrder.query()
   .where('telegramId', telegramId)
   .andWhere('amountLeft', '>', 0);
@@ -306,14 +313,6 @@ const processBuyOrder = async (bot, chatId, itemCode, price, quantity, telegramI
     const message = makeQuantityLimitExceededMessage(chatId, itemCode, quantityLimit, price, quantity);
     bot.sendTelegramMessage('sendMessage', message);
     return Promise.reject(`Rejected in buy: User ${telegramId} quantity limit exceeded for ${searchTermToNameMap.get(itemCode)}`);
-  }
-
-  const user = await User.query().where('telegramId', telegramId).first();
-  const isSuccess = !_.isNil(user) && !_.isEmpty(user.chtwrsId);
-  if (_.isNil(user) || _.isEmpty(user.chtwrsToken)) {
-    const message = makeUnregisteredMessage(chatId);
-    bot.sendTelegramMessage('sendMessage', message);
-    return Promise.reject(`Rejected in buy: User ${telegramId} is not registered.`);
   }
 
   const request = makeWantToBuyRequest(user.chtwrsToken, '01', 99999, 1);

@@ -69,8 +69,8 @@ const orders = (params) => {
     return processOrders(orders);
   })
   .then((ordersToAheadMap) => {
-    const user = User.query().where('telegramId', telegramId);
-    return Promise.all([ordersToAheadMap, user]);
+    const queriedUser = User.query().where('telegramId', telegramId);
+    return Promise.all([ordersToAheadMap, queriedUser]);
   })
   .then(([ordersToAheadMap, user]) => {
     const message = makeOrdersMessage(chatId, user.buyOrderLimit, ordersToAheadMap);
