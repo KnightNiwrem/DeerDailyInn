@@ -279,14 +279,14 @@ const itemCodeToQuantityLimitEntries = [
 const itemCodeToQuantityLimits = new Map(itemCodeToQuantityLimitEntries);
 
 const processBuyOrder = async (bot, chatId, itemCode, price, quantity, telegramId) => {
-  const user = await User.query().where('telegramId', telegramId);
+  const user = await User.query().where('telegramId', telegramId).first();
   const isSuccess = !_.isNil(user) && !_.isEmpty(user.chtwrsId);
   if (_.isNil(user) || _.isEmpty(user.chtwrsToken)) {
     const message = makeUnregisteredMessage(chatId);
     bot.sendTelegramMessage('sendMessage', message);
     return Promise.reject(`Rejected in buy: User ${telegramId} is not registered.`);
   }
-  
+
   const pendingBuyOrders = await BuyOrder.query()
   .where('telegramId', telegramId)
   .andWhere('amountLeft', '>', 0);
