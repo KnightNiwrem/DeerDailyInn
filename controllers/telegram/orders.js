@@ -69,7 +69,7 @@ const orders = (params) => {
     return processOrders(orders);
   })
   .then((ordersToAheadMap) => {
-    const user = User.query().where('telegramId', telegramId);
+    const user = User.query().where('telegramId', telegramId).first();
     return Promise.all([ordersToAheadMap, user]);
   })
   .then(([ordersToAheadMap, user]) => {
