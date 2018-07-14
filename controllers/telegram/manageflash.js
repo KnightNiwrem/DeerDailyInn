@@ -102,6 +102,13 @@ const itemCodeToNameEntries = [
   ['506', 'Bottle of Remedy'],
   ['508', 'Bottle of Poison'],
 
+  ['518', 'Hay'],
+  ['519', 'Corn'],
+  ['520', 'Hamsters'],
+  ['521', 'Cheese'],
+
+  ['ch1', 'Zombie Chest'],
+
   ['p01', 'Vial of Rage'],
   ['p02', 'Potion of Rage'],
   ['p03', 'Bottle of Rage'],

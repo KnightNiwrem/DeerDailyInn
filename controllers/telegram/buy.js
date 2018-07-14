@@ -152,6 +152,13 @@ const itemCodeToNameEntries = [
   ['506', 'Bottle of Remedy'],
   ['508', 'Bottle of Poison'],
 
+  ['518', 'Hay'],
+  ['519', 'Corn'],
+  ['520', 'Hamsters'],
+  ['521', 'Cheese'],
+
+  ['ch1', 'Zombie Chest'],
+
   ['p01', 'Vial of Rage'],
   ['p02', 'Potion of Rage'],
   ['p03', 'Bottle of Rage'],
@@ -250,6 +257,11 @@ const itemCodeToQuantityLimitEntries = [
   ['501', 10],
   ['506', 5],
   ['508', 5],
+  ['518', 3],
+  ['519', 3],
+  ['520', 3],
+  ['521', 3],
+  ['ch1', 1],
   ['p01', 5],
   ['p02', 5],
   ['p03', 5],
