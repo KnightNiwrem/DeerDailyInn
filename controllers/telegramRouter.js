@@ -61,7 +61,10 @@ const controllerRouter = {
 };
 
 const usableCommandsInChannel = new Set([
+  'balance',
   'coffee',
+  'confirm',
+  'deposit',
   'deals',
   'flash',
   'help',
