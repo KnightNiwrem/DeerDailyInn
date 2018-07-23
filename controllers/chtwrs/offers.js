@@ -3,6 +3,8 @@ const BuyOrder = require('../../models/buyOrder');
 const Flash = require('../../models/flash');
 const User = require('../../models/user');
 
+const blacklistChtwrsId = require('../../blacklistChtwrsId');
+
 const makeWantToBuyRequest = (chtwrsToken, itemCode, quantity, price) => {
   const message = JSON.stringify({  
     token: chtwrsToken,  
@@ -143,12 +145,14 @@ const offers = (params) => {
     const itemCode = itemNameToItemCodeMap.get(content.item);
     const amountPurchased = Math.min(content.qty, buyOrder.amountLeft);
 
-    BuyOrder.query()
-    .patch({ amountLeft: buyOrder.amountLeft - amountPurchased })
-    .where('id', buyOrder.id)
-    .then(() => {
-      return;
-    });
+    if (_.isNil(blacklistChtwrsId) || !blacklistChtwrsId.has(content.sellerId)) {
+      BuyOrder.query()
+      .patch({ amountLeft: buyOrder.amountLeft - amountPurchased })
+      .where('id', buyOrder.id)
+      .then(() => {
+        return;
+      });
+    }
 
     User.query()
     .where('telegramId', buyOrder.telegramId)
