@@ -60,8 +60,9 @@ const transfer = async (params) => {
   const bot = params.bot;
   const chatId = params.chatId;
   const telegramId = params.telegramId;
-  const [fromTelegramId, toTelegramId, transferAmount, ] = params.options.map(Number);
-  if (!_.isInteger(fromTelegramId) || !_.isInteger(toTelegramId) || !_.isInteger(transferAmount) || transferAmount < 1) {
+  const [fromTelegramId, toTelegramId, transferAmountString, ] = params.options;
+  const transferAmount = parseInt(transferAmountString);
+  if (!_.isInteger(transferAmount) || transferAmount < 1) {
     const message = makeBadArgumentMessage(chatId);
     return bot.sendTelegramMessage('sendMessage', message);
   }
