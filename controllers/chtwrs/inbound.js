@@ -154,7 +154,6 @@ Please do:
 };
 
 const bannedItemNames = new Set([
-  'Vial of Greed',
   'Zombie Chest'
 ]);
 
@@ -182,6 +181,7 @@ const respondToWantToBuy = async (content, bot) => {
       .patch({ amountLeft: targetBuyOrder.amountLeft + quantity })
       .where('id', targetBuyOrder.id);
 
+      console.log(`${new Date()} | User ${telegramId} | Could not buy ${quantity} ${itemName}: ${content.result} + Rollback`);
       return;
     }
 
