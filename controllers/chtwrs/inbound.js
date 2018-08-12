@@ -156,6 +156,9 @@ Please do:
 const bannedItemNames = new Set([
   'Zombie Chest'
 ]);
+const invalidRollbackStatusCode = new Set([
+  'levelislow'
+]);
 
 const respondToWantToBuy = async (content, bot) => {
   const telegramId = content.payload.userId;
@@ -166,11 +169,12 @@ const respondToWantToBuy = async (content, bot) => {
   const statusCode = content.result.toLowerCase();
   const isSuccessful = statusCode === 'ok';
   const isBannedItemName = bannedItemNames.has(itemName);
+  const canRollback = !invalidRollbackStatusCode.has(statusCode);
 
   if (!isSuccessful) {
     // For items that cannot be manually purchased
     // Rollback instead of sending error message
-    if (isBannedItemName) {
+    if (isBannedItemName && canRollback) {
       const targetBuyOrder = await BuyOrder.query()
       .where('item', itemName)
       .andWhere('telegramId', telegramId)
