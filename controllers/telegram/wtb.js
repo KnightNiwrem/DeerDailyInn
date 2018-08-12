@@ -27,6 +27,16 @@ const makeBadArgumentMessage = (chatId) => {
   return message;
 };
 
+const makeBannedItemCodeMessage = (chatId, itemCode) => {
+  const text = `This item has been restricted from manual /wtb.`;
+
+  const message = JSON.stringify({
+    chat_id: chatId,
+    text: text
+  });
+  return message;
+};
+
 const makeWantToBuyRequest = (chtwrsToken, itemCode, quantity, price) => {
   const message = JSON.stringify({  
     token: chtwrsToken,  
@@ -148,6 +158,10 @@ const searchTermToNameMap = new Map([
   ...itemNames.map(name => [normalizeItemName(name), name])
 ]);
 
+const bannedItemCodes = new Set([
+  'ch1'
+]);
+
 const wtb = (params) => {
   if (_.isNil(params.bot)) {
     return Promise.reject('Rejected in wtb: Bot cannot be missing');
@@ -170,6 +184,10 @@ const wtb = (params) => {
   const isValidPrice = _.isFinite(price) && _.isSafeInteger(price) && (price > 0);
   if (!isValidItemCode || !isValidQuantity || !isValidPrice) {
     const message = makeBadArgumentMessage(chatId);
+    return bot.sendTelegramMessage('sendMessage', message);
+  }
+  if (bannedItemCodes.has(itemCode)) {
+    const message = makeBannedItemCodeMessage(chatId, itemCode);
     return bot.sendTelegramMessage('sendMessage', message);
   }
 

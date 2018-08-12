@@ -153,7 +153,12 @@ Please do:
   return bot.sendTelegramMessage('sendMessage', message);
 };
 
-const respondToWantToBuy = (content, bot) => {
+const bannedItemNames = new Set([
+  'Vial of Greed',
+  'Zombie Chest'
+]);
+
+const respondToWantToBuy = async (content, bot) => {
   const telegramId = content.payload.userId;
   const itemName = content.payload.itemName;
   const quantity = content.payload.quantity;
@@ -161,8 +166,25 @@ const respondToWantToBuy = (content, bot) => {
 
   const statusCode = content.result.toLowerCase();
   const isSuccessful = statusCode === 'ok';
+  const isBannedItemName = bannedItemNames.has(itemName);
 
   if (!isSuccessful) {
+    // For items that cannot be manually purchased
+    // Rollback instead of sending error message
+    if (isBannedItemName) {
+      const targetBuyOrder = await BuyOrder.query()
+      .where('item', itemName)
+      .andWhere('telegramId', telegramId)
+      .orderBy('id', 'DESC')
+      .first();
+
+      await BuyOrder.query()
+      .patch({ amountLeft: targetBuyOrder.amountLeft + quantity })
+      .where('id', targetBuyOrder.id);
+
+      return;
+    }
+
     const text = hasDetails ? `Could not buy ${quantity} ${itemName}: ${content.result}` : `Could not access exchange: ${content.result}`;
     const message = JSON.stringify({
       chat_id: telegramId,
