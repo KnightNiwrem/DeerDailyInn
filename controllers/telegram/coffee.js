@@ -91,6 +91,12 @@ const coffee = async (params) => {
     };
     const updatedUser = await user.$query(transactionObject).patch(userAttributes).returning('*');
 
+    const botUser = await User.query(transactionObject).where('id', 0).first();
+    const botAttributes = {
+      balance: botUser.balance + coffeeCost
+    };
+    const updatedBotUser = await botUser.$query(transactionObject).patch(botAttributes).returning('*');
+
     const transactionAttributes = {
       fromId: user.id,
       quantity: coffeeCost,
