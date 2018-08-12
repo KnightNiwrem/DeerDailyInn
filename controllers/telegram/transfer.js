@@ -15,7 +15,7 @@ const makeBadArgumentMessage = (chatId) => {
 };
 
 const makeUserNotFoundMessage = (chatId, fromUser, toUser) => {
-  const text = `Could not find either fromUser to toUser.
+  const text = `Could not find fromUser or toUser.
 fromUser: ${_.isNil(fromUser) ? 'Not found' : 'Found'}
 toUser: ${_.isNil(toUser) ? 'Not found' : 'Found'}`;
 
@@ -27,7 +27,7 @@ toUser: ${_.isNil(toUser) ? 'Not found' : 'Found'}`;
 };
 
 const makeInsufficientBalanceMessage = (chatId, amount, balance) => {
-  const text = `Could not transfer ${amount} from fromUser! Source user only have ${balance} gold in balance!`;
+  const text = `Could not transfer ${amount} gold from fromUser! Source user only have ${balance} gold in balance!`;
 
   const message = JSON.stringify({
     chat_id: chatId,
@@ -102,7 +102,7 @@ const transfer = async (params) => {
   });
 
   return Promise.resolve(transferTransaction)
-  .then(() => {
+  .then(([fromUser, toUser, transaction]) => {
     const message = makeTransferCompletionMessage(chatId, transaction.quantity, fromUser, toUser);
     return bot.sendTelegramMessage('sendMessage', message);
   });
