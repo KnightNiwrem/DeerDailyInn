@@ -157,7 +157,9 @@ const bannedItemNames = new Set([
   'Zombie Chest'
 ]);
 const invalidRollbackStatusCode = new Set([
-  'levelislow'
+  'insufficientfunds',
+  'levelislow',
+  'userisbusy'
 ]);
 
 const respondToWantToBuy = async (content, bot) => {
