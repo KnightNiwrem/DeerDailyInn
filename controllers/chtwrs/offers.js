@@ -122,6 +122,10 @@ const itemCodeToNameEntries = [
 const itemCodeToItemNameMap = new Map(itemCodeToNameEntries.map((e) => [e[0], e[1]]));
 const itemNameToItemCodeMap = new Map(itemCodeToNameEntries.map((e) => [e[1], e[0]]));
 
+const invalidItemCodeForWtb = new Set([
+  'ch1'
+]);
+
 const offers = (params) => {
   if (_.isNil(params.bot)) {
     console.warn('Offers queue: Bot cannot be missing');
@@ -181,8 +185,8 @@ const offers = (params) => {
         chat_id: flash.chatId,
         text: `${content.sellerCastle}${content.sellerName} is selling ${content.qty} ${content.item} at ${content.price} gold each! (Lag time: ${new Date() - params.startTime + delay} ms)
 
-Quickbuy 1: ${_.isNil(itemCode) ? 'Not available' : `/wtb_${itemCode}_1_${content.price}`}
-Quickbuy all: ${_.isNil(itemCode) ? 'Not available' : `/wtb_${itemCode}_${content.qty}_${content.price}`}`
+Quickbuy 1: ${_.isNil(itemCode) || invalidItemCodeForWtb.has(itemCode) ? 'Not available' : `/wtb_${itemCode}_1_${content.price}`}
+Quickbuy all: ${_.isNil(itemCode) || invalidItemCodeForWtb.has(itemCode) ? 'Not available' : `/wtb_${itemCode}_${content.qty}_${content.price}`}`
       });
       return bot.sendTelegramMessage('sendMessage', flashMessage, delay);
     });
