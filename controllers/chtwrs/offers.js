@@ -185,8 +185,8 @@ const offers = (params) => {
         chat_id: flash.chatId,
         text: `${content.sellerCastle}${content.sellerName} is selling ${content.qty} ${content.item} at ${content.price} gold each! (Lag time: ${new Date() - params.startTime + delay} ms)
 
-Quickbuy 1: ${_.isNil(itemCode) || invalidItemCodeForWtb.has(itemCode) ? 'Not available' : `/wtb_${itemCode}_1_${content.price}`}
-Quickbuy all: ${_.isNil(itemCode) || invalidItemCodeForWtb.has(itemCode) ? 'Not available' : `/wtb_${itemCode}_${content.qty}_${content.price}`}`
+Quickbuy 1: ${_.isNil(itemCode) || invalidItemCodeForWtb.has(itemCode) ? 'This item is not eligible for manual /wtb' : `/wtb_${itemCode}_1_${content.price}`}
+Quickbuy all: ${_.isNil(itemCode) || invalidItemCodeForWtb.has(itemCode) ? 'This item is not eligible for manual /wtb' : `/wtb_${itemCode}_${content.qty}_${content.price}`}`
       });
       return bot.sendTelegramMessage('sendMessage', flashMessage, delay);
     });
