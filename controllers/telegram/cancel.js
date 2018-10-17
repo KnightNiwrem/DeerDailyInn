@@ -113,6 +113,7 @@ const itemCodeToNameEntries = [
   ['521', 'Cheese'],
 
   ['ch1', 'Zombie Chest'],
+  ['ch2', 'Ancient Chest'],
 
   ['p01', 'Vial of Rage'],
   ['p02', 'Potion of Rage'],

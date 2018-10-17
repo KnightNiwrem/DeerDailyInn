@@ -158,6 +158,7 @@ const itemCodeToNameEntries = [
   ['521', 'Cheese'],
 
   ['ch1', 'Zombie Chest'],
+  ['ch2', 'Ancient Chest'],
 
   ['p01', 'Vial of Rage'],
   ['p02', 'Potion of Rage'],
@@ -262,6 +263,7 @@ const itemCodeToQuantityLimitEntries = [
   ['520', 3],
   ['521', 3],
   ['ch1', 1],
+  ['ch2', 1],
   ['p01', 5],
   ['p02', 5],
   ['p03', 5],

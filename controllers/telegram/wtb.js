@@ -125,6 +125,7 @@ const itemCodeToNameEntries = [
   ['521', 'Cheese'],
 
   ['ch1', 'Zombie Chest'],
+  ['ch2', 'Ancient Chest'],
 
   ['p01', 'Vial of Rage'],
   ['p02', 'Potion of Rage'],
@@ -159,7 +160,7 @@ const searchTermToNameMap = new Map([
 ]);
 
 const bannedItemCodes = new Set([
-  'ch1'
+  'ch1', 'ch2'
 ]);
 
 const wtb = (params) => {
