@@ -154,7 +154,8 @@ Please do:
 };
 
 const bannedItemNames = new Set([
-  'Zombie Chest'
+  'Zombie Chest',
+  'Ancient Chest'
 ]);
 const invalidRollbackStatusCode = new Set([
   'insufficientfunds',
