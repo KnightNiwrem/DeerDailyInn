@@ -146,7 +146,7 @@ const itemCodeToNameEntries = [
 ];
 const itemCodeToNames = new Map(itemCodeToNameEntries);
 
-const inspectBuyOrders = async (chatId, itemName, price, telegramId) => {
+const inspectBuyOrders = async (bot, chatId, itemName, price, telegramId) => {
   const userBuyOrder = await BuyOrder.query()
   .where('telegramId', telegramId)
   .andWhere('item', itemName)
@@ -215,7 +215,7 @@ const inspect = (params) => {
     return bot.sendTelegramMessage('sendMessage', unknownItemCodeMessage);
   }
 
-  return inspectBuyOrders(chatId, itemName, price, telegramId);
+  return inspectBuyOrders(bot, chatId, itemName, price, telegramId);
 };
 
 module.exports = inspect;
