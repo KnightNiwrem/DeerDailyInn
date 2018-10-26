@@ -17,16 +17,15 @@ Format: /inspect {itemCode} {price}`;
   return missingArgumentMessage;
 };
 
-const makeUnknownItemCodeMessage = (chatId) => {
-  const unknownItemCodeText = `Hi, I'm not familiar \
-with that item code. If this is an error, contact me \
-at @knightniwrem!`;
-
-  const unknownItemCodeMessage = JSON.stringify({
+const makeBadArgumentMessage = (chatId) => {
+  const badArgumentText = `Sorry, you need to specify an itemCode that \
+I know of. Make sure that the price is given, is a number too!`;
+  
+  const badArgumentMessage = JSON.stringify({
     chat_id: chatId,
-    text: unknownItemCodeText
+    text: badArgumentText
   });
-  return makeUnknownItemCodeMessage;
+  return badArgumentMessage;
 };
 
 const makeInspectMessage = (chatId, aheadQuantity, behindQuantity, itemName, price, userBuyOrder) => {
@@ -203,16 +202,17 @@ const inspect = (params) => {
   const chatId = params.chatId;
   const telegramId = params.telegramId;
   const options = params.options;
-  const [itemCode, price] = options;
-  if (_.isUndefined(itemCode) || _.isUndefined(price)) {
+  const [itemCode, priceString] = options;
+  if (_.isUndefined(itemCode) || _.isUndefined(priceString)) {
     const missingArgumentMessage = makeMissingArgumentMessage(chatId);
     return bot.sendTelegramMessage('sendMessage', missingArgumentMessage);
   }
 
   const itemName = itemCodeToNames.get(itemCode);
-  if (!itemCodeToNames.has(itemCode)) {
-    const unknownItemCodeMessage = makeUnknownItemCodeMessage(chatId);
-    return bot.sendTelegramMessage('sendMessage', unknownItemCodeMessage);
+  const price = Number(priceString);
+  if (_.isUndefined(itemName) || !_.isInteger(price) || !_.isFinite(price) || price < 1) {
+    const badArgumentMessage = makeBadArgumentMessage(chatId);
+    return bot.sendTelegramMessage('sendMessage', badArgumentMessage);
   }
 
   return inspectBuyOrders(bot, chatId, itemName, price, telegramId);
