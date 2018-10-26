@@ -15,6 +15,7 @@ const makeHelpMessage = (chatId) => {
 /deposit [number of pouches] - Deposits gold into personal Deer Daily Inn balance
 /help - Display this help message
 /info - Displays channel and user info
+/inspect [item code] [price] - Displays the buy order quantity waiting to purchase this item at that price
 /purchases (optional item name) - Displays your recent purchases
 /orders - Displays your current active orders
 /sales (optional item name) - Displays your recent sales
