@@ -19,6 +19,7 @@ const getInfoController = require('./telegram/getinfo');
 const grantController = require('./telegram/grant');
 const helpController = require('./telegram/help');
 const infoController = require('./telegram/info');
+const inspectController = require('./telegram/inspect');
 const manageFlashController = require('./telegram/manageflash');
 const ordersController = require('./telegram/orders');
 const pokeFleeController = require('./telegram/pokeflee');
@@ -46,7 +47,9 @@ const controllerRouter = {
   getinfo: getInfoController,
   grant: grantController,
   help: helpController,
+  i: inspectController,
   info: infoController,
+  inspect: inspectController,
   manageflash: manageFlashController,
   mf: manageFlashController,
   orders: ordersController,
@@ -69,9 +72,14 @@ const usableCommandsInChannel = new Set([
   'confirm',
   'deposit',
   'deals',
+  'f',
   'flash',
   'help',
+  'i',
   'info',
+  'inspect',
+  'manageflash',
+  'mf', 
   'pokeflee',
   'pokeplayers',
   'pokeregister',
