@@ -210,7 +210,7 @@ const inspect = (params) => {
   }
 
   const itemName = itemCodeToNames.get(itemCode);
-  if (_.isUndefined(itemName)) {
+  if (!itemCodeToNames.has(itemCode)) {
     const unknownItemCodeMessage = makeUnknownItemCodeMessage(chatId);
     return bot.sendTelegramMessage('sendMessage', unknownItemCodeMessage);
   }
