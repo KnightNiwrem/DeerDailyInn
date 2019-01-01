@@ -30,6 +30,7 @@ r.context.Model.knex(r.context.knex);
 r.context.BuyOrder = require('./models/buyOrder');
 r.context.Deal = require('./models/deal');
 r.context.Flash = require('./models/flash');
+r.context.Status = require('./models/status');
 r.context.Subscription = require('./models/subscription');
 r.context.Transaction = require('./models/transaction');
 r.context.User = require('./models/user');
