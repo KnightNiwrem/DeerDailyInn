@@ -16,7 +16,7 @@ be registered yet! Do /start to register first!`;
 };
 
 const makeStatusMessage = (chatId, activeStatuses, expiredStatuses, queuedStatuses, now) => {
-  const activeStatusText = statuses.map(status => {
+  const activeStatusText = activeStatuses.map(status => {
     return `${status.title} (${status.description}, Expiring in: ${moment.duration(now - moment(status.expireAt)).duration().humanize()})`;
   }).join('\n');
 
