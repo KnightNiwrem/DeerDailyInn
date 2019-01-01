@@ -17,7 +17,7 @@ be registered yet! Do /start to register first!`;
 
 const makeStatusMessage = (chatId, activeStatuses, expiredStatuses, queuedStatuses, now) => {
   const activeStatusText = activeStatuses.map(status => {
-    return `${status.title} (${status.description}, Expiring in: ${moment.duration(now - moment(status.expireAt)).duration().humanize()})`;
+    return `${status.title} (${status.description}, Expiring in: ${moment.duration(now - moment(status.expireAt)).humanize()})`;
   }).join('\n');
 
   const expiredStatusText = _.isEmpty(expiredStatuses) 
@@ -35,7 +35,7 @@ ${expiredStatuses.map(status => {
 
 Queue Statuses: 
 ${queuedStatuses.map(status => {
-  return `${status.title} (${status.description}, Starting in: ${moment.duration(now - moment(status.startAt)).duration().humanize()})`;
+  return `${status.title} (${status.description}, Starting in: ${moment.duration(now - moment(status.startAt)).humanize()})`;
 }).join('\n')}`;
 
   const text = `Active Statuses:
