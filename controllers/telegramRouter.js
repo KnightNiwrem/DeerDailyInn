@@ -26,6 +26,7 @@ const pokeFleeController = require('./telegram/pokeflee');
 const pokePlayersController = require('./telegram/pokeplayers');
 const pokeRegisterController = require('./telegram/pokeregister');
 const startController = require('./telegram/start');
+const statusController = require('./telegram/status');
 const transferController = require('./telegram/transfer');
 const updateLogController = require('./telegram/updatelog');
 const withdrawController = require('./telegram/withdraw');
@@ -59,6 +60,7 @@ const controllerRouter = {
   purchases: dealsController,
   sales: dealsController,
   start: startController,
+  status: statusController,
   transfer: transferController,
   updatelog: updateLogController,
   withdraw: withdrawController,
@@ -85,6 +87,7 @@ const usableCommandsInChannel = new Set([
   'pokeregister',
   'purchases',
   'sales',
+  'status',
   'updatelog',
   'wtb']);
 const definedCommands = new Set(_.keys(controllerRouter));

@@ -12,6 +12,7 @@ be registered yet! Do /start to register first!`;
   });
   return message;
 };
+
 const makeBalanceMessage = (chatId, balance) => {
   const text = `Balance: ${balance} gold`;
   const message = JSON.stringify({
