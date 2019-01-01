@@ -29,7 +29,7 @@ ${expiredStatuses.map(status => {
   return `${status.title} (${status.description}, Expired on: ${moment(status.expireAt).utc().format('Do MMMM Y, h:mm:ssa')})`;
 }).join('\n')}`;
 
-  const queuedStatusText = _.isEmpty(queueStatuses) 
+  const queuedStatusText = _.isEmpty(queuedStatuses) 
     ? ''
     : `
 
