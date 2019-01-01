@@ -74,7 +74,7 @@ const orders = async (params) => {
   .whereNotNull('deltaBuyOrderLimit')
   .andWhere('telegramId', telegramId)
   .andWhere('startAt', '<', now.toISOString())
-  .andWhere('expireAt', '>' now.toISOString());
+  .andWhere('expireAt', '>', now.toISOString());
   const totalActiveBuyOrderBoost = activeBuyOrderBoosts.reduce((total, next) => {
     return total + next.deltaBuyOrderLimit;
   }, 0);
