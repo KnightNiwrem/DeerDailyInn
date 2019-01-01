@@ -77,7 +77,7 @@ const orders = async (params) => {
   .andWhere('telegramId', telegramId)
   .andWhere('startAt', '<', now.toISOString())
   .andWhere('expireAt', '>', now.toISOString());
-  const totalActiveBuyOrderBoost = activeBuyOrderBoosts.reduce((total, next) => {
+  const totalActiveBuyOrderBoost = boosts.reduce((total, next) => {
     return total + next.deltaBuyOrderLimit;
   }, 0);
   const userBuyOrderLimit = user.buyOrderLimit + totalActiveBuyOrderBoost;
