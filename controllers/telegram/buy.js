@@ -317,7 +317,7 @@ const processBuyOrder = async (bot, chatId, itemCode, price, quantity, telegramI
   const totalActiveBuyOrderBoost = activeBuyOrderBoosts.reduce((total, next) => {
     return total + next.deltaBuyOrderLimit;
   }, 0);
-  const userBuyOrderLimit = user.buyOrderLimit + totalActiveBuyOrderBoost;
+  const userBuyOrderLimit = Math.max(user.buyOrderLimit + totalActiveBuyOrderBoost, 0);
 
   if (pendingBuyOrders.length >= userBuyOrderLimit) {
     const message = makeBuyOrderLimitExceededMessage(chatId, itemCode, userBuyOrderLimit, price, quantity)

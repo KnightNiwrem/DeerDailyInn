@@ -80,7 +80,7 @@ const orders = async (params) => {
   const totalActiveBuyOrderBoost = boosts.reduce((total, next) => {
     return total + next.deltaBuyOrderLimit;
   }, 0);
-  const userBuyOrderLimit = user.buyOrderLimit + totalActiveBuyOrderBoost;
+  const userBuyOrderLimit = Math.max(user.buyOrderLimit + totalActiveBuyOrderBoost, 0);
 
   const message = makeOrdersMessage(chatId, userBuyOrderLimit, ordersToAheadMap);
   return bot.sendTelegramMessage('sendMessage', message);
