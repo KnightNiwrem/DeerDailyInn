@@ -82,6 +82,7 @@ const usableCommandsInChannel = new Set([
   'inspect',
   'manageflash',
   'mf', 
+  'orders', 
   'pokeflee',
   'pokeplayers',
   'pokeregister',
