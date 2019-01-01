@@ -20,6 +20,7 @@ const makeHelpMessage = (chatId) => {
 /orders - Displays your current active orders
 /sales (optional item name) - Displays your recent sales
 /start - Gets authorization code from @chtwrsbot for registration
+/status - Displays current, future and past statuses
 /withdraw [number of pouches] - Withdraws gold from personal Deer Daily Inn balance
 /wtb [item code] [quantity] [price] - Executes an immediate exact price wtb command`;
   
