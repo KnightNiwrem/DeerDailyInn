@@ -15,12 +15,31 @@ be registered yet! Do /start to register first!`;
   return message;
 };
 
-const makeStatusMessage = (chatId, statuses) => {
-  const statusText = statuses.map(status => {
-    return `${status.title} (${status.description})`;
+const makeStatusMessage = (chatId, activeStatuses, expiredStatuses, queuedStatuses, now) => {
+  const activeStatusText = statuses.map(status => {
+    return `${status.title} (${status.description}, Expiring in: ${moment.duration(now - moment(status.expireAt)).duration().humanize()})`;
   }).join('\n');
+
+  const expiredStatusText = _.isEmpty(expiredStatuses) 
+    ? ''
+    : `
+
+Expired Statuses: 
+${expiredStatuses.map(status => {
+  return `${status.title} (${status.description}, Expired on: ${moment(status.expireAt).utc().format('Do MMMM Y, h:mm:ssa')})`;
+}).join('\n')}`;
+
+  const queuedStatusText = _.isEmpty(queueStatuses) 
+    ? ''
+    : `
+
+Queue Statuses: 
+${queuedStatuses.map(status => {
+  return `${status.title} (${status.description}, Starting in: ${moment.duration(now - moment(status.startAt)).duration().humanize()})`;
+}).join('\n')}`;
+
   const text = `Active Statuses:
-${statusText}`;
+${_.isEmpty(activeStatuses) ? 'None' : activeStatusText}${queuedStatusText}${expiredStatusText}`;
   const message = JSON.stringify({
     chat_id: chatId,
     text: text
@@ -50,12 +69,22 @@ const status = async (params) => {
   }
 
   const now = moment();
-  const statuses = await Status.query()
+  const activeStatuses = await Status.query()
   .where('telegramId', telegramId)
   .andWhere('startAt', '<', now.toISOString())
   .andWhere('expireAt', '>', now.toISOString());
 
-  const message = makeStatusMessage(chatId, statuses);
+  const expiredStatuses = await Status.query()
+  .where('telegramId', telegramId)
+  .andWhere('expireAt', '<', now.toISOString())
+  .orderBy('expireAt', 'desc')
+  .limit(5);
+
+  const queuedStatuses = await Status.query()
+  .where('telegramId', telegramId)
+  .andWhere('startAt', '>', now.toISOString());
+
+  const message = makeStatusMessage(chatId, activeStatuses, expiredStatuses, queuedStatuses, now);
   return bot.sendTelegramMessage('sendMessage', message);
 };
 
