@@ -19,7 +19,7 @@ class User extends Model {
     .then((user) => {
       let foundUser = user;
       if (_.isNil(user)) {
-        const newUser = this._construct(attributes)
+        const newUser = this._construct(attributes);
         foundUser = this.query().insert(newUser).returning('*');
       }
       return foundUser;

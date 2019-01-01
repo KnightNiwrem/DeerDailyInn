@@ -50,7 +50,7 @@ ${orderLines.join('\n')}`;
   return message;
 };
 
-const orders = (params) => {
+const orders = async (params) => {
   if (_.isNil(params.bot)) {
     return Promise.reject('Rejected in orders: Bot cannot be missing');
   }
@@ -62,20 +62,26 @@ const orders = (params) => {
   const chatId = params.chatId;
   const telegramId = params.telegramId;
 
-  return BuyOrder.query()
+
+  const orders = await BuyOrder.query()
   .where('amountLeft', '>', 0)
+  .andWhere('telegramId', telegramId);
+  const ordersToAheadMap = await processOrders(orders);
+
+  const now = moment();
+  const user = await User.query().where('telegramId', telegramId).first();
+  const boosts = await Status.query()
+  .whereNotNull('deltaBuyOrderLimit')
   .andWhere('telegramId', telegramId)
-  .then((orders) => {
-    return processOrders(orders);
-  })
-  .then((ordersToAheadMap) => {
-    const user = User.query().where('telegramId', telegramId).first();
-    return Promise.all([ordersToAheadMap, user]);
-  })
-  .then(([ordersToAheadMap, user]) => {
-    const message = makeOrdersMessage(chatId, user.buyOrderLimit, ordersToAheadMap);
-    return bot.sendTelegramMessage('sendMessage', message);
-  });
+  .andWhere('startAt', '<', now.toISOString())
+  .andWhere('expireAt', '>' now.toISOString());
+  const totalActiveBuyOrderBoost = activeBuyOrderBoosts.reduce((total, next) => {
+    return total + next.deltaBuyOrderLimit;
+  }, 0);
+  const userBuyOrderLimit = user.buyOrderLimit + totalActiveBuyOrderBoost;
+
+  const message = makeOrdersMessage(chatId, userBuyOrderLimit, ordersToAheadMap);
+  return bot.sendTelegramMessage('sendMessage', message);
 };
 
 module.exports = orders;

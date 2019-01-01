@@ -42,16 +42,17 @@ ${coffeeText}`;
 const coffeeCost = 10;
 const buyOrderLimitToSuccessRate = new Map([
   [0, 1.0],
-  [1, 0.9],
-  [2, 0.8],
-  [3, 0.7],
-  [4, 0.6],
-  [5, 0.5],
-  [6, 0.125],
-  [7, 0.03125],
-  [8, 0.0078125],
-  [9, 0.001953125]
+  [1, 0.81],
+  [2, 0.64],
+  [3, 0.49],
+  [4, 0.36],
+  [5, 0.25],
+  [6, 0.16],
+  [7, 0.09],
+  [8, 0.04],
+  [9, 0.01]
 ]);
+const buyOrderLimitDefaultSuccessRate = 0.001;
 
 const coffee = async (params) => {
   if (_.isNil(params.bot)) {
@@ -81,7 +82,9 @@ const coffee = async (params) => {
     }
 
     const currentBuyOrderLimit = user.buyOrderLimit;
-    const coffeeSuccessRate = buyOrderLimitToSuccessRate.has(currentBuyOrderLimit) ? buyOrderLimitToSuccessRate.get(currentBuyOrderLimit) : 0;
+    const coffeeSuccessRate = buyOrderLimitToSuccessRate.has(currentBuyOrderLimit) 
+      ? buyOrderLimitToSuccessRate.get(currentBuyOrderLimit) 
+      : buyOrderLimitDefaultSuccessRate;
     const isSuccessfulCoffee = Math.random() < coffeeSuccessRate;
     bot.sendLog(`Success: User ${user.telegramId} drank some coffee for ${coffeeCost} gold`);
 

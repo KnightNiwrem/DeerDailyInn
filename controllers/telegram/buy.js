@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const Promise = require('bluebird');
+const moment = require('moment');
 const User = require('../../models/user');
 const BuyOrder = require('../../models/buyOrder');
 
@@ -305,8 +306,20 @@ const processBuyOrder = async (bot, chatId, itemCode, price, quantity, telegramI
   .where('telegramId', telegramId)
   .andWhere('amountLeft', '>', 0);
 
-  if (pendingBuyOrders.length >= user.buyOrderLimit) {
-    const message = makeBuyOrderLimitExceededMessage(chatId, itemCode, user.buyOrderLimit, price, quantity)
+  const now = moment();
+  const activeBuyOrderBoosts = await Status.query()
+  .whereNotNull('deltaBuyOrderLimit')
+  .andWhere('telegramId', telegramId)
+  .andWhere('startAt', '<', now.toISOString())
+  .andWhere('expireAt', '>' now.toISOString());
+
+  const totalActiveBuyOrderBoost = activeBuyOrderBoosts.reduce((total, next) => {
+    return total + next.deltaBuyOrderLimit;
+  }, 0);
+  const userBuyOrderLimit = user.buyOrderLimit + totalActiveBuyOrderBoost;
+
+  if (pendingBuyOrders.length >= userBuyOrderLimit) {
+    const message = makeBuyOrderLimitExceededMessage(chatId, itemCode, userBuyOrderLimit, price, quantity)
     bot.sendTelegramMessage('sendMessage', message);
     return Promise.reject(`Rejected in buy: User ${telegramId} pending buy order limit exceeded for ${searchTermToNameMap.get(itemCode)}`);
   }

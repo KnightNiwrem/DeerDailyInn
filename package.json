@@ -4,23 +4,25 @@
   "description": "Chat Wars Application for Deer Daily Inn",
   "main": "index.js",
   "scripts": {
+    "knex": "./node_modules/knex/bin/cli.js",
+    "knex-migrate": "./node_modules/knex-migrate/src/cli.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "KnightNiwrem",
   "license": "ISC",
   "dependencies": {
-    "amqplib": "^0.5.2",
-    "bluebird": "^3.5.1",
-    "body-parser": "^1.18.2",
-    "convict": "^4.0.2",
-    "express": "^4.16.2",
-    "knex": "^0.14.4",
-    "knex-migrate": "^1.5.1",
-    "lodash": "^4.17.5",
-    "moment": "^2.20.1",
-    "node-fetch": "^2.0.0",
-    "objection": "^1.0.0",
-    "pg": "^7.4.1",
-    "uuid": "^3.2.1"
+    "amqplib": "^0.5.3",
+    "bluebird": "^3.5.3",
+    "body-parser": "^1.18.3",
+    "convict": "^4.4.1",
+    "express": "^4.16.4",
+    "knex": "^0.14.6",
+    "knex-migrate": "^1.7.0",
+    "lodash": "^4.17.11",
+    "moment": "^2.23.0",
+    "node-fetch": "^2.3.0",
+    "objection": "^1.4.0",
+    "pg": "^7.7.1",
+    "uuid": "^3.3.2"
   }
 }
