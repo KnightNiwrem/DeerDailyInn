@@ -3,6 +3,7 @@ const Promise = require('bluebird');
 const moment = require('moment');
 const User = require('../../models/user');
 const BuyOrder = require('../../models/buyOrder');
+const Status = require('../../models/status');
 
 const normalizeItemName = (itemName) => {
   return itemName.replace(/[^\x00-\x7F]/g, "").trim().toLowerCase();
