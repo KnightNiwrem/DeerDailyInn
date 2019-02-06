@@ -3,6 +3,7 @@ const Promise = require('bluebird');
 const moment = require('moment');
 const { transaction } = require('objection');
 const User = require('../../models/user');
+const Status = require('../../models/status');
 const Transaction = require('../../models/transaction');
 
 const makeUnregisteredMessage = (chatId) => {
