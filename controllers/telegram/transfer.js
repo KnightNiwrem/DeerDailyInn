@@ -5,7 +5,7 @@ const User = require('../../models/user');
 const Transaction = require('../../models/transaction');
 
 const makeBadArgumentMessage = (chatId) => {
-  const text = `Invalid syntax. Should be /transfer ${fromTelegramId} ${toTelegramId} ${gold}`;
+  const text = 'Invalid syntax. Should be /transfer [fromTelegramId] [toTelegramId] [gold]';
 
   const message = JSON.stringify({
     chat_id: chatId,
