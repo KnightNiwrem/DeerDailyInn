@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const Promise = require('bluebird');
+const moment = require('moment');
 const { transaction } = require('objection');
 const User = require('../../models/user');
 const Transaction = require('../../models/transaction');
@@ -74,11 +75,23 @@ const coffee = async (params) => {
       return Promise.reject(`Rejected in coffee: User ${telegramId} is not registered.`);
     }
 
-    if (user.balance < coffeeCost) {
-      const message = makeInsufficientBalanceMessage(chatId, coffeeCost, user.balance);
+    const now = moment();
+    const activeCoffeeBoosts = await Status.query()
+    .whereNotNull('deltaCoffeePrice')
+    .andWhere('telegramId', telegramId)
+    .andWhere('startAt', '<', now.toISOString())
+    .andWhere('expireAt', '>', now.toISOString());
+
+    const totalActiveCoffeeBoost = activeCoffeeBoosts.reduce((total, next) => {
+      return total + next.deltaCoffeePrice;
+    }, 0);
+    const finalCoffeePrice = Math.max(coffeeCost + totalActiveCoffeeBoost, 0);
+
+    if (user.balance < finalCoffeePrice) {
+      const message = makeInsufficientBalanceMessage(chatId, finalCoffeePrice, user.balance);
       bot.sendTelegramMessage('sendMessage', message);
-      bot.sendLog(`Failure: User ${user.telegramId} tried to drink some coffee but did not have enough gold`);
-      return Promise.reject(`Rejected in coffee: User ${user.telegramId} tried to drink a cup of coffee for ${coffeeCost} gold, but only had ${user.balance} gold in balance.`);
+      bot.sendLog(`Failure: User ${user.telegramId} tried to drink some coffee but did not have enough gold (Cost: ${finalCoffeePrice})`);
+      return Promise.reject(`Rejected in coffee: User ${user.telegramId} tried to drink a cup of coffee for ${finalCoffeePrice} gold, but only had ${user.balance} gold in balance.`);
     }
 
     const currentBuyOrderLimit = user.buyOrderLimit;
@@ -86,23 +99,23 @@ const coffee = async (params) => {
       ? buyOrderLimitToSuccessRate.get(currentBuyOrderLimit) 
       : buyOrderLimitDefaultSuccessRate;
     const isSuccessfulCoffee = Math.random() < coffeeSuccessRate;
-    bot.sendLog(`Success: User ${user.telegramId} drank some coffee for ${coffeeCost} gold`);
+    bot.sendLog(`Success: User ${user.telegramId} drank some coffee for ${finalCoffeePrice} gold`);
 
     const userAttributes = {
-      balance: user.balance - coffeeCost,
+      balance: user.balance - finalCoffeePrice,
       buyOrderLimit: isSuccessfulCoffee ? user.buyOrderLimit + 1 : user.buyOrderLimit
     };
     const updatedUser = await user.$query(transactionObject).patch(userAttributes).returning('*');
 
     const botUser = await User.query(transactionObject).where('id', 0).first();
     const botAttributes = {
-      balance: botUser.balance + coffeeCost
+      balance: botUser.balance + finalCoffeePrice
     };
     const updatedBotUser = await botUser.$query(transactionObject).patch(botAttributes).returning('*');
 
     const transactionAttributes = {
       fromId: user.id,
-      quantity: coffeeCost,
+      quantity: finalCoffeePrice,
       reason: 'User invoked /coffee command',
       status: 'completed',
       toId: 0

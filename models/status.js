@@ -52,6 +52,9 @@ class Status extends Model {
         deltaBuyOrderLimit: {
           type: 'integer'
         },
+        deltaCoffeePrice: {
+          type: 'integer'
+        },
         description: {
           type: 'string'
         },
