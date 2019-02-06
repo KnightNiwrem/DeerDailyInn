@@ -91,7 +91,7 @@ const coffee = async (params) => {
     if (user.balance < finalCoffeePrice) {
       const message = makeInsufficientBalanceMessage(chatId, finalCoffeePrice, user.balance);
       bot.sendTelegramMessage('sendMessage', message);
-      bot.sendLog(`Failure: User ${user.telegramId} tried to drink some coffee but did not have enough gold (Cost: ${finalCoffeePrice})`);
+      bot.sendLog(`Failure: User ${user.telegramId} tried to drink some coffee but did not have enough gold (Cost: ${finalCoffeePrice} gold)`);
       return Promise.reject(`Rejected in coffee: User ${user.telegramId} tried to drink a cup of coffee for ${finalCoffeePrice} gold, but only had ${user.balance} gold in balance.`);
     }
 
