@@ -107,10 +107,10 @@ const itemCodeToNameEntries = [
   ['506', 'Bottle of Remedy'],
   ['508', 'Bottle of Poison'],
 
-  ['518', 'Hay'],
-  ['519', 'Corn'],
-  ['520', 'Hamsters'],
-  ['521', 'Cheese'],
+  ['618', 'Hay'],
+  ['619', 'Corn'],
+  ['620', 'Hamsters'],
+  ['621', 'Cheese'],
 
   ['ch1', 'Zombie Chest'],
   ['ch2', 'Ancient Chest'],
