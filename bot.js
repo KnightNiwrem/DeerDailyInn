@@ -1,4 +1,5 @@
 const Promise = require('bluebird');
+const Bottleneck = require('bottleneck');
 const _ = require('lodash');
 const fetch = require('node-fetch');
 fetch.Promise = Promise;
@@ -15,6 +16,11 @@ class Bot {
     this.username = username;
     this.password = password;
     this.botKey = botKey;
+
+    this.telegramBottleneck = new Bottleneck({
+      maxConcurrent: 50,
+      minTime: 1000,
+    })
   }
 
   registerKnex(knex) {
@@ -98,7 +104,7 @@ class Bot {
     return Promise.resolve();
   }
 
-  sendTelegramMessage(method, message, delay=0) {
+  sendTelegramMessage(method, message, priority=9) {
     const url = `https://api.telegram.org/bot${this.botKey}/${method}`;
     const headers = {
       'Content-Type': 'application/json'
@@ -110,20 +116,18 @@ class Bot {
     };
 
     const bot = this;
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        fetch(url, options)
-        .then((response) => {
-          if (response.status === 429) {
-            console.warn(`${new Date()} | Hitting rate limits. Will retry...`);
-            resolve(bot.sendTelegramMessage(method, message, 1000));
-          }
-          resolve(response.json().tapCatch(() => {
-            console.warn(response);
-          }));
-        })
-        .catch(reject);
-      }, delay);
+    return this.telegramBottleneck.schedule({ priority }, () => {
+      fetch(url, options)
+      .then((response) => {
+        if (response.status === 429) {
+          console.warn(`${new Date()} | Hitting rate limits. Will retry...`);
+          return bot.sendTelegramMessage(method, message, Math.max(priority - 1, 0));
+        }
+        return response.json().tapCatch(() => {
+          console.warn(response);
+        });
+      })
+      .catch(console.warn);
     });
   }
 
