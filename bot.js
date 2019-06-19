@@ -117,7 +117,7 @@ class Bot {
 
     const bot = this;
     return this.telegramBottleneck.schedule({ priority }, () => {
-      fetch(url, options)
+      return fetch(url, options)
       .then((response) => {
         if (response.status === 429) {
           console.warn(`${new Date()} | Hitting rate limits. Will retry...`);
