@@ -19,7 +19,7 @@ class Bot {
 
     this.telegramBottleneck = new Bottleneck({
       maxConcurrent: 50,
-      minTime: 1000,
+      minTime: 333,
     })
   }
 
