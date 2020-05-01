@@ -6,7 +6,9 @@
   "scripts": {
     "knex": "./node_modules/knex/bin/cli.js",
     "knex-migrate": "./node_modules/knex-migrate/src/cli.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "author": "KnightNiwrem",
   "license": "ISC",
@@ -24,6 +26,8 @@
     "node-fetch": "^2.3.0",
     "objection": "^1.4.0",
     "pg": "^7.7.1",
-    "uuid": "^3.3.2"
-  }
+    "uuid": "^3.3.2",
+    "snyk": "^1.316.1"
+  },
+  "snyk": true
 }
