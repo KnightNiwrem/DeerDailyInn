@@ -94,7 +94,7 @@ app.post(`/${botKey}`, (req, res) => {
 
 app.listen(port, () => {
   const webhookRequest = JSON.stringify({
-    url: `https://ddi.knightniwrem.xyz/${botKey}`,
+    url: `https://ddi.knightniwrem.com/${botKey}`,
   });
   bot.sendTelegramMessage('setWebhook', webhookRequest);
   bot.sendLog('Deer Daily Inn has restarted');
