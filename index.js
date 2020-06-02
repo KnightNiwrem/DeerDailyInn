@@ -60,8 +60,10 @@ bot.registerAMQPConfig(amqpConfig);
 bot.registerKafkaConfig(kafkaConfig);
 bot.registerKnex(knex);
 
-bot.setupAMQP().catch(console.error);
-bot.setupKafka().catch(console.error);
+setInterval(() => {
+  bot.setupAMQP().catch(console.error);
+  bot.setupKafka().catch(console.error);
+}, 5 * 60 * 1000);
 
 /************************
  *   Set Up - Server

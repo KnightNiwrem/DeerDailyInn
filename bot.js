@@ -20,8 +20,8 @@ class Bot {
     this.channel = undefined;
     this.consumer = undefined;
 
-    this.lastAMQPReconnect = undefined;
-    this.lastKafkaReconnect = undefined;
+    this.lastAMQPAction = undefined;
+    this.lastKafkaAction = undefined;
 
     this.username = username;
     this.password = password;
@@ -30,7 +30,7 @@ class Bot {
     this.telegramBottleneck = new Bottleneck({
       maxConcurrent: 50,
       minTime: 333,
-    })
+    });
   }
 
   registerAMQPConfig(amqpConfig) {
@@ -53,15 +53,18 @@ class Bot {
     return !_.isUndefined(this.consumer);
   }
 
-  async connectAMQP() {
+  willRetryConnectAMQP() {
     const now = Date.now();
-    const isBackoffOver = !this.lastAMQPReconnect || (now - this.lastAMQPReconnect) > moment.duration(5, 'minutes').asMilliseconds();
-    if (this.hasAMQPResources() || !isBackoffOver) {
-      return;
-    }
-    this.lastAMQPReconnect = now;
+    return !this.lastAMQPAction || (now - this.lastAMQPAction) > moment.duration(5, 'minutes').asMilliseconds();
+  }
 
-    this.lastAMQPReconnect = Date.now();
+  willRetryConnectKafka() {
+    const now = Date.now();  
+    return !this.lastKafkaAction || (now - this.lastKafkaAction) > moment.duration(5, 'minutes').asMilliseconds();
+  }
+
+  async connectAMQP() {
+    this.lastAMQPAction = Date.now();
     const connection = await amqp.connect(this.amqpConfig);
     const channel = await connection.createChannel();
 
@@ -76,13 +79,7 @@ class Bot {
   }
 
   async connectKafka() {
-    const now = Date.now();
-    const isBackoffOver = !this.lastKafkaReconnect || (now - this.lastKafkaReconnect) > moment.duration(5, 'minutes').asMilliseconds();
-    if (this.hasKafkaResources() || !isBackoffOver) {
-      return;
-    }
-    this.lastKafkaReconnect = now;
-
+    this.lastKafkaAction = Date.now();
     const kafka = new Kafka(this.kafkaConfig);
     const consumer = kafka.consumer({ groupId: this.kafkaConfig.clientId });
     await consumer.connect();
@@ -91,11 +88,19 @@ class Bot {
   }
 
   async setupAMQP() {
+    if (!this.willRetryConnectAMQP()) {
+      return;
+    }
+
     await this.connectAMQP();
     this.subscribeToInboundQueue();
   }
 
   async setupKafka() {
+    if (!this.willRetryConnectKafka()) {
+      return;
+    }
+ 
     await this.connectKafka();
     this.subscribeToOffersQueue();
     this.subscribeToDealsQueue();
@@ -104,12 +109,12 @@ class Bot {
 
   subscribeToInboundQueue() {
     if (!this.hasAMQPResources()) {
-      this.setupAMQP().catch(console.error);
       console.warn('Bot tried to subscribed to inbound queue but lacked resources.');
       return;
     }
 
     const callbackWrapper = (message) => {
+      this.lastAMQPAction = Date.now();
       const parameters = {
         bot: this,
         controllerName: 'inbound',
@@ -122,7 +127,6 @@ class Bot {
 
   subscribeToOffersQueue() {
     if (!this.hasKafkaResources()) {
-      this.setupKafka().catch(console.error);
       console.warn('Bot tried to subscribed to offers queue but lacked resources.');
       return;
     }
@@ -132,7 +136,6 @@ class Bot {
 
   subscribeToDealsQueue() {
     if (!this.hasKafkaResources()) {
-      this.setupKafka().catch(console.error);
       console.warn('Bot tried to subscribed to deals queue but lacked resources.');
       return;
     }
@@ -142,11 +145,11 @@ class Bot {
 
   startKafkaConsumer() {
     if (!this.hasKafkaResources()) {
-      this.connectKafka().catch(console.error);
       return Promise.reject('Bot does not have a connection or channel to publish to.');
     }
 
     const callbackWrapper = async ({ topic, partition, message }) => {
+      this.lastKafkaAction = Date.now();
       const [_, controllerName] = topic.split('-'); 
       message.content = message.value;
       message.fields = { redelivered: false };
@@ -164,7 +167,6 @@ class Bot {
 
   sendChtwrsMessage(message) {
     if (!this.hasAMQPResources()) {
-      this.setupAMQP().catch(console.error);
       return Promise.reject('Bot does not have a connection or channel to publish to.');
     }
 
