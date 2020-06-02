@@ -55,16 +55,18 @@ class Bot {
 
   willRetryConnectAMQP() {
     const now = Date.now();
-    return !this.lastAMQPAction || (now - this.lastAMQPAction) > moment.duration(10, 'minutes').asMilliseconds();
+    return _.isUndefined(this.lastAMQPAction) || (now - this.lastAMQPAction) > moment.duration(10, 'minutes').asMilliseconds();
   }
 
   willRetryConnectKafka() {
     const now = Date.now();  
-    return !this.lastKafkaAction || (now - this.lastKafkaAction) > moment.duration(10, 'minutes').asMilliseconds();
+    return _.isUndefined(this.lastKafkaAction) || (now - this.lastKafkaAction) > moment.duration(10, 'minutes').asMilliseconds();
   }
 
   async connectAMQP() {
     this.lastAMQPAction = Date.now();
+    console.log('Connecting to AMQP');
+
     const connection = await amqp.connect(this.amqpConfig);
     const channel = await connection.createChannel();
 
@@ -80,6 +82,8 @@ class Bot {
 
   async connectKafka() {
     this.lastKafkaAction = Date.now();
+    console.log('Connecting to Kafka');
+
     const kafka = new Kafka(this.kafkaConfig);
     const consumer = kafka.consumer({ groupId: this.kafkaConfig.clientId });
     await consumer.connect();
