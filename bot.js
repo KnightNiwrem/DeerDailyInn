@@ -3,7 +3,7 @@ const Promise = require('bluebird');
 const Bottleneck = require('bottleneck');
 const { Kafka } = require('kafkajs');
 const _ = require('lodash');
-const moment - require('moment');
+const moment = require('moment');
 const fetch = require('node-fetch');
 fetch.Promise = Promise;
 
