@@ -75,7 +75,7 @@ Promise.all([setUpPromise, kafkaConsumerPromise])
 
   bot.registerKnex(knex);
   bot.registerConnection(connection);
-  bot.registerKafkaConsumer(kafkaConsumerPromise);
+  bot.registerKafkaConsumer(consumer);
   bot.registerChannel(channel);
 
   bot.subscribeToInboundQueue();
