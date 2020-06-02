@@ -60,7 +60,7 @@ const setUpPromise = amqp.connect(connectionOptions)
 const { Kafka } = require('kafkajs');
 const kafka = new Kafka({ clientId: 'ddi', brokers: ['digest-api.chtwrs.com:9092'] });
 const kafkaConsumer = kafka.consumer({ groupId: 'ddi' });
-const kafkaConsumerPromise = kafkaConsumer.connect().then(connectedConsumer => connectedConsumer);
+const kafkaConnectionPromise = kafkaConsumer.connect();
 
 /************************
  *     Set Up - Bot
@@ -69,13 +69,13 @@ const botKey = config.get('botKey');
 const Bot = require('./bot');
 const bot = new Bot(botKey, username, password);
 
-Promise.all([setUpPromise, kafkaConsumerPromise])
-.then(([connectionAndChannel, consumer]) => {
+Promise.all([setUpPromise, kafkaConnectionPromise])
+.then(([connectionAndChannel, _]) => {
   const [connection, channel] = connectionAndChannel;
 
   bot.registerKnex(knex);
   bot.registerConnection(connection);
-  bot.registerKafkaConsumer(consumer);
+  bot.registerKafkaConsumer(kafkaConsumer);
   bot.registerChannel(channel);
 
   bot.subscribeToInboundQueue();
