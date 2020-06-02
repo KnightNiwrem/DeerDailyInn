@@ -69,8 +69,8 @@ const botKey = config.get('botKey');
 const Bot = require('./bot');
 const bot = new Bot(botKey, username, password);
 
-setUpPromise
-.then((connectionAndChannel) => {
+Promise.all([setUpPromise, kafkaConsumerPromise])
+.then(([connectionAndChannel, consumer]) => {
   const [connection, channel] = connectionAndChannel;
 
   bot.registerKnex(knex);
