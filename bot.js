@@ -108,7 +108,7 @@ class Bot {
       const parameters = {
         bot: this,
         rawMessage: message,
-        startTime: message.timestamp ? new Date(message.timestamp) : Date.now(),
+        startTime: message.timestamp || Date.now(),
         controllerName,
       };
       return chtwrsRouter(parameters);
