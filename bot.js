@@ -5,6 +5,7 @@ const { Kafka } = require('kafkajs');
 const _ = require('lodash');
 const moment = require('moment');
 const fetch = require('node-fetch');
+const { v4: uuidv4 } = require('uuid');
 fetch.Promise = Promise;
 
 const chtwrsRouter = require('./controllers/chtwrsRouter');
@@ -84,8 +85,10 @@ class Bot {
     this.lastKafkaAction = Date.now();
     console.log('Connecting to Kafka');
 
-    const kafka = new Kafka(this.kafkaConfig);
-    const consumer = kafka.consumer({ groupId: this.kafkaConfig.clientId });
+    const { clientId, brokers } = this.kafkaConfig;
+    const randomId = `${clientId}-${uuidv4()}`;
+    const kafka = new Kafka({ clientId: randomId, brokers });
+    const consumer = kafka.consumer({ groupId: randomId });
     await consumer.connect();
 
     this.consumer = consumer;
