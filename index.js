@@ -60,6 +60,8 @@ bot.registerAMQPConfig(amqpConfig);
 bot.registerKafkaConfig(kafkaConfig);
 bot.registerKnex(knex);
 
+bot.setupAMQP().catch(console.error);
+bot.setupKafka().catch(console.error);
 setInterval(() => {
   bot.setupAMQP().catch(console.error);
   bot.setupKafka().catch(console.error);
