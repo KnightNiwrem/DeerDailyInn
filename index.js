@@ -65,7 +65,7 @@ bot.setupKafka().catch(console.error);
 setInterval(() => {
   bot.setupAMQP().catch(console.error);
   bot.setupKafka().catch(console.error);
-}, 60 * 1000);
+}, 3 * 60 * 1000);
 
 /************************
  *   Set Up - Server
