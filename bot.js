@@ -101,7 +101,7 @@ class Bot {
       return Promise.reject('Bot does not have a connection or channel to publish to.');
     }
 
-    const callbackWrapper = ({ topic, partition, message }) => {
+    const callbackWrapper = async ({ topic, partition, message }) => {
       const [_, controllerName] = topic.split('-'); 
       message.content = message.value;
       message.fields = { redelivered: false };
