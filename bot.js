@@ -55,12 +55,12 @@ class Bot {
 
   willRetryConnectAMQP() {
     const now = Date.now();
-    return _.isUndefined(this.lastAMQPAction) || (now - this.lastAMQPAction) > moment.duration(10, 'minutes').asMilliseconds();
+    return _.isUndefined(this.lastAMQPAction) || (now - this.lastAMQPAction) > moment.duration(20, 'minutes').asMilliseconds();
   }
 
   willRetryConnectKafka() {
     const now = Date.now();  
-    return _.isUndefined(this.lastKafkaAction) || (now - this.lastKafkaAction) > moment.duration(10, 'minutes').asMilliseconds();
+    return _.isUndefined(this.lastKafkaAction) || (now - this.lastKafkaAction) > moment.duration(20, 'minutes').asMilliseconds();
   }
 
   async connectAMQP() {
