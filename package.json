@@ -5,25 +5,25 @@
   "main": "index.js",
   "scripts": {
     "knex": "./node_modules/knex/bin/cli.js",
-    "knex-migrate": "./node_modules/knex-migrate/src/cli.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "KnightNiwrem",
   "license": "ISC",
   "dependencies": {
-    "amqplib": "^0.5.3",
-    "bluebird": "^3.5.3",
-    "body-parser": "^1.18.3",
-    "bottleneck": "^2.19.1",
-    "convict": "^4.4.1",
-    "express": "^4.16.4",
-    "knex": "^0.14.6",
-    "knex-migrate": "^1.7.0",
-    "lodash": "^4.17.11",
-    "moment": "^2.23.0",
-    "node-fetch": "^2.3.0",
-    "objection": "^1.4.0",
-    "pg": "^7.7.1",
-    "uuid": "^3.3.2"
+    "amqplib": "^0.5.6",
+    "bluebird": "^3.7.2",
+    "body-parser": "^1.19.0",
+    "bottleneck": "^2.19.5",
+    "convict": "^6.0.0",
+    "convict-format-with-validator": "^6.0.0",
+    "express": "^4.17.1",
+    "kafkajs": "^1.12.0",
+    "knex": "^0.21.1",
+    "lodash": "^4.17.15",
+    "moment": "^2.26.0",
+    "node-fetch": "^2.6.0",
+    "objection": "^2.1.5",
+    "pg": "^8.2.1",
+    "uuid": "^8.1.0"
   }
 }

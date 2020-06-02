@@ -1,4 +1,7 @@
 const convict = require('convict');
+const convict_format_with_validator = require('convict-format-with-validator');
+
+convict.addFormats(convict_format_with_validator);
 const nodeEnv = process.env.NODE_ENV ? process.env.NODE_ENV.toUpperCase() : 'DEVELOPMENT';
 
 // Define a schema

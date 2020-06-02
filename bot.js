@@ -12,6 +12,7 @@ class Bot {
     this.knex = undefined;
     this.connection = undefined;
     this.channel = undefined;
+    this.consumer = undefined;
 
     this.username = username;
     this.password = password;
@@ -35,12 +36,20 @@ class Bot {
     this.channel = channel;
   }
 
-  hasResources() {
+  registerKafkaConsumer(consumer) {
+    this.consumer = consumer;
+  }
+
+  hasAMQPResources() {
     return !_.isUndefined(this.connection) && !_.isUndefined(this.channel);
   }
 
+  hasKafkaResources() {
+    return !_.isUndefined(this.consumer);
+  }
+
   subscribeToInboundQueue() {
-    if (!this.hasResources) {
+    if (!this.hasAMQPResources()) {
       console.warn('Bot tried to subscribed to inbound queue but lacked resources.');
       return;
     }
@@ -57,42 +66,25 @@ class Bot {
   }
 
   subscribeToOffersQueue() {
-    if (!this.hasResources()) {
+    if (!this.hasKafkaResources()) {
       console.warn('Bot tried to subscribed to offers queue but lacked resources.');
       return;
     }
 
-    const callbackWrapper = (message) => {
-      const parameters = {
-        bot: this,
-        controllerName: 'offers',
-        rawMessage: message,
-        startTime: new Date(message.properties.timestamp * 1000)
-      };
-      return chtwrsRouter(parameters);
-    };
-    this.channel.consume(`${this.username}_offers`, callbackWrapper, { noAck: true });
+    this.consumer.subscribe({ topic: 'cw2-offers' });
   }
 
   subscribeToDealsQueue() {
-    if (!this.hasResources()) {
+    if (!this.hasKafkaResources()) {
       console.warn('Bot tried to subscribed to deals queue but lacked resources.');
       return;
     }
 
-    const callbackWrapper = (message) => {
-      const parameters = {
-        bot: this,
-        controllerName: 'deals',
-        rawMessage: message
-      };
-      return chtwrsRouter(parameters);
-    };
-    this.channel.consume(`${this.username}_deals`, callbackWrapper, { noAck: true });
+    this.consumer.subscribe({ topic: 'cw2-deals' });
   }
 
   sendChtwrsMessage(message) {
-    if (!this.hasResources()) {
+    if (!this.hasAMQPResources()) {
       return Promise.reject('Bot does not have a connection or channel to publish to.');
     }
 
@@ -102,6 +94,26 @@ class Bot {
     };
     this.channel.publish(`${this.username}_ex`, `${this.username}_o`, messageBuffer, options);
     return Promise.resolve();
+  }
+
+  startKafkaConsumer() {
+    if (!this.hasKafkaResources()) {
+      return Promise.reject('Bot does not have a connection or channel to publish to.');
+    }
+
+    const callbackWrapper = ({ topic, partition, message }) => {
+      const [_, controllerName] = topic.split('-'); 
+      message.content = message.value;
+      message.fields = { redelivered: false };
+      const parameters = {
+        bot: this,
+        rawMessage: message,
+        controllerName,
+      };
+      return chtwrsRouter(parameters);
+    };
+
+    this.consumer.run({ eachMessage: callbackWrapper });
   }
 
   sendTelegramMessage(method, message, priority=9) {
