@@ -20,8 +20,8 @@ class Bot {
     this.channel = undefined;
     this.consumer = undefined;
 
-    this.lastAMQPReconnect = Date.now();
-    this.lastKafkaReconnect = Date.now();
+    this.lastAMQPReconnect = undefined;
+    this.lastKafkaReconnect = undefined;
 
     this.username = username;
     this.password = password;
@@ -55,7 +55,7 @@ class Bot {
 
   async connectAMQP() {
     const now = Date.now();
-    const isBackoffOver = (now - this.lastAMQPReconnect) > moment.duration(5, 'minutes').asMilliseconds();
+    const isBackoffOver = !this.lastAMQPReconnect || (now - this.lastAMQPReconnect) > moment.duration(5, 'minutes').asMilliseconds();
     if (this.hasAMQPResources() || !isBackoffOver) {
       return;
     }
@@ -77,7 +77,7 @@ class Bot {
 
   async connectKafka() {
     const now = Date.now();
-    const isBackoffOver = (now - this.lastKafkaReconnect) > moment.duration(5, 'minutes').asMilliseconds();
+    const isBackoffOver = !this.lastKafkaReconnect || (now - this.lastKafkaReconnect) > moment.duration(5, 'minutes').asMilliseconds();
     if (this.hasKafkaResources() || !isBackoffOver) {
       return;
     }
