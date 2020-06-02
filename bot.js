@@ -5,8 +5,9 @@ const { Kafka } = require('kafkajs');
 const _ = require('lodash');
 const moment = require('moment');
 const fetch = require('node-fetch');
-const { v4: uuidv4 } = require('uuid');
+const { customAlphabet } = require('nanoid');
 fetch.Promise = Promise;
+const nanoId = customAlphabet('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 16);
 
 const chtwrsRouter = require('./controllers/chtwrsRouter');
 const telegramRouter = require('./controllers/telegramRouter');
@@ -86,7 +87,7 @@ class Bot {
     console.log('Connecting to Kafka');
 
     const { clientId, brokers } = this.kafkaConfig;
-    const randomId = `${clientId}-${uuidv4()}`;
+    const randomId = `${clientId}${nanoId()}`;
     const kafka = new Kafka({ clientId: randomId, brokers });
     const consumer = kafka.consumer({ groupId: randomId });
     await consumer.connect();
