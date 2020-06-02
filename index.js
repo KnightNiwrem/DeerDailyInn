@@ -24,11 +24,11 @@ const knex = Knex({
 Model.knex(knex);
 
 /************************
- *  Set Up - RabbitMQ
+ *  Config - RabbitMQ 
 ************************/
 const username = config.get('username');
 const password = config.get('password');
-const connectionOptions = {
+const amqpConfig = {
   protocol: 'amqps',
   hostname: 'api.chatwars.me',
   port: 5673,
@@ -39,28 +39,15 @@ const connectionOptions = {
   heartbeat: 60,
   vhost: '/'
 };
-const amqp = require('amqplib');
-
-const setUpPromise = amqp.connect(connectionOptions)
-.then((connection) => {
-  const closeConnection = connection.close.bind(connection);
-  process.once('SIGINT', () => {
-    closeConnection();
-    console.log('\nConnection has been closed.');
-  });
-  const channelPromise = connection.createChannel();
-  return Promise.all([connection, channelPromise]);
-}).then((connectionAndChannel) => {
-  return connectionAndChannel;
-});
 
 /************************
- *  Set Up - Kafka
+ *  Config - Kafka
 ************************/
-const { Kafka } = require('kafkajs');
-const kafka = new Kafka({ clientId: 'ddi', brokers: ['digest-api.chtwrs.com:9092'] });
-const kafkaConsumer = kafka.consumer({ groupId: 'ddi' });
-const kafkaConnectionPromise = kafkaConsumer.connect();
+
+const kafkaConfig = {
+  clientId: 'ddi',
+  brokers: ['digest-api.chtwrs.com:9092'],
+};
 
 /************************
  *     Set Up - Bot
@@ -69,22 +56,12 @@ const botKey = config.get('botKey');
 const Bot = require('./bot');
 const bot = new Bot(botKey, username, password);
 
-Promise.all([setUpPromise, kafkaConnectionPromise])
-.then(([connectionAndChannel, _]) => {
-  const [connection, channel] = connectionAndChannel;
+bot.registerAMQPConfig(amqpConfig);
+bot.registerKafkaConfig(kafkaConfig);
+bot.registerKnex(knex);
 
-  bot.registerKnex(knex);
-  bot.registerConnection(connection);
-  bot.registerKafkaConsumer(kafkaConsumer);
-  bot.registerChannel(channel);
-
-  bot.subscribeToInboundQueue();
-  bot.subscribeToOffersQueue();
-  bot.subscribeToDealsQueue();
-
-  bot.startKafkaConsumer();
-})
-.catch(console.warn);
+bot.setupAMQP().catch(console.error);
+bot.setupKafka().catch(console.error);
 
 /************************
  *   Set Up - Server

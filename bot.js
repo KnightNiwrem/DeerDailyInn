@@ -1,6 +1,9 @@
+const amqp = require('amqplib');
 const Promise = require('bluebird');
 const Bottleneck = require('bottleneck');
+const { Kafka } = require('kafkajs');
 const _ = require('lodash');
+const moment - require('moment');
 const fetch = require('node-fetch');
 fetch.Promise = Promise;
 
@@ -9,10 +12,16 @@ const telegramRouter = require('./controllers/telegramRouter');
 
 class Bot {
   constructor(botKey, username, password) {
+    this.amqpConfig = {};
+    this.kafkaConfig = {};
     this.knex = undefined;
+
     this.connection = undefined;
     this.channel = undefined;
     this.consumer = undefined;
+
+    this.lastAMQPReconnect = Date.now();
+    this.lastKafkaReconnect = Date.now();
 
     this.username = username;
     this.password = password;
@@ -24,20 +33,16 @@ class Bot {
     })
   }
 
+  registerAMQPConfig(amqpConfig) {
+    this.amqpConfig = amqpConfig;
+  }
+
+  registerKafkaConfig(kafkaConfig) {
+    this.kafkaConfig = kafkaConfig;
+  }
+
   registerKnex(knex) {
     this.knex = knex;
-  }
-
-  registerConnection(connection) {
-    this.connection = connection;
-  }
-
-  registerChannel(channel) {
-    this.channel = channel;
-  }
-
-  registerKafkaConsumer(consumer) {
-    this.consumer = consumer;
   }
 
   hasAMQPResources() {
@@ -48,8 +53,58 @@ class Bot {
     return !_.isUndefined(this.consumer);
   }
 
+  async connectAMQP() {
+    const now = Date.now();
+    const isBackoffOver = (now - this.lastAMQPReconnect) > moment().duration(5, 'minutes').asMilliseconds();
+    if (this.hasAMQPResources() || !isBackoffOver) {
+      return;
+    }
+    this.lastAMQPReconnect = now;
+
+    this.lastAMQPReconnect = Date.now();
+    const connection = await amqp.connect(this.amqpConfig);
+    const channel = await connection.createChannel();
+
+    const closeConnection = connection.close.bind(connection);
+    process.once('SIGINT', () => {
+      closeConnection();
+      console.log('\nConnection has been closed.');
+    });
+
+    this.connection = connection;
+    this.channel = channel;
+  }
+
+  async connectKafka() {
+    const now = Date.now();
+    const isBackoffOver = (now - this.lastKafkaReconnect) > moment().duration(5, 'minutes').asMilliseconds();
+    if (this.hasKafkaResources() || !isBackoffOver) {
+      return;
+    }
+    this.lastKafkaReconnect = now;
+
+    const kafka = new Kafka(this.kafkaConfig);
+    const consumer = kafka.consumer({ groupId: this.kafkaConfig.clientId });
+    await consumer.connect();
+
+    this.consumer = consumer;
+  }
+
+  async setupAMQP() {
+    await this.connectAMQP();
+    this.subscribeToInboundQueue();
+  }
+
+  async setupKafka() {
+    await this.connectKafka();
+    this.subscribeToOffersQueue();
+    this.subscribeToDealsQueue();
+    this.startKafkaConsumer();
+  }
+
   subscribeToInboundQueue() {
     if (!this.hasAMQPResources()) {
+      this.setupAMQP().catch(console.error);
       console.warn('Bot tried to subscribed to inbound queue but lacked resources.');
       return;
     }
@@ -67,6 +122,7 @@ class Bot {
 
   subscribeToOffersQueue() {
     if (!this.hasKafkaResources()) {
+      this.setupKafka().catch(console.error);
       console.warn('Bot tried to subscribed to offers queue but lacked resources.');
       return;
     }
@@ -76,6 +132,7 @@ class Bot {
 
   subscribeToDealsQueue() {
     if (!this.hasKafkaResources()) {
+      this.setupKafka().catch(console.error);
       console.warn('Bot tried to subscribed to deals queue but lacked resources.');
       return;
     }
@@ -83,21 +140,9 @@ class Bot {
     this.consumer.subscribe({ topic: 'cw2-deals' });
   }
 
-  sendChtwrsMessage(message) {
-    if (!this.hasAMQPResources()) {
-      return Promise.reject('Bot does not have a connection or channel to publish to.');
-    }
-
-    const messageBuffer = new Buffer(message);
-    const options = { 
-      contentType: 'application/json'
-    };
-    this.channel.publish(`${this.username}_ex`, `${this.username}_o`, messageBuffer, options);
-    return Promise.resolve();
-  }
-
   startKafkaConsumer() {
     if (!this.hasKafkaResources()) {
+      this.connectKafka().catch(console.error);
       return Promise.reject('Bot does not have a connection or channel to publish to.');
     }
 
@@ -115,6 +160,20 @@ class Bot {
     };
 
     this.consumer.run({ eachMessage: callbackWrapper });
+  }
+
+  sendChtwrsMessage(message) {
+    if (!this.hasAMQPResources()) {
+      this.setupAMQP().catch(console.error);
+      return Promise.reject('Bot does not have a connection or channel to publish to.');
+    }
+
+    const messageBuffer = new Buffer(message);
+    const options = { 
+      contentType: 'application/json'
+    };
+    this.channel.publish(`${this.username}_ex`, `${this.username}_o`, messageBuffer, options);
+    return Promise.resolve();
   }
 
   sendTelegramMessage(method, message, priority=9) {
