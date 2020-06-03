@@ -22,6 +22,7 @@ class Bot {
     this.channel = undefined;
     this.consumer = undefined;
 
+    this.coolOffPeriod = moment.duration(3, 'minutes').asMilliseconds();
     this.lastAMQPAction = undefined;
     this.lastKafkaAction = undefined;
 
@@ -56,13 +57,27 @@ class Bot {
   }
 
   willRetryConnectAMQP() {
+    if (_.isUndefined(this.lastAMQPAction)) {
+      return true;
+    }
+    if (this.hasAMQPResources()) {
+      return false;
+    }
+
     const now = Date.now();
-    return _.isUndefined(this.lastAMQPAction) || (now - this.lastAMQPAction) > moment.duration(20, 'minutes').asMilliseconds();
+    return (now - this.lastAMQPAction) > this.coolOffPeriod;
   }
 
   willRetryConnectKafka() {
-    const now = Date.now();  
-    return _.isUndefined(this.lastKafkaAction) || (now - this.lastKafkaAction) > moment.duration(20, 'minutes').asMilliseconds();
+    if (_.isUndefined(this.lastKafkaAction)) {
+      return true;
+    }
+    if (this.hasKafkaResources()) {
+      return false;
+    }
+
+    const now = Date.now();
+    return (now - this.lastKafkaAction) > this.coolOffPeriod;
   }
 
   async connectAMQP() {
@@ -76,6 +91,10 @@ class Bot {
     process.once('SIGINT', () => {
       closeConnection();
       console.log('\nConnection has been closed.');
+    });
+    connection.on('close', err => {
+      this.connection = undefined;
+      this.channel = undefined;
     });
 
     this.connection = connection;
