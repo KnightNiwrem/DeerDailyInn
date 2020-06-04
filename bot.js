@@ -6,7 +6,6 @@ const _ = require('lodash');
 const moment = require('moment');
 const fetch = require('node-fetch');
 fetch.Promise = Promise;
-const nanoId = customAlphabet('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 16);
 
 const chtwrsRouter = require('./controllers/chtwrsRouter');
 const telegramRouter = require('./controllers/telegramRouter');
