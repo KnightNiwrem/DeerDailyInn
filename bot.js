@@ -105,7 +105,7 @@ class Bot {
     console.log('Connecting to Kafka');
 
     const { clientId, brokers } = this.kafkaConfig;
-    const randomId = `${clientId}${this.nanoId()}`;
+    const randomId = `${clientId}${this.nanoId}`;
     const kafka = new Kafka({ clientId: randomId, brokers });
     const consumer = kafka.consumer({ groupId: randomId });
     await consumer.connect();
