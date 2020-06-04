@@ -53,8 +53,9 @@ const kafkaConfig = {
  *     Set Up - Bot
 ************************/
 const botKey = config.get('botKey');
+const nanoId = config.get('nanoId');
 const Bot = require('./bot');
-const bot = new Bot(botKey, username, password);
+const bot = new Bot(botKey, username, password, nanoId);
 
 bot.registerAMQPConfig(amqpConfig);
 bot.registerKafkaConfig(kafkaConfig);

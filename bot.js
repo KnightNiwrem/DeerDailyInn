@@ -5,7 +5,6 @@ const { Kafka } = require('kafkajs');
 const _ = require('lodash');
 const moment = require('moment');
 const fetch = require('node-fetch');
-const { customAlphabet } = require('nanoid');
 fetch.Promise = Promise;
 const nanoId = customAlphabet('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 16);
 
@@ -13,7 +12,7 @@ const chtwrsRouter = require('./controllers/chtwrsRouter');
 const telegramRouter = require('./controllers/telegramRouter');
 
 class Bot {
-  constructor(botKey, username, password) {
+  constructor(botKey, username, password, nanoId) {
     this.amqpConfig = {};
     this.kafkaConfig = {};
     this.knex = undefined;
@@ -29,6 +28,7 @@ class Bot {
     this.username = username;
     this.password = password;
     this.botKey = botKey;
+    this.nanoId = nanoId;
 
     this.telegramBottleneck = new Bottleneck({
       maxConcurrent: 50,
@@ -106,7 +106,7 @@ class Bot {
     console.log('Connecting to Kafka');
 
     const { clientId, brokers } = this.kafkaConfig;
-    const randomId = `${clientId}${nanoId()}`;
+    const randomId = `${clientId}${this.nanoId()}`;
     const kafka = new Kafka({ clientId: randomId, brokers });
     const consumer = kafka.consumer({ groupId: randomId });
     await consumer.connect();

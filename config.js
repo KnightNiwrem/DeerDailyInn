@@ -33,6 +33,11 @@ const config = convict({
     default: '',
     env: 'DEER_DAILY_BOT_KEY'
   },
+  nanoId: {
+    doc: 'Additional nanoId tag for the Deer Daily App',
+    default: 'mP5vwCDZBNvitq9L',
+    env: 'DEER_DAILY_NANOID'
+  },
   db: {
     host: {
       doc: 'The database host for the Deer Daily App',
