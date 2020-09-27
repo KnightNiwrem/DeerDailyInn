@@ -24,7 +24,7 @@
     "moment": "^2.26.0",
     "nanoid": "^3.1.9",
     "node-fetch": "^2.6.1",
-    "objection": "^2.1.5",
+    "objection": "^2.2.3",
     "pg": "^8.2.1",
     "uuid": "^8.1.0"
   }
