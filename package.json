@@ -2,6 +2,7 @@
   "name": "deer_daily_inn",
   "version": "1.0.0",
   "description": "Chat Wars Application for Deer Daily Inn",
+  "repository": "https://github.com/KnightNiwrem/DeerDailyInn",
   "main": "index.js",
   "scripts": {
     "knex": "./node_modules/knex/bin/cli.js",
@@ -19,10 +20,10 @@
     "express": "^4.17.1",
     "kafkajs": "^1.12.0",
     "knex": "^0.21.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.20",
     "moment": "^2.26.0",
     "nanoid": "^3.1.9",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "objection": "^2.1.5",
     "pg": "^8.2.1",
     "uuid": "^8.1.0"
