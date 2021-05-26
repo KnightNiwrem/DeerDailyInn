@@ -1,0 +1,25 @@
+{
+   "imports": {
+      "amqplib": "https://esm.sh/amqplib@0.7",
+      "dotenv": "https://dsr.edjopato.de/dotenv/^2.0.0/mod.ts",
+      "grammy": "https://dsr.edjopato.de/grammy/^1.0.0/mod.ts",
+      "kafkajs": "https://esm.sh/kafkajs@1",
+      "knex": "https://esm.sh/knex@0.21?no-check",
+      "lodash": "https://esm.sh/lodash@4",
+      "luxon": "https://esm.sh/luxon@1",
+      "nanoid": "https://esm.sh/nanoid@3",
+      "nanoid-dictionary": "https://esm.sh/nanoid-dictionary@4",
+      "objection": "https://esm.sh/objection@2?no-check",
+      "pg": "https://esm.sh/pg@8",
+      "transformer-throttler": "https://dsr.edjopato.de/grammy_transformer_throttler/^0.1.0/mod.ts",
+      "uuid": "https://esm.sh/uuid@8",
+
+      "constants/": "./src/constants/",
+      "controllers/": "./src/controllers/",
+      "models/": "./src/models/",
+      "routes/": "./src/routes/",
+      "services/": "./src/services/",
+      "views/": "./src/views/",
+      "utils/": "./src/utils/"
+   }
+}

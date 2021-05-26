@@ -1,49 +1,25 @@
-const config = require('./config');
-const dbConfig = config.get('db');
+import { config } from 'dotenv';
 
-module.exports = {
-  development: {
-    client: 'postgresql',
-    connection: {
-      host: dbConfig.host,
-      port: dbConfig.port,
-      database: dbConfig.database,
-      user: dbConfig.username,
-      password: dbConfig.password,
-    }
+const env = config({
+  example: './configs/.env.example',
+  defaults: './configs/.env.defaults',
+  path: './configs/.env',
+  safe: true,
+});
+
+const knexConfig = {
+  client: 'pg',
+  connection: {
+    database : env.DB_DATABASE,
+    host : env.DB_HOST,
+    password : env.DB_PASSWORD,
+    port: env.DB_PORT,
+    user : env.DB_USERNAME,
   },
-  staging: {
-    client: 'postgresql',
-    connection: {
-      host: dbConfig.host,
-      port: dbConfig.port,
-      database: dbConfig.database,
-      user: dbConfig.username,
-      password: dbConfig.password,
-    },
-    pool: {
-      min: 2,
-      max: 10
-    },
-    migrations: {
-      tableName: 'knex_migrations'
-    }
-  },
-  production: {
-    client: 'postgresql',
-    connection: {
-      host: dbConfig.host,
-      port: dbConfig.port,
-      database: dbConfig.database,
-      user: dbConfig.username,
-      password: dbConfig.password,
-    },
-    pool: {
-      min: 2,
-      max: 10
-    },
-    migrations: {
-      tableName: 'knex_migrations'
-    }
-  }
+};
+
+export {
+  development: knexConfig,
+  staging: knexConfig,
+  production: knexConfig,
 };

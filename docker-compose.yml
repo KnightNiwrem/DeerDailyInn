@@ -1,0 +1,29 @@
+version: '3'
+services:
+  app:
+    depends_on:
+      - db
+    command:
+      - docker:watch
+    env_file:
+      - ${ENV}.env
+    image: ${IMAGE:-ddi}
+    networks:
+      - ddi-network
+    ports:
+      - ${BOT_PORT:-3000}:3000
+    volumes:
+      - ./src:/ddi/src
+  db:
+    image: 'postgres:13-alpine'
+    networks:
+      - ddi-network
+    ports:
+      - ${POSTGRES_PORT:-5432}:5432
+    restart: always
+    volumes:
+      - ddi-db:/var/lib/postgresql/data
+networks:
+  ddi-network:
+volumes:
+  ddi-db:

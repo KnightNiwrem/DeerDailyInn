@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "declaration": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "paths": {
+      "constants/*": ["./src/constants/*"],
+      "controllers/*": ["./src/controllers/*"],
+      "models/*": ["./src/models/*"],
+      "routes/*": ["./src/routes/*"],
+      "services/*": ["./src/services/*"],
+      "views/*": ["./src/views/*"],
+      "utils/*": ["./src/utils/*"]
+    },
+    "rootDirs": ["./src"]
+  },
+  "extends": "@tsconfig/node14/tsconfig.json"
+}
