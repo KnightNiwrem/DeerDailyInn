@@ -2,11 +2,14 @@ import {
   auth,
   authAdditionalOperation,
   authorizePayment,
+  forbidden,
   getInfo,
   grantAdditionalOperation,
   grantToken,
+  invalidToken,
   pay,
   payout,
+  unknown,
   wantToBuy,
 } from 'controllers/amqp/mod';
 import { isEmpty } from 'lodash';
@@ -34,10 +37,6 @@ const inboundErrorResponders = new Map([
   ['wantToBuy', wantToBuy],
 ]);
 
-const respondToUnknown = async (content: any) => {
-  console.warn(`Inbound queue: ${content.action} returned status code ${content.result}`);
-};
-
 const eachMessage = async (message: ConsumeMessage | null) => {
   if (!message || message.fields.redelivered) {
     return;
@@ -50,22 +49,25 @@ const eachMessage = async (message: ConsumeMessage | null) => {
 
   const statusCode = content.result.toLowerCase();
   if (statusCode === 'ok') {
-    const responder = inboundResponders.get(content.action) ?? respondToUnknown;
+    const responder = inboundResponders.get(content.action) ?? unknown;
     await responder(content);
     return;
   }
-  /* else if (statusCode === 'forbidden') {
-    responder = respondToForbidden;
-  } else if (statusCode === 'invalidtoken') {
-    responder = respondToInvalidToken;
-  } */
+  if (statusCode === 'forbidden') {
+    await forbidden(content);
+    return;
+  }
+  if (statusCode === 'invalidtoken') {
+    await invalidToken(content);
+    return;
+  }
 
-  const responder = inboundErrorResponders.get(content.action) ?? respondToUnknown;
+  const responder = inboundErrorResponders.get(content.action) ?? unknown;
   await responder(content);
 };
 
 const loadAMQPRoutes = () => {
-  amqpChannel.consume(`${env.RABBITMQ_USERNAME}_i`, eachMessage, { noAck: true });
+  amqpChannel.consume(`${env.RABBITMQ_USERNAME}_ti`, eachMessage, { noAck: true });
 };
 
 export { loadAMQPRoutes };

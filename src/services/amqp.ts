@@ -1,4 +1,4 @@
-import * as amqp from 'amqplib';
+import { connect } from 'amqplib';
 import { env } from 'services/env';
 
 const config = {
@@ -13,7 +13,7 @@ const config = {
   vhost: '/',
 };
 
-const connection = await amqp.connect(config);
+const connection = await connect(config);
 const channel = await connection.createChannel();
 
 const sendChtwrsMessage = async (message: string) => {
@@ -21,7 +21,7 @@ const sendChtwrsMessage = async (message: string) => {
   const options = { contentType: 'application/json' };
   return channel.publish(
     `${env.RABBITMQ_USERNAME}_ex`,
-    `${env.RABBITMQ_USERNAME}_o`,
+    `${env.RABBITMQ_USERNAME}_to`,
     messageBuffer,
     options,
   );

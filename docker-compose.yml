@@ -3,20 +3,23 @@ services:
   app:
     depends_on:
       - db
-    image: ${IMAGE:-ddi}
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+    image: ${IMAGE:-knightniwrem/ddi}
     networks:
       - ddi-network
-    ports:
-      - ${BOT_PORT:-3000}:3000
     volumes:
       - ./configs:/ddi/configs
       - ./src:/ddi/src
   db:
     image: 'postgres:13-alpine'
+    env_file:
+      - ./configs/.env
     networks:
       - ddi-network
     ports:
-      - ${POSTGRES_PORT:-5432}:5432
+      - ${POSTGERS_PORT:-5432}:5432
     restart: always
     volumes:
       - ddi-db:/var/lib/postgresql/data

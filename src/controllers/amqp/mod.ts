@@ -1,9 +1,12 @@
 export { auth } from 'controllers/amqp/auth';
 export { authAdditionalOperation } from 'controllers/amqp/authAdditionalOperation';
 export { authorizePayment } from 'controllers/amqp/authorizePayment';
+export { forbidden } from 'controllers/amqp/forbidden';
 export { getInfo } from 'controllers/amqp/getInfo';
 export { grantAdditionalOperation } from 'controllers/amqp/grantAdditionalOperation';
 export { grantToken } from 'controllers/amqp/grantToken';
+export { invalidToken } from 'controllers/amqp/invalidToken';
 export { pay } from 'controllers/amqp/pay';
 export { payout } from 'controllers/amqp/payout';
+export { unknown } from 'controllers/amqp/unknown';
 export { wantToBuy } from 'controllers/amqp/wantToBuy';

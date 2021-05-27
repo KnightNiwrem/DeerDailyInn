@@ -15,7 +15,6 @@
       "views/*": ["./src/views/*"],
       "utils/*": ["./src/utils/*"]
     },
-    "rootDirs": ["./src"]
   },
   "extends": "@tsconfig/node14/tsconfig.json"
 }

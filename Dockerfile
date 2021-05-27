@@ -7,6 +7,8 @@ WORKDIR /ddi/src
 COPY src .
 
 WORKDIR /ddi
+COPY .eslintignore .
+COPY .eslintrc.cjs .
 COPY package.json .
 COPY tsconfig.json .
 COPY yarn.lock .
