@@ -1,5 +1,3 @@
-const makeBalance = (balance: number) => {
-  return `Balance: ${balance} gold`;
-};
+const makeBalance = (balance: number) => `Balance: ${balance} gold`;
 
 export { makeBalance };

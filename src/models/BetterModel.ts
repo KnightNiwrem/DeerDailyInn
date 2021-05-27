@@ -10,7 +10,7 @@ import {
   some,
 } from 'lodash';
 import { Model, ValidationError } from 'objection';
-import type { MaybeCompositeId, QueryBuilder, QueryContext } from 'objection';
+import type { QueryBuilder, QueryContext } from 'objection';
 
 class BetterModel extends Model {
   id!: number;
@@ -52,17 +52,6 @@ class BetterModel extends Model {
   static async create<T extends typeof BetterModel>(this: T, props: any) {
     type R = QueryBuilder<InstanceType<T>, InstanceType<T> | undefined>;
     return this.query().insert(props).returning('*') as R;
-  }
-
-  static async findById<T extends typeof BetterModel>(this: T, id: MaybeCompositeId) {
-    type R = QueryBuilder<InstanceType<T>, InstanceType<T> | undefined>;
-    return this.query().findById(id) as R;
-  }
-
-  static async findOne<T extends typeof BetterModel>(this: T, ...args: any) {
-    type R = QueryBuilder<InstanceType<T>, InstanceType<T> | undefined>;
-    //@ts-ignore
-    return this.query().findOne(...args) as R;
   }
 
   async $beforeInsert(queryContext: QueryContext) {

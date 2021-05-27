@@ -3,7 +3,7 @@ import { User } from 'models/mod';
 
 const auth = async (content: any) => {
   const telegramId = content.payload.userId;
-  const user = await User.findOne({ telegramId });
+  const user = await User.query().findOne({ telegramId });
   if (!isNil(user)) {
     return;
   }

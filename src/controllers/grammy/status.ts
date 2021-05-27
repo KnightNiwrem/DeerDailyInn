@@ -14,7 +14,7 @@ const status: TextMiddleware<Context> = async ctx => {
     return;
   }
 
-  const user = await User.findOne({ telegramId });
+  const user = await User.query().findOne({ telegramId });
   const chtwrsToken = user?.chtwrsToken;
   if (isNil(user) || isEmpty(chtwrsToken)) {
     const text = makeUnregistered();

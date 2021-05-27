@@ -1,10 +1,15 @@
 import { config } from 'dotenv';
 
 const { error, parsed } = config({
-  path: '../configs/.env',
+  path: 'configs/.env',
 });
+if (error) {
+  throw error;
+}
 if (!parsed) {
-  throw new Error('Rejected at services/env: dotenv.config().parsed is undefined!');
+  const errorText = `Rejected at services/env: dotenv.config().parsed \
+is undefined!`;
+  throw new Error(errorText);
 }
 
 const env = parsed;

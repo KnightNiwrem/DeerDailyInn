@@ -5,8 +5,7 @@ import { bot } from 'services/grammy';
 
 const wantToBuy = async (content: any) => {
   const telegramId = content.payload.userId;
-  const itemName = content.payload.itemName;
-  const quantity = content.payload.quantity;
+  const { itemName, quantity } = content.payload;
   const hasDetails = !isNil(itemName) && !isNil(quantity);
 
   const statusCode = content.result.toLowerCase();

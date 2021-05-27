@@ -1,7 +1,7 @@
 const invalidRollbackStatusCodes = new Set([
   'insufficientfunds',
   'levelislow',
-  'userisbusy'
+  'userisbusy',
 ]);
 
 export { invalidRollbackStatusCodes };

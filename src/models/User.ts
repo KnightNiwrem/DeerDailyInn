@@ -13,7 +13,7 @@ class User extends BetterModel {
   sales?: Deal[];
   subscriptions?: Subscription[];
 
-  static get jsonSchema () {
+  static get jsonSchema() {
     return {
       type: 'object',
       required: [

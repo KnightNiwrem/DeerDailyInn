@@ -2,7 +2,7 @@ import { isEmpty, isFinite, isInteger, isNil } from 'lodash';
 import { Transaction } from 'models/Transaction';
 import { User } from 'models/User';
 import { sendChtwrsMessage } from 'services/amqp';
-import { extractMatch } from 'utils/extractMatch'
+import { extractMatch } from 'utils/extractMatch';
 import { makePayout } from 'utils/makePayout';
 import { makeBadWithdraw } from 'views/makeBadWithdraw';
 import { makeInsufficientWithdrawBalance } from 'views/makeInsufficientWithdrawBalance';

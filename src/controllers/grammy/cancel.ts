@@ -4,7 +4,6 @@ import { BuyOrder } from 'models/BuyOrder';
 import { extractMatch } from 'utils/extractMatch';
 import { makeBadCancel } from 'views/makeBadCancel';
 import { makeCancel } from 'views/makeCancel';
-import { makeUnregistered } from 'views/makeUnregistered';
 
 import type { Context } from 'grammy';
 import type { TextMiddleware } from 'utils/types/TextMiddleware';
@@ -25,7 +24,7 @@ const cancel: TextMiddleware<Context> = async ctx => {
 
   await BuyOrder.query()
     .patch({ amountLeft: 0 })
-    .where( { telegramId, item: item.name })
+    .where({ telegramId, item: item.name })
     .andWhere('amountLeft', '>', 0);
 
   const text = makeCancel(item.name);

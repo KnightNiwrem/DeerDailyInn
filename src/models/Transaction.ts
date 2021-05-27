@@ -12,7 +12,7 @@ class Transaction extends BetterModel {
   source?: User;
   destination?: User;
 
-  static get jsonSchema () {
+  static get jsonSchema() {
     return {
       type: 'object',
       required: [
@@ -27,7 +27,7 @@ class Transaction extends BetterModel {
       properties: {
         ...super.jsonSchema.properties,
         apiStatus: {
-          type: 'string'
+          type: 'string',
         },
         fromId: {
           type: 'integer',

@@ -12,14 +12,14 @@ class Status extends BetterModel {
 
   user?: User;
 
-  static get jsonSchema () {
+  static get jsonSchema() {
     return {
       type: 'object',
       required: [
         ...super.jsonSchema.required,
         'expireAt',
         'startAt',
-        'telegramId'
+        'telegramId',
       ],
       properties: {
         ...super.jsonSchema.properties,

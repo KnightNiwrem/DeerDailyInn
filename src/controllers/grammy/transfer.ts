@@ -25,8 +25,8 @@ const transfer: TextMiddleware<Context> = async ctx => {
     return;
   }
 
-  const fromUser = await User.findOne({ telegramId: fromId });
-  const toUser = await User.findOne({ telegramId: toId });
+  const fromUser = await User.query().findOne({ telegramId: fromId });
+  const toUser = await User.query().findOne({ telegramId: toId });
   if (isNil(fromUser) || isNil(toUser)) {
     const text = makeTransferNotFound({ fromUser, toUser });
     await ctx.reply(text);
@@ -57,13 +57,13 @@ const transfer: TextMiddleware<Context> = async ctx => {
         reason: `Administrator ${telegramId} invoked /transfer command \
     to send ${amount} gold from ${fromUser.id} to ${toUser.id}`,
         status: 'completed',
-        toId: toUser.id
+        toId: toUser.id,
       })
       .returning('*');
     await trx.commit();
 
     const text = makeTransfer({
-      amount:recordedTransaction.quantity,
+      amount: recordedTransaction.quantity,
       fromUser: updatedFromUser,
       toUser: updatedToUser,
     });

@@ -46,7 +46,7 @@ const inspect: TextMiddleware<Context> = async ctx => {
     const text = makeInspect({
       price,
       itemName: item.name,
-      quantityAhead: quantity
+      quantityAhead: quantity,
     });
     await ctx.reply(text);
     return;
@@ -66,14 +66,14 @@ const inspect: TextMiddleware<Context> = async ctx => {
     .andWhere('id', '>', buyOrder.id)
     .sum('quantity') as unknown as [{ sum: number | null }];
 
-    const quantityAhead = aheadSumResult[0].sum ?? 0;
-    const quantityBehind = behindSumResult[0].sum ?? 0;
-    const text = makeInspect({
-      price,
-      quantityAhead,
-      quantityBehind,
-      itemName: item.name,
-    });
+  const quantityAhead = aheadSumResult[0].sum ?? 0;
+  const quantityBehind = behindSumResult[0].sum ?? 0;
+  const text = makeInspect({
+    price,
+    quantityAhead,
+    quantityBehind,
+    itemName: item.name,
+  });
   await ctx.reply(text);
 };
 

@@ -3,16 +3,13 @@ services:
   app:
     depends_on:
       - db
-    command:
-      - docker:watch
-    env_file:
-      - ${ENV}.env
     image: ${IMAGE:-ddi}
     networks:
       - ddi-network
     ports:
       - ${BOT_PORT:-3000}:3000
     volumes:
+      - ./configs:/ddi/configs
       - ./src:/ddi/src
   db:
     image: 'postgres:13-alpine'

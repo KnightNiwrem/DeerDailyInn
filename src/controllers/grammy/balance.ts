@@ -12,7 +12,7 @@ const balance: TextMiddleware<Context> = async ctx => {
     return;
   }
 
-  const user = await User.findOne({ telegramId });
+  const user = await User.query().findOne({ telegramId });
   const chtwrsToken = user?.chtwrsToken;
   const isRegistered = !isNil(user) && !isEmpty(chtwrsToken);
   if (!isRegistered) {

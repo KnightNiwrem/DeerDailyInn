@@ -1,6 +1,4 @@
-const makeUnregistered = () => {
-  return `Hi, you don't seem to \
-be registered yet! Do /start to register first!`;
-};
+const makeUnregistered = () => `Hi, you don't seem to be registered \
+yet! Do /start to register first!`;
 
 export { makeUnregistered };

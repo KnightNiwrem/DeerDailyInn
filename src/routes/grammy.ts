@@ -20,7 +20,7 @@ import {
   unknown,
   withdraw,
   wtb,
- } from 'controllers/grammy/mod';
+} from 'controllers/grammy/mod';
 import { bot } from 'services/grammy';
 import { buildHearsRegex } from 'utils/buildHearsRegex';
 
@@ -52,6 +52,6 @@ const loadBotRoutes = async () => {
 
   bot.catch(console.warn);
   bot.start();
-}
+};
 
 export { loadBotRoutes };

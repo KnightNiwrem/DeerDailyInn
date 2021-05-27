@@ -1,7 +1,7 @@
 type MakeInsufficientCoffeeBalanceOptions = {
   balance: number;
   cost: number;
-}
+};
 
 const makeInsufficientCoffeeBalance = (options: MakeInsufficientCoffeeBalanceOptions) => {
   const { balance, cost } = options;

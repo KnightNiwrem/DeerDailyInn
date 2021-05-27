@@ -11,7 +11,7 @@ class Deal extends BetterModel {
   buyer?: User;
   seller?: User;
 
-  static get jsonSchema () {
+  static get jsonSchema() {
     return {
       type: 'object',
       required: [

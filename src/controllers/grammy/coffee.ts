@@ -48,13 +48,13 @@ const coffee: TextMiddleware<Context> = async ctx => {
     }
 
     const isSuccessfulCoffee = rollCoffeeCheck(user.buyOrderLimit);
-    const updatedUser = await user.$query(trx)
+    await user.$query(trx)
       .decrement('balance', finalCoffeePrice)
       .increment('buyOrderLimit', isSuccessfulCoffee ? 1 : 0)
       .returning('*');
 
     const botUser = await User.query(trx).findOne({ id: 0 });
-    const updatedBotUser = await botUser.$query(trx)
+    await botUser.$query(trx)
       .increment('balance', finalCoffeePrice)
       .returning('*');
 
@@ -65,7 +65,7 @@ const coffee: TextMiddleware<Context> = async ctx => {
       status: 'completed',
       toId: 0,
     };
-    const recordedTransaction = await Transaction.query(trx).insert(transactionProps);
+    await Transaction.query(trx).insert(transactionProps);
 
     const text = makeCoffee(isSuccessfulCoffee);
     await ctx.reply(text);

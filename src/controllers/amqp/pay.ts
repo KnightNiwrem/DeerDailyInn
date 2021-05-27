@@ -3,7 +3,7 @@ import { bot, sendLog } from 'services/grammy';
 import { makeContact } from 'views/makeContact';
 
 const pay = async (content: any) => {
-  const transactionId = content.payload.transactionId;
+  const { transactionId } = content.payload;
   const hasSuccessfulResult = content.result.toLowerCase() === 'ok';
 
   const trx = await User.startTransaction();
@@ -18,12 +18,15 @@ const pay = async (content: any) => {
 
   const status = hasSuccessfulResult ? 'completed' : 'cancelled';
   await transaction.$query(trx).patch({
+    status,
     apiStatus: content.result,
-    status: status
   });
 
-  const text = hasSuccessfulResult ? `Your deposit request is successful! Your new balance is ${finalBalance} gold.` : makeContact();
-  sendLog(`${hasSuccessfulResult ? "Success" : "Failure"}: User ${user.telegramId} tried to deposit ${content.payload.debit.gold} gold`);
+  const text = hasSuccessfulResult
+    ? `Your deposit request is successful! Your new balance is ${finalBalance} gold.`
+    : makeContact();
+  sendLog(`${hasSuccessfulResult ? 'Success' : 'Failure'}: \
+User ${user.telegramId} tried to deposit ${content.payload.debit.gold} gold`);
   await bot.api.sendMessage(user.telegramId, text);
 };
 

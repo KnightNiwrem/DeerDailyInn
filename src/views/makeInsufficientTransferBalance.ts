@@ -4,7 +4,7 @@ type MakeInsufficientTransferBalanceOptions = {
 };
 
 const makeInsufficientTransferBalance = (
-  options: MakeInsufficientTransferBalanceOptions
+  options: MakeInsufficientTransferBalanceOptions,
 ) => {
   const { amount, balance } = options;
   return `Could not transfer ${amount} gold from fromUser! \

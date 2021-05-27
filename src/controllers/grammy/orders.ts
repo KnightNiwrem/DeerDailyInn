@@ -10,7 +10,7 @@ import type { TextMiddleware } from 'utils/types/TextMiddleware';
 
 const processOrders = async (orders: BuyOrder[]) => {
   const ordersToAheadMap = new Map();
-  for (const order of orders) {
+  await Promise.all(orders.map(async order => {
     const sumResult = await BuyOrder.query()
       .where({ item: order.item })
       .andWhere('amountLeft', '>', 0)
@@ -18,21 +18,20 @@ const processOrders = async (orders: BuyOrder[]) => {
       .sum('amountLeft') as unknown as [{ sum: number }];
     const countAheads = sumResult[0].sum ?? 0;
     ordersToAheadMap.set(order, countAheads);
-  }
+  }));
   return ordersToAheadMap;
 };
 
 const orders: TextMiddleware<Context> = async ctx => {
-  const chatId = ctx.chat.id;
   const telegramId = ctx.from?.id;
   if (isNil(telegramId)) {
     return;
   }
 
-  const orders = await BuyOrder.query()
+  const buyOrders = await BuyOrder.query()
     .where('amountLeft', '>', 0)
     .andWhere('telegramId', telegramId);
-  const ordersToAheadMap = await processOrders(orders);
+  const ordersToAheadMap = await processOrders(buyOrders);
 
   const nowISO = DateTime.utc().toISO();
   const user = await User.query().findOne({ telegramId });

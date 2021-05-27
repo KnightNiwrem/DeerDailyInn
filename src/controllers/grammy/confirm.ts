@@ -40,7 +40,7 @@ const confirm: TextMiddleware<Context> = async ctx => {
       status: 'pending',
       toId: user.id,
     };
-    const lastPendingDeposit =  await Transaction.query(trx)
+    const lastPendingDeposit = await Transaction.query(trx)
       .where(transactionProps)
       .orderBy('id', 'desc')
       .first();

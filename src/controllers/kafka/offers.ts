@@ -1,5 +1,6 @@
 import { itemsFromName } from 'constants/itemsFromName';
 import { isNil } from 'lodash';
+import { DateTime } from 'luxon';
 import { BuyOrder, User } from 'models/mod';
 import { sendChtwrsMessage } from 'services/amqp';
 import { makeWantToBuy } from 'utils/makeWantToBuy';
@@ -9,9 +10,7 @@ const offers = async (content: any) => {
     item: itemName,
     price,
     qty: quantity,
-    sellerCastle,
     sellerId,
-    sellerName,
   } = content;
 
   const buyOrder = await BuyOrder
@@ -25,7 +24,7 @@ const offers = async (content: any) => {
     return;
   }
 
-  const buyer = await User.findOne('telegramId', buyOrder.telegramId);
+  const buyer = await User.query().findOne({ telegramId: buyOrder.telegramId });
   if (isNil(buyer)) {
     return;
   }
@@ -48,9 +47,12 @@ const offers = async (content: any) => {
     itemCode: item.id,
     quantity: amountPurchased,
   });
-  const response = await sendChtwrsMessage(request);
-  const now = new Date();
-  console.log(`${now} | User ${buyer.telegramId} | Bought ${amountPurchased} ${itemName} at ${price} gold each from Seller ${sellerId}`);
+  await sendChtwrsMessage(request);
+
+  const nowISO = DateTime.utc().toISO();
+  const logText = `${nowISO} | User ${buyer.telegramId} | Bought \
+${amountPurchased} ${itemName} at ${price} gold each from Seller ${sellerId}`;
+  console.log(logText);
 };
 
 export { offers };

@@ -4,17 +4,21 @@ import { makeConfirmation } from 'views/makeConfirmation';
 import { makeContact } from 'views/makeContact';
 
 const authorizePayment = async (content: any) => {
-  const transactionId = content.payload.transactionId;
+  const { transactionId } = content.payload;
   const hasSuccessfulResult = content.result.toLowerCase() === 'ok';
 
   const trx = await User.startTransaction();
-  const transaction = await Transaction.query(trx).where('id', transactionId).first();
-  const user = await User.query(trx).where('id', transaction.toId).first();
+  const transaction = await Transaction
+    .query(trx)
+    .findOne({ id: transactionId });
+  const user = await User
+    .query(trx)
+    .findOne({ id: transaction.toId });
 
   const status = hasSuccessfulResult ? 'pending' : 'cancelled';
   await transaction.$query(trx).patch({
+    status,
     apiStatus: content.result,
-    status: status
   });
 
   const text = hasSuccessfulResult ? makeConfirmation() : makeContact();

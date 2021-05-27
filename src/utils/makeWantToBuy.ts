@@ -16,7 +16,7 @@ const makeWantToBuy = (options: MakeWantToBuyOptions) => {
   } = options;
   const message = JSON.stringify({
     token,
-    action: "wantToBuy",
+    action: 'wantToBuy',
     payload: { itemCode, quantity, price, exactPrice },
   });
   return message;

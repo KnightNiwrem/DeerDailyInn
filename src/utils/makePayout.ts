@@ -11,10 +11,10 @@ const makePayout = (options: MakePayoutOptions) => {
     token,
     payLoad: {
       amount: {
-        pouches: amount
+        pouches: amount,
       },
       message: `You have withdrawn ${amount} gold pouch(es)!`,
-      transactionId: `${transactionId}`
+      transactionId: `${transactionId}`,
     },
   });
   return message;

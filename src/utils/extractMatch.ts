@@ -1,7 +1,7 @@
 import { isNil } from 'lodash';
 
 const extractMatch = (
-  ctxMatch: string | RegExpMatchArray | null | undefined
+  ctxMatch: string | RegExpMatchArray | null | undefined,
 ) => {
   if (isNil(ctxMatch)) {
     return [];

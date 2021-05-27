@@ -17,16 +17,14 @@ const connection = await amqp.connect(config);
 const channel = await connection.createChannel();
 
 const sendChtwrsMessage = async (message: string) => {
-  const messageBuffer = new Buffer(message);
-  const options = { 
-    contentType: 'application/json'
-  };
+  const messageBuffer = Buffer.from(message);
+  const options = { contentType: 'application/json' };
   return channel.publish(
     `${env.RABBITMQ_USERNAME}_ex`,
     `${env.RABBITMQ_USERNAME}_o`,
     messageBuffer,
     options,
   );
-}
+};
 
 export { channel as amqpChannel, connection as amqpConnection, sendChtwrsMessage };

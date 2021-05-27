@@ -3,7 +3,7 @@ type MakeBuyOrderLimitExceededOptions = {
   itemName: string;
   price: number;
   quantity: number;
-}
+};
 
 const makeBuyOrderLimitExceeded = (options: MakeBuyOrderLimitExceededOptions) => {
   const { buyOrderLimit, itemName, price, quantity } = options;
@@ -13,4 +13,4 @@ each. You can only have a total of ${buyOrderLimit} \
 active buy orders at any given time.`;
 };
 
-export { makeBuyOrderLimitExceeded } ;
+export { makeBuyOrderLimitExceeded };

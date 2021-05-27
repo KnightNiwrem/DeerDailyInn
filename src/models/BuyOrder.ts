@@ -10,7 +10,7 @@ class BuyOrder extends BetterModel {
 
   user?: User;
 
-  static get jsonSchema () {
+  static get jsonSchema() {
     return {
       type: 'object',
       required: [

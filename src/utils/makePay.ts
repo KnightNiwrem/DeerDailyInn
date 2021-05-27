@@ -3,7 +3,7 @@ type MakePayOptions = {
   chtwrsToken: string;
   confirmationCode: string;
   transactionId: string;
-}
+};
 
 const makePay = (options: MakePayOptions) => {
   const { amount, chtwrsToken: token, confirmationCode, transactionId } = options;
@@ -14,7 +14,7 @@ const makePay = (options: MakePayOptions) => {
       confirmationCode,
       transactionId,
       amount: {
-        pouches: amount
+        pouches: amount,
       },
     },
   });

@@ -23,33 +23,33 @@ const toHumanDifference = (end: Duration, start: Duration) => {
 const makeStatus = (options: MakeStatusOptions) => {
   const { activeStatuses, expiredStatuses, queuedStatuses, nowISO } = options;
   const nowDuration = Duration.fromISO(nowISO);
-  const activeStatusText = activeStatuses.map(
-    status => `${status.title} (${status.description}, Expiring in: \
-${toHumanDifference(Duration.fromISO(status.expireAt), nowDuration)})`
-  ).join('\n');
 
-  const expiredStatusText = isEmpty(expiredStatuses)
-    ? ''
-    : `
-Expired Statuses:
-${expiredStatuses.map(
-  status => `${status.title} (${status.description}, Expired on: \
-${DateTime.fromISO(status.expireAt).toFormat('FF')})`
-).join('\n')}`;
-
-  const queuedStatusText = isEmpty(queuedStatuses)
-    ? ''
-    : `
-Queue Statuses:
-${queuedStatuses.map(
-  status => `${status.title} (${status.description}, Starting in: \
-${toHumanDifference(Duration.fromISO(status.startAt), nowDuration)})`
-).join('\n')}`;
+  const activeStatusText = activeStatuses.map(status => {
+    const { description, title } = status;
+    const expireAsDuration = Duration.fromISO(status.expireAt);
+    const humanDifference = toHumanDifference(expireAsDuration, nowDuration);
+    return `${title} (${description}, Expiring in: ${humanDifference})`;
+  }).join('\n');
+  const expiredStatusText = expiredStatuses.map(status => {
+    const { description, title } = status;
+    const expiredDateTime = DateTime.fromISO(status.expireAt).toFormat('FF');
+    return `${title} (${description}, Expired on: ${expiredDateTime})`;
+  }).join('\n');
+  const queuedStatusText = queuedStatuses.map(status => {
+    const { description, title } = status;
+    const startAsDuration = Duration.fromISO(status.startAt);
+    const humanDifference = toHumanDifference(startAsDuration, nowDuration);
+    return `${title} (${description}, Starting in: ${humanDifference})`;
+  }).join('\n');
 
   return `Active Statuses:
-${isEmpty(activeStatuses) ? 'None' : activeStatusText}\
-${isEmpty(queuedStatuses) ? '' : queuedStatusText}\
-${isEmpty(expiredStatuses) ? '' : expiredStatusText}`;
+${isEmpty(activeStatuses) ? 'None' : activeStatusText}
+
+Queued Statuses:
+${isEmpty(queuedStatuses) ? 'None' : queuedStatusText}
+
+Expired Statuses:
+${isEmpty(expiredStatuses) ? 'None' : expiredStatusText}`;
 };
 
 export { makeStatus };

@@ -5,7 +5,7 @@ type MakeInspectOptions = {
   price: number;
   quantityAhead: number;
   quantityBehind?: number;
-}
+};
 
 const makeInspect = (options: MakeInspectOptions) => {
   const {

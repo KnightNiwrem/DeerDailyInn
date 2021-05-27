@@ -4,6 +4,6 @@ const makeCoffee = (isSuccessfulCoffee: boolean) => {
     : `But you still feel unsatisfied, somehow...`;
   return `You take a sip of your coffee...
 ${coffeeText}`;
-}
+};
 
 export { makeCoffee };

@@ -23,7 +23,7 @@ const authextra: TextMiddleware<Context> = async ctx => {
     throw new Error('Rejected in authextra: Missing argument(s).');
   }
 
-  const user = await User.findOne({ telegramId });
+  const user = await User.query().findOne({ telegramId });
   const chtwrsToken = user?.chtwrsToken;
   const isRegistered = !isNil(user) && !isEmpty(chtwrsToken);
   if (!isRegistered) {

@@ -6,6 +6,14 @@
   "repository": "git@github.com:KnightNiwrem/DeerDailyInn.git",
   "author": "KnightNiwrem",
   "license": "MIT",
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "docker:start": "raw:migrate && raw:start",
+    "lint": "eslint . --ext .ts",
+    "raw:migrate": "knex --knexfile dist/knexfile.js migrate:latest",
+    "raw:start": "node dist/index.js",
+    "start": "build && raw:migrate && raw:start"
+  },
   "dependencies": {
     "@grammyjs/transformer-throttler": "^0.1.9",
     "amqplib": "^0.8.0",
@@ -29,6 +37,11 @@
     "@types/luxon": "^1.26.5",
     "@types/nanoid-dictionary": "^4.2.0",
     "@types/node": "^15.6.0",
+    "@typescript-eslint/eslint-plugin": "^4.25.0",
+    "@typescript-eslint/parser": "^4.25.0",
+    "eslint": "^7.27.0",
+    "eslint-config-airbnb-typescript": "^12.3.1",
+    "eslint-plugin-import": "^2.23.3",
     "typescript": "^4.2.4"
   }
 }

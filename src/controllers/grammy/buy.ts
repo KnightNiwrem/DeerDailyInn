@@ -1,9 +1,7 @@
 import { itemsFromId } from 'constants/itemsFromId';
 import { isEmpty, isFinite, isSafeInteger, isNil } from 'lodash';
 import { DateTime } from 'luxon';
-import { BuyOrder } from 'models/BuyOrder';
-import { Status } from 'models/Status';
-import { User } from 'models/User';
+import { BuyOrder, Status, User } from 'models/mod';
 import { sendChtwrsMessage } from 'services/amqp';
 import { extractMatch } from 'utils/extractMatch';
 import { makeWantToBuy } from 'utils/makeWantToBuy';
@@ -36,7 +34,7 @@ const buy: TextMiddleware<Context> = async ctx => {
     throw new Error('Rejected in buy: Bad argument(s).');
   }
 
-  const user = await User.findOne({ telegramId });
+  const user = await User.query().findOne({ telegramId });
   const chtwrsId = user?.chtwrsId;
   const isRegistered = !isNil(user) && !isEmpty(chtwrsId);
   if (!isRegistered) {
@@ -64,15 +62,14 @@ const buy: TextMiddleware<Context> = async ctx => {
   }
 
   const nowString = DateTime.utc().toISO();
-  const activeBuyOrderBoo = await Status.query()
+  const sumResult = await Status.query()
     .whereNotNull('deltaBuyOrderLimit')
     .andWhere({ telegramId })
     .andWhere('startAt', '<', nowString)
-    .andWhere('expireAt', '>', nowString);
-  const buyOrderBooTotal = activeBuyOrderBoo.reduce((total, next) => {
-    return total + next.deltaBuyOrderLimit;
-  }, 0);
-  const buyOrderLimit = Math.max(user!.buyOrderLimit + buyOrderBooTotal, 0);
+    .andWhere('expireAt', '>', nowString)
+    .sum('deltaBuyOrderLimit') as unknown as [{ sum: number }];
+  const buyOrderBoostsTotal = sumResult[0]?.sum ?? 0;
+  const buyOrderLimit = Math.max(user.buyOrderLimit + buyOrderBoostsTotal, 0);
   if (pendingBuyOrders.length >= buyOrderLimit) {
     const text = makeBuyOrderLimitExceeded({ buyOrderLimit, itemName, price, quantity });
     await ctx.reply(text);
@@ -88,14 +85,13 @@ const buy: TextMiddleware<Context> = async ctx => {
   });
   await sendChtwrsMessage(testRequest);
 
-  const attributes = {
+  await BuyOrder.query().insert({
     quantity,
     telegramId,
     amountLeft: quantity,
     item: itemName,
     maxPrice: price,
-  };
-  const newBuyOrder = await BuyOrder.create(attributes);
+  });
   const text = makeBuyOrder({ itemName, price, quantity });
   await ctx.reply(text);
 };

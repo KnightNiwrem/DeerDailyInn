@@ -2,7 +2,7 @@ type MakeBuyOrderOptions = {
   itemName: string;
   price: number;
   quantity: number;
-}
+};
 
 const makeBuyOrder = (options: MakeBuyOrderOptions) => {
   const { itemName, price, quantity } = options;

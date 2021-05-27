@@ -22,8 +22,7 @@ const eachMessage = async (payload: EachMessagePayload) => {
   }
   try {
     const content = JSON.parse(text);
-    const response = await controller(content);
-    return response;
+    await controller(content);
   } catch (err) {
     console.error(err);
   }

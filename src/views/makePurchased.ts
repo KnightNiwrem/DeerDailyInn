@@ -1,4 +1,4 @@
-type makePurchasedOptions = {
+type MakePurchasedOptions = {
   buyerCastle: string;
   buyerName: string;
   itemName: string;
@@ -6,7 +6,7 @@ type makePurchasedOptions = {
   quantity: number;
 };
 
-const makePurchased = (options: makePurchasedOptions) => {
+const makePurchased = (options: MakePurchasedOptions) => {
   const {
     buyerCastle,
     buyerName,
@@ -15,8 +15,8 @@ const makePurchased = (options: makePurchasedOptions) => {
     quantity,
   } = options;
 
-  return `${buyerCastle}${buyerName} purchased \
-${quantity} ${itemName} from you at ${price} gold each.`;
+  return `${buyerCastle}${buyerName} purchased ${quantity} ${itemName} \
+from you at ${price} gold each.`;
 };
 
 export { makePurchased };

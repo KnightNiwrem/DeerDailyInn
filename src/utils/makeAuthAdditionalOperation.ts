@@ -8,9 +8,9 @@ const makeAuthAdditionalOperation = (options: MakeAuthAdditionalOperationOptions
     chtwrsToken: token,
     operation,
   } = options;
-  const message = JSON.stringify({  
-    token,  
-    action: "authAdditionalOperation",  
+  const message = JSON.stringify({
+    token,
+    action: 'authAdditionalOperation',
     payload: { operation },
   });
   return message;

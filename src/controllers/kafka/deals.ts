@@ -14,7 +14,7 @@ const deals = async (content: any) => {
     sellerId,
   } = content;
 
-  const seller = await User.findOne('chtwrsId', sellerId);
+  const seller = await User.query().findOne({ chtwrsId: sellerId });
   if (!isNil(seller)) {
     const message = makePurchased({
       buyerCastle,
@@ -26,7 +26,7 @@ const deals = async (content: any) => {
     await bot.api.sendMessage(seller.telegramId, message);
   }
 
-  const buyer = await User.findOne('chtwrsId', buyerId);
+  const buyer = await User.query().findOne({ chtwrsId: buyerId });
   if (isNil(buyer) && isNil(seller)) {
     return;
   }

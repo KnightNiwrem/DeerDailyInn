@@ -8,6 +8,6 @@ const makeInfo = (options: MakeInfoOptions) => {
   return `Here is the requested info:
 Chat Id: ${chatId}
 Telegram Id: ${telegramId ?? 'None'}`;
-}
+};
 
 export { makeInfo };
