@@ -1,6 +1,5 @@
 import { isNil } from 'lodash';
-import { BuyOrder } from 'models/BuyOrder';
-import { User } from 'models/User';
+import { BuyOrder, User } from 'models/mod';
 import { bot } from 'services/grammy';
 
 const invalidToken = async (content: any) => {

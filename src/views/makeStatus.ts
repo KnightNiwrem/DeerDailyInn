@@ -2,7 +2,7 @@ import humanizeDuration from 'humanize-duration';
 import { isEmpty } from 'lodash';
 import { DateTime, Duration } from 'luxon';
 
-import type { Status } from 'models/Status';
+import type { Status } from 'models/mod';
 
 type MakeStatusOptions = {
   activeStatuses: Status[];

@@ -1,12 +1,14 @@
-import { auth } from 'controllers/amqp/auth';
-import { authAdditionalOperation } from 'controllers/amqp/authAdditionalOperation';
-import { authorizePayment } from 'controllers/amqp/authorizePayment';
-import { getInfo } from 'controllers/amqp/getInfo';
-import { grantAdditionalOperation } from 'controllers/amqp/grantAdditionalOperation';
-import { grantToken } from 'controllers/amqp/grantToken';
-import { pay } from 'controllers/amqp/pay';
-import { payout } from 'controllers/amqp/payout';
-import { wantToBuy } from 'controllers/amqp/wantToBuy';
+import {
+  auth,
+  authAdditionalOperation,
+  authorizePayment,
+  getInfo,
+  grantAdditionalOperation,
+  grantToken,
+  pay,
+  payout,
+  wantToBuy,
+} from 'controllers/amqp/mod';
 import { isEmpty } from 'lodash';
 import { amqpChannel } from 'services/amqp';
 import { env } from 'services/env';

@@ -1,5 +1,4 @@
-import { Transaction } from 'models/Transaction';
-import { User } from 'models/User';
+import { Transaction, User } from 'models/mod';
 import { bot } from 'services/grammy';
 import { makeConfirmation } from 'views/makeConfirmation';
 import { makeContact } from 'views/makeContact';

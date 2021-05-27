@@ -1,6 +1,6 @@
 import { invalidRollbackStatusCodes } from 'constants/invalidRollbackStatusCodes';
 import { isNil } from 'lodash';
-import { BuyOrder } from 'models/BuyOrder';
+import { BuyOrder } from 'models/mod';
 import { bot } from 'services/grammy';
 
 const wantToBuy = async (content: any) => {

@@ -1,6 +1,6 @@
 import { forEach, groupBy } from 'lodash';
 import { DateTime } from 'luxon';
-import type { Deal } from 'models/Deal';
+import type { Deal } from 'models/mod';
 
 type MakeDealsOptions = {
   chtwrsId: string;

@@ -1,7 +1,6 @@
 import { itemsFromName } from 'constants/itemsFromName';
 import { isNil } from 'lodash';
-import { BuyOrder } from 'models/BuyOrder';
-import { User } from 'models/User';
+import { BuyOrder, User } from 'models/mod';
 import { sendChtwrsMessage } from 'services/amqp';
 import { makeWantToBuy } from 'utils/makeWantToBuy';
 

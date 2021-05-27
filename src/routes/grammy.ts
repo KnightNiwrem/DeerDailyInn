@@ -1,24 +1,26 @@
 import { apiThrottler } from '@grammyjs/transformer-throttler';
-import { auth } from 'controllers/grammy/auth';
-import { authextra } from 'controllers/grammy/authextra';
-import { balance } from 'controllers/grammy/balance';
-import { buy } from 'controllers/grammy/buy';
-import { cancel } from 'controllers/grammy/cancel';
-import { coffee } from 'controllers/grammy/coffee';
-import { confirm } from 'controllers/grammy/confirm';
-import { deals } from 'controllers/grammy/deals';
-import { deposit } from 'controllers/grammy/deposit';
-import { getinfo } from 'controllers/grammy/getinfo';
-import { help } from 'controllers/grammy/help';
-import { info } from 'controllers/grammy/info';
-import { inspect } from 'controllers/grammy/inspect';
-import { orders } from 'controllers/grammy/orders';
-import { start } from 'controllers/grammy/start';
-import { status } from 'controllers/grammy/status';
-import { transfer } from 'controllers/grammy/transfer';
-import { unknown } from 'controllers/grammy/unknown';
-import { withdraw } from 'controllers/grammy/withdraw';
-import { wtb } from 'controllers/grammy/wtb';
+import {
+  auth,
+  authextra,
+  balance,
+  buy,
+  cancel,
+  coffee,
+  confirm,
+  deals,
+  deposit,
+  getinfo,
+  help,
+  info,
+  inspect,
+  orders,
+  start,
+  status,
+  transfer,
+  unknown,
+  withdraw,
+  wtb,
+ } from 'controllers/grammy/mod';
 import { bot } from 'services/grammy';
 import { buildHearsRegex } from 'utils/buildHearsRegex';
 

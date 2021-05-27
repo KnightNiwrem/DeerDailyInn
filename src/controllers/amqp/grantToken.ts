@@ -1,4 +1,4 @@
-import { User } from 'models/User';
+import { User } from 'models/mod';
 import { bot } from 'services/grammy';
 
 const grantToken = async (content: any) => {

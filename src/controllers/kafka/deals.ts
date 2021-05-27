@@ -1,6 +1,5 @@
 import { isNil } from 'lodash';
-import { Deal } from 'models/Deal';
-import { User } from 'models/User';
+import { Deal, User } from 'models/mod';
 import { bot } from 'services/grammy';
 import { makePurchased } from 'views/makePurchased';
 

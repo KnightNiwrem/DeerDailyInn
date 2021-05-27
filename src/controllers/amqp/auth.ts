@@ -1,5 +1,5 @@
 import { isNil } from 'lodash';
-import { User } from 'models/User';
+import { User } from 'models/mod';
 
 const auth = async (content: any) => {
   const telegramId = content.payload.userId;

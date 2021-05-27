@@ -1,4 +1,4 @@
-import { User } from 'models/User';
+import { User } from 'models/mod';
 import { sendChtwrsMessage } from 'services/amqp';
 import { makeAuthAdditionalOperation } from 'utils/makeAuthAdditionalOperation';
 

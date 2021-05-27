@@ -1,4 +1,4 @@
-import type { BuyOrder } from 'models/BuyOrder';
+import type { BuyOrder } from 'models/mod';
 
 type MakeOrdersOption = {
   buyOrderLimit: number;
