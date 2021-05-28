@@ -21,7 +21,7 @@ const sendChtwrsMessage = async (message: string) => {
   const options = { contentType: 'application/json' };
   return channel.publish(
     `${env.RABBITMQ_USERNAME}_ex`,
-    `${env.RABBITMQ_USERNAME}_to`,
+    `${env.RABBITMQ_USERNAME}_o`,
     messageBuffer,
     options,
   );
