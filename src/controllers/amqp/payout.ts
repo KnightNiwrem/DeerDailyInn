@@ -3,8 +3,8 @@ import { bot, sendLog } from 'services/grammy.js';
 import { makeContact } from 'views/makeContact.js';
 
 const payout = async (content: any) => {
-  const { transactionId } = content.payload;
-  const hasSuccessfulResult = content.result.toLowerCase() === 'ok';
+  const { payload, result } = content;
+  const hasSuccessfulResult = result.toLowerCase() === 'ok';
 
   const trx = await User.startTransaction();
   const attributes = {
@@ -13,12 +13,13 @@ const payout = async (content: any) => {
   };
   const [transaction] = await Transaction
     .query(trx)
-    .where('id', transactionId)
+    .where({ status: 'started', fromId: payload.userId })
+    .orderBy('id', 'desc')
     .first()
     .patch(attributes)
     .returning('*');
-  const user = await User.query(trx).findOne({ id: transaction.fromId });
 
+  const user = await User.query(trx).findOne({ id: transaction.fromId });
   if (!hasSuccessfulResult) {
     await user.$query(trx).increment('balance', content.payload.debit.gold);
   }

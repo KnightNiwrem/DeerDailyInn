@@ -3,12 +3,18 @@ import { bot, sendLog } from 'services/grammy.js';
 import { makeContact } from 'views/makeContact.js';
 
 const pay = async (content: any) => {
-  const { transactionId } = content.payload;
-  const hasSuccessfulResult = content.result.toLowerCase() === 'ok';
+  const { result, token: chtwrsToken } = content;
+  const hasSuccessfulResult = result.toLowerCase() === 'ok';
 
   const trx = await User.startTransaction();
-  const transaction = await Transaction.query(trx).where('id', transactionId).first();
-  const user = await User.query(trx).where('id', transaction.toId).first();
+  const user = await User
+    .query(trx)
+    .findOne({ chtwrsToken });
+  const transaction = await Transaction
+    .query(trx)
+    .where({ status: 'started', toId: user.id })
+    .orderBy('id', 'DESC')
+    .first();
 
   let finalBalance = user.balance;
   if (hasSuccessfulResult) {
