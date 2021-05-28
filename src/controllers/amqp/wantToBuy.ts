@@ -4,9 +4,12 @@ import { BuyOrder } from 'models/mod.js';
 import { bot } from 'services/grammy.js';
 
 const wantToBuy = async (content: any) => {
-  const telegramId = content.payload.userId;
-  const { itemName, quantity } = content.payload;
+  const { itemName, quantity, userId } = content.payload;
   const hasDetails = !isNil(itemName) && !isNil(quantity);
+  const telegramId = userId;
+  if (isNil(telegramId)) {
+    return;
+  }
 
   const statusCode = content.result.toLowerCase();
   const isSuccessful = statusCode === 'ok';
@@ -28,8 +31,7 @@ const wantToBuy = async (content: any) => {
 
   const targetBuyOrder = await BuyOrder
     .query()
-    .where('item', itemName)
-    .andWhere('telegramId', telegramId)
+    .where({ item: itemName, telegramId })
     .orderBy('id', 'DESC')
     .first();
   if (isNil(targetBuyOrder)) {
