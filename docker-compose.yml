@@ -11,7 +11,7 @@ services:
     volumes:
       - ./configs:/ddi/configs
   db:
-    image: 'postgres:13-alpine'
+    image: 'postgres:11'
     env_file:
       - ./configs/database.env
     networks:
