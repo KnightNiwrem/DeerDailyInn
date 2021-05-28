@@ -7,33 +7,39 @@ const pay = async (content: any) => {
   const hasSuccessfulResult = result.toLowerCase() === 'ok';
 
   const trx = await User.startTransaction();
-  const user = await User
-    .query(trx)
-    .findOne({ chtwrsToken });
-  const transaction = await Transaction
-    .query(trx)
-    .where({ status: 'started', toId: user.id })
-    .orderBy('id', 'DESC')
-    .first();
+  try {
+    const user = await User
+      .query(trx)
+      .findOne({ chtwrsToken });
+    const transaction = await Transaction
+      .query(trx)
+      .where({ status: 'started', toId: user.id })
+      .orderBy('id', 'DESC')
+      .first();
 
-  let finalBalance = user.balance;
-  if (hasSuccessfulResult) {
-    finalBalance = user.balance + content.payload.debit.gold;
-    await user.$query(trx).increment('balance', content.payload.debit.gold);
+    let finalBalance = user.balance;
+    if (hasSuccessfulResult) {
+      finalBalance = user.balance + content.payload.debit.gold;
+      await user.$query(trx).increment('balance', content.payload.debit.gold);
+    }
+
+    const status = hasSuccessfulResult ? 'completed' : 'cancelled';
+    await transaction.$query(trx).patch({
+      status,
+      apiStatus: content.result,
+    });
+    await trx.commit();
+
+    const text = hasSuccessfulResult
+      ? `Your deposit request is successful! Your new balance is ${finalBalance} gold.`
+      : makeContact();
+    sendLog(`${hasSuccessfulResult ? 'Success' : 'Failure'}: \
+  User ${user.telegramId} tried to deposit ${content.payload.debit.gold} gold`);
+    await bot.api.sendMessage(user.telegramId, text);
+  } catch (err) {
+    await trx.rollback();
+    throw err;
   }
-
-  const status = hasSuccessfulResult ? 'completed' : 'cancelled';
-  await transaction.$query(trx).patch({
-    status,
-    apiStatus: content.result,
-  });
-
-  const text = hasSuccessfulResult
-    ? `Your deposit request is successful! Your new balance is ${finalBalance} gold.`
-    : makeContact();
-  sendLog(`${hasSuccessfulResult ? 'Success' : 'Failure'}: \
-User ${user.telegramId} tried to deposit ${content.payload.debit.gold} gold`);
-  await bot.api.sendMessage(user.telegramId, text);
 };
 
 export { pay };
