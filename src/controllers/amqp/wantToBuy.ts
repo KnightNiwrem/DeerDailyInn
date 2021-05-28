@@ -32,12 +32,14 @@ const wantToBuy = async (content: any) => {
     .andWhere('telegramId', telegramId)
     .orderBy('id', 'DESC')
     .first();
+  if (isNil(targetBuyOrder)) {
+    return;
+  }
 
   await BuyOrder
     .query()
     .patch({ amountLeft: targetBuyOrder.amountLeft + quantity })
     .where('id', targetBuyOrder.id);
-
   console.log(`${new Date()} | User ${telegramId} | Could not buy ${quantity} ${itemName}: ${content.result} + Rollback`);
 };
 

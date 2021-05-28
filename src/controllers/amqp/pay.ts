@@ -1,21 +1,25 @@
+import { isNil } from 'lodash-es';
 import { Transaction, User } from 'models/mod.js';
 import { bot, sendLog } from 'services/grammy.js';
 import { makeContact } from 'views/makeContact.js';
 
 const pay = async (content: any) => {
-  const { result, token: chtwrsToken } = content;
+  const { payload, result } = content;
+  const telegramId = payload?.userId;
   const hasSuccessfulResult = result.toLowerCase() === 'ok';
+  if (isNil(telegramId)) {
+    return;
+  }
 
   const trx = await User.startTransaction();
   try {
     const user = await User
       .query(trx)
-      .findOne({ chtwrsToken });
+      .findOne({ telegramId });
     const transaction = await Transaction
       .query(trx)
-      .where({ status: 'started', toId: user.id })
       .orderBy('id', 'DESC')
-      .first();
+      .findOne({ status: 'started', toId: user.id });
 
     let finalBalance = user.balance;
     if (hasSuccessfulResult) {
