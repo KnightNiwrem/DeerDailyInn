@@ -1,3 +1,4 @@
+import { isNil } from 'lodash-es';
 import { Transaction, User } from 'models/mod.js';
 import { bot, sendLog } from 'services/grammy.js';
 import { makeContact } from 'views/makeContact.js';
@@ -5,22 +6,29 @@ import { makeContact } from 'views/makeContact.js';
 const payout = async (content: any) => {
   const { payload, result } = content;
   const hasSuccessfulResult = result.toLowerCase() === 'ok';
+  const telegramId = payload?.userId;
+  if (isNil(telegramId)) {
+    return;
+  }
 
   const trx = await User.startTransaction();
   try {
+    const user = await User
+      .query(trx)
+      .findOne({ telegramId });
+
     const attributes = {
       apiStatus: content.result,
       status: hasSuccessfulResult ? 'completed' : 'cancelled',
     };
     const transaction = await Transaction
       .query(trx)
-      .where({ status: 'pending', fromId: payload.userId })
+      .where({ status: 'pending', fromId: user.id })
       .orderBy('id', 'desc')
       .first()
       .patch(attributes)
       .returning('*') as unknown as Transaction;
 
-    const user = await User.query(trx).findOne({ id: transaction.fromId });
     if (!hasSuccessfulResult) {
       await user.$query(trx).increment('balance', content.payload.debit.gold);
     }
