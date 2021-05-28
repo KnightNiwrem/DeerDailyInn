@@ -8,6 +8,8 @@ services:
     image: ${IMAGE:-knightniwrem/ddi}
     networks:
       - ddi-network
+    ports:
+      - ${BOT_PORT:-3001}:3001
     restart: always
     volumes:
       - ./configs:/ddi/configs
