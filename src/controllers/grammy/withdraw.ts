@@ -60,8 +60,8 @@ gold in balance.`);
       });
 
     const request = makePayout({
+      amount,
       chtwrsToken,
-      amount: amountInGold,
       transactionId: recordedTransaction.id,
     });
     await sendChtwrsMessage(request);
