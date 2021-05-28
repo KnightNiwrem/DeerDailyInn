@@ -14,7 +14,7 @@ const payout = async (content: any) => {
     };
     const transaction = await Transaction
       .query(trx)
-      .where({ status: 'started', fromId: payload.userId })
+      .where({ status: 'pending', fromId: payload.userId })
       .orderBy('id', 'desc')
       .first()
       .patch(attributes)

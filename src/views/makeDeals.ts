@@ -12,7 +12,7 @@ const makeDeals = (options: MakeDealsOptions) => {
   const { chtwrsId, deals, dealType } = options;
   const sortedDeals = sortBy(deals, deal => deal.created_at)
     .map(deal => {
-      const date = DateTime.fromISO(deal.created_at);
+      const date = DateTime.fromISO(deal.created_at.toISOString());
       return { date, deal };
     });
 

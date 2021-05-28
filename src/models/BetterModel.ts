@@ -14,8 +14,8 @@ import type { QueryBuilder, QueryContext } from 'objection';
 
 class BetterModel extends Model {
   id!: number;
-  created_at!: string;
-  updated_at!: string;
+  created_at!: Date;
+  updated_at!: Date;
 
   static get fields() {
     return keys(this.jsonSchema.properties);
@@ -63,11 +63,11 @@ class BetterModel extends Model {
       throw validationError;
     }
 
-    this.created_at = new Date().toISOString();
+    this.created_at = new Date();
   }
 
   async $beforeUpdate() {
-    this.updated_at = new Date().toISOString();
+    this.updated_at = new Date();
   }
 
   protected buildMissingFieldsError<T extends typeof BetterModel>(
