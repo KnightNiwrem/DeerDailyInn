@@ -67,7 +67,7 @@ const eachMessage = async (message: ConsumeMessage | null) => {
 };
 
 const loadAMQPRoutes = () => {
-  amqpChannel.consume(`${env.RABBITMQ_USERNAME}_ti`, eachMessage, { noAck: true });
+  amqpChannel.consume(`${env.RABBITMQ_USERNAME}_i`, eachMessage, { noAck: true });
 };
 
 export { loadAMQPRoutes };
