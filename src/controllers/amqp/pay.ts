@@ -19,7 +19,7 @@ const pay = async (content: any) => {
     const transaction = await Transaction
       .query(trx)
       .orderBy('id', 'DESC')
-      .findOne({ status: 'started', toId: user.id });
+      .findOne({ status: 'pending', toId: user.id });
 
     let finalBalance = user.balance;
     if (hasSuccessfulResult) {
