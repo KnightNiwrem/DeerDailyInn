@@ -49,8 +49,10 @@ const coffee: TextMiddleware<Context> = async ctx => {
 
     const isSuccessfulCoffee = rollCoffeeCheck(user.buyOrderLimit);
     await user.$query(trx)
-      .decrement('balance', finalCoffeePrice)
-      .increment('buyOrderLimit', isSuccessfulCoffee ? 1 : 0)
+      .patch({
+        balance: user.balance - finalCoffeePrice,
+        buyOrderLimit: isSuccessfulCoffee ? user.buyOrderLimit + 1 : user.buyOrderLimit,
+      })
       .returning('*');
 
     const botUser = await User.query(trx).findOne({ id: 0 });
