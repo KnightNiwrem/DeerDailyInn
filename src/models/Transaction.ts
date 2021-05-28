@@ -17,7 +17,6 @@ class Transaction extends BetterModel {
       type: 'object',
       required: [
         ...super.jsonSchema.required,
-        'apiStatus',
         'fromId',
         'quantity',
         'reason',
@@ -75,9 +74,11 @@ class Transaction extends BetterModel {
   static get requiredFields() {
     return [
       ...super.requiredFields,
+      'fromId',
       'quantity',
       'reason',
       'status',
+      'toId',
     ];
   }
 
