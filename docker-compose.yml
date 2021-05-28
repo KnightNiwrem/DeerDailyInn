@@ -8,6 +8,7 @@ services:
     image: ${IMAGE:-knightniwrem/ddi}
     networks:
       - ddi-network
+    restart: always
     volumes:
       - ./configs:/ddi/configs
   db:
