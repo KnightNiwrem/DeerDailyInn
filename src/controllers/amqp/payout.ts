@@ -21,7 +21,7 @@ const payout = async (content: any) => {
       apiStatus: content.result,
       status: hasSuccessfulResult ? 'completed' : 'cancelled',
     };
-    const transaction = await Transaction
+    await Transaction
       .query(trx)
       .where({ status: 'pending', fromId: user.id })
       .orderBy('id', 'desc')
