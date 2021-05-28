@@ -1,6 +1,6 @@
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 
-import type { User } from 'models/mod';
+import type { User } from 'models/mod.js';
 
 type MakeTransferNotFoundOptions = {
   fromUser?: User;

@@ -1,7 +1,7 @@
-import { invalidRollbackStatusCodes } from 'constants/invalidRollbackStatusCodes';
-import { isNil } from 'lodash';
-import { BuyOrder } from 'models/mod';
-import { bot } from 'services/grammy';
+import { invalidRollbackStatusCodes } from 'constants/invalidRollbackStatusCodes.js';
+import { isNil } from 'lodash-es';
+import { BuyOrder } from 'models/mod.js';
+import { bot } from 'services/grammy.js';
 
 const wantToBuy = async (content: any) => {
   const telegramId = content.payload.userId;

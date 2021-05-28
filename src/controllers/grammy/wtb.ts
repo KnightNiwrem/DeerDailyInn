@@ -1,14 +1,14 @@
-import { itemsFromId } from 'constants/itemsFromId';
-import { isEmpty, isFinite, isSafeInteger, isNil } from 'lodash';
-import { User } from 'models/User';
-import { sendChtwrsMessage } from 'services/amqp';
-import { extractMatch } from 'utils/extractMatch';
-import { makeWantToBuy } from 'utils/makeWantToBuy';
-import { makeBadWtb } from 'views/makeBadWtb';
-import { makeUnregistered } from 'views/makeUnregistered';
+import { itemsFromId } from 'constants/itemsFromId.js';
+import { isEmpty, isFinite, isSafeInteger, isNil } from 'lodash-es';
+import { User } from 'models/User.js';
+import { sendChtwrsMessage } from 'services/amqp.js';
+import { extractMatch } from 'utils/extractMatch.js';
+import { makeWantToBuy } from 'utils/makeWantToBuy.js';
+import { makeBadWtb } from 'views/makeBadWtb.js';
+import { makeUnregistered } from 'views/makeUnregistered.js';
 
 import type { Context } from 'grammy';
-import type { TextMiddleware } from 'utils/types/TextMiddleware';
+import type { TextMiddleware } from 'utils/types/TextMiddleware.js';
 
 const wtb: TextMiddleware<Context> = async ctx => {
   const telegramId = ctx.from?.id;

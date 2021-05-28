@@ -1,7 +1,7 @@
 import { Kafka } from 'kafkajs';
 import { customAlphabet } from 'nanoid';
 import { alphanumeric } from 'nanoid-dictionary';
-import { env } from 'services/env';
+import { env } from 'services/env.js';
 
 const brokers = [env.KAFKA_BROKER];
 const clientId = customAlphabet(alphanumeric, 16)();

@@ -1,12 +1,12 @@
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 import { DateTime } from 'luxon';
-import { BuyOrder } from 'models/BuyOrder';
-import { Status } from 'models/Status';
-import { User } from 'models/User';
-import { makeOrders } from 'views/makeOrders';
+import { BuyOrder } from 'models/BuyOrder.js';
+import { Status } from 'models/Status.js';
+import { User } from 'models/User.js';
+import { makeOrders } from 'views/makeOrders.js';
 
 import type { Context } from 'grammy';
-import type { TextMiddleware } from 'utils/types/TextMiddleware';
+import type { TextMiddleware } from 'utils/types/TextMiddleware.js';
 
 const processOrders = async (orders: BuyOrder[]) => {
   const ordersToAheadMap = new Map();

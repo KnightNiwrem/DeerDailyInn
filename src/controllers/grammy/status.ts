@@ -1,12 +1,12 @@
-import { isEmpty, isNil } from 'lodash';
+import { isEmpty, isNil } from 'lodash-es';
 import { DateTime } from 'luxon';
-import { User } from 'models/User';
-import { Status } from 'models/Status';
-import { makeStatus } from 'views/makeStatus';
-import { makeUnregistered } from 'views/makeUnregistered';
+import { User } from 'models/User.js';
+import { Status } from 'models/Status.js';
+import { makeStatus } from 'views/makeStatus.js';
+import { makeUnregistered } from 'views/makeUnregistered.js';
 
 import type { Context } from 'grammy';
-import type { TextMiddleware } from 'utils/types/TextMiddleware';
+import type { TextMiddleware } from 'utils/types/TextMiddleware.js';
 
 const status: TextMiddleware<Context> = async ctx => {
   const telegramId = ctx.from?.id;

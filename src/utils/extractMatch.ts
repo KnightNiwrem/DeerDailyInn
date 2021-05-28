@@ -1,4 +1,4 @@
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 
 const extractMatch = (
   ctxMatch: string | RegExpMatchArray | null | undefined,

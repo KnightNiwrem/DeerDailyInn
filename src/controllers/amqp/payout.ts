@@ -1,6 +1,6 @@
-import { Transaction, User } from 'models/mod';
-import { bot, sendLog } from 'services/grammy';
-import { makeContact } from 'views/makeContact';
+import { Transaction, User } from 'models/mod.js';
+import { bot, sendLog } from 'services/grammy.js';
+import { makeContact } from 'views/makeContact.js';
 
 const payout = async (content: any) => {
   const { transactionId } = content.payload;

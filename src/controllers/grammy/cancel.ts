@@ -1,12 +1,12 @@
-import { itemsFromId } from 'constants/itemsFromId';
-import { isNil } from 'lodash';
-import { BuyOrder } from 'models/BuyOrder';
-import { extractMatch } from 'utils/extractMatch';
-import { makeBadCancel } from 'views/makeBadCancel';
-import { makeCancel } from 'views/makeCancel';
+import { itemsFromId } from 'constants/itemsFromId.js';
+import { isNil } from 'lodash-es';
+import { BuyOrder } from 'models/BuyOrder.js';
+import { extractMatch } from 'utils/extractMatch.js';
+import { makeBadCancel } from 'views/makeBadCancel.js';
+import { makeCancel } from 'views/makeCancel.js';
 
 import type { Context } from 'grammy';
-import type { TextMiddleware } from 'utils/types/TextMiddleware';
+import type { TextMiddleware } from 'utils/types/TextMiddleware.js';
 
 const cancel: TextMiddleware<Context> = async ctx => {
   const telegramId = ctx.from?.id;

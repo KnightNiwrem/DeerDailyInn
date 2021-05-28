@@ -1,4 +1,4 @@
-import { makeUnknown } from 'views/makeUnknown';
+import { makeUnknown } from 'views/makeUnknown.js';
 
 import type { Context } from 'grammy';
 

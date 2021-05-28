@@ -1,5 +1,5 @@
 import { connect } from 'amqplib';
-import { env } from 'services/env';
+import { env } from 'services/env.js';
 
 const config = {
   protocol: env.RABBITMQ_PROTOCOL,

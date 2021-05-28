@@ -1,13 +1,13 @@
-import { itemsFromId } from 'constants/itemsFromId';
-import { isEmpty, isFinite, isInteger, isNil } from 'lodash';
-import { BuyOrder } from 'models/BuyOrder';
-import { extractMatch } from 'utils/extractMatch';
-import { makeBadInspect } from 'views/makeBadInspect';
-import { makeInspect } from 'views/makeInspect';
-import { makeMissingInspect } from 'views/makeMissingInspect';
+import { itemsFromId } from 'constants/itemsFromId.js';
+import { isEmpty, isFinite, isInteger, isNil } from 'lodash-es';
+import { BuyOrder } from 'models/BuyOrder.js';
+import { extractMatch } from 'utils/extractMatch.js';
+import { makeBadInspect } from 'views/makeBadInspect.js';
+import { makeInspect } from 'views/makeInspect.js';
+import { makeMissingInspect } from 'views/makeMissingInspect.js';
 
 import type { Context } from 'grammy';
-import type { TextMiddleware } from 'utils/types/TextMiddleware';
+import type { TextMiddleware } from 'utils/types/TextMiddleware.js';
 
 const inspect: TextMiddleware<Context> = async ctx => {
   const telegramId = ctx.from?.id;

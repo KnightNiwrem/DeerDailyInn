@@ -14,7 +14,7 @@ COPY tsconfig.json .
 COPY yarn.lock .
 RUN yarn && \
     yarn lint && \
-    yarn tsc
+    yarn ttsc
 
 CMD ["docker:start"]
 ENTRYPOINT ["yarn"]

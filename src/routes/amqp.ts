@@ -11,10 +11,10 @@ import {
   payout,
   unknown,
   wantToBuy,
-} from 'controllers/amqp/mod';
-import { isEmpty } from 'lodash';
-import { amqpChannel } from 'services/amqp';
-import { env } from 'services/env';
+} from 'controllers/amqp/mod.js';
+import { isEmpty } from 'lodash-es';
+import { amqpChannel } from 'services/amqp.js';
+import { env } from 'services/env.js';
 
 import type { ConsumeMessage } from 'amqplib';
 

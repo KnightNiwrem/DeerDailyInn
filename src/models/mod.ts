@@ -1,7 +1,7 @@
-export { BetterModel } from 'models/BetterModel';
-export { BuyOrder } from 'models/BuyOrder';
-export { Deal } from 'models/Deal';
-export { Status } from 'models/Status';
-export { Subscription } from 'models/Subscription';
-export { Transaction } from 'models/Transaction';
-export { User } from 'models/User';
+export { BetterModel } from 'models/BetterModel.js';
+export { BuyOrder } from 'models/BuyOrder.js';
+export { Deal } from 'models/Deal.js';
+export { Status } from 'models/Status.js';
+export { Subscription } from 'models/Subscription.js';
+export { Transaction } from 'models/Transaction.js';
+export { User } from 'models/User.js';

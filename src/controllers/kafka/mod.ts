@@ -1,2 +1,2 @@
-export { deals } from 'controllers/kafka/deals';
-export { offers } from 'controllers/kafka/offers';
+export { deals } from 'controllers/kafka/deals.js';
+export { offers } from 'controllers/kafka/offers.js';

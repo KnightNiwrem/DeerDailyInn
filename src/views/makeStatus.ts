@@ -1,8 +1,8 @@
 import humanizeDuration from 'humanize-duration';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { DateTime, Duration } from 'luxon';
 
-import type { Status } from 'models/mod';
+import type { Status } from 'models/mod.js';
 
 type MakeStatusOptions = {
   activeStatuses: Status[];

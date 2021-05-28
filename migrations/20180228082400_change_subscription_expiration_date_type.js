@@ -1,27 +1,19 @@
-exports.up = function(knex, Promise) {
-  const hasSubscriptionTable = knex.schema.hasTable('subscriptions');
-  const changeSubscriptionTable = hasSubscriptionTable.then((hasTable) => {
-    let tableChanges = Promise.resolve();
-    if (hasTable) {
-      tableChanges = knex.schema.alterTable('subscriptions', (table) => {
-        table.timestamp('expirationDate').notNullable().alter();
-      });
-    }
-    return tableChanges;
-  });
-  return changeSubscriptionTable;
+const up = async knex => {
+  const hasTable = await knex.schema.hasTable('subscriptions');
+  if (hasTable) {
+    await knex.schema.alterTable('subscriptions', (table) => {
+      table.timestamp('expirationDate').notNullable().alter();
+    });
+  }
 };
 
-exports.down = function(knex, Promise) {
-  const hasSubscriptionTable = knex.schema.hasTable('subscriptions');
-  const changeSubscriptionTable = hasSubscriptionTable.then((hasTable) => {
-    let tableChanges = Promise.resolve();
-    if (hasTable) {
-      tableChanges = knex.schema.alterTable('subscriptions', (table) => {
-        table.string('expirationDate').alter();
-      });
-    }
-    return tableChanges;
-  });
-  return changeSubscriptionTable;
+const down = async knex => {
+  const hasTable = await knex.schema.hasTable('subscriptions');
+  if (hasTable) {
+    await knex.schema.alterTable('subscriptions', (table) => {
+      table.string('expirationDate').alter();
+    });
+  }
 };
+
+export { up, down };

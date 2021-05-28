@@ -1,7 +1,7 @@
-import { isNil } from 'lodash';
-import { Deal, User } from 'models/mod';
-import { bot } from 'services/grammy';
-import { makePurchased } from 'views/makePurchased';
+import { isNil } from 'lodash-es';
+import { Deal, User } from 'models/mod.js';
+import { bot } from 'services/grammy.js';
+import { makePurchased } from 'views/makePurchased.js';
 
 const deals = async (content: any) => {
   const {

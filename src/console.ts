@@ -1,6 +1,6 @@
-import { isSafeInteger } from 'lodash';
+import { isSafeInteger } from 'lodash-es';
 import { connect } from 'net';
-import { env } from 'services/env';
+import { env } from 'services/env.js';
 
 const consolePort = Number(env.CONSOLE_PORT);
 if (!isSafeInteger(consolePort)) {

@@ -1,16 +1,16 @@
-import { isEmpty, isNil } from 'lodash';
-import { Transaction } from 'models/Transaction';
-import { User } from 'models/User';
-import { sendChtwrsMessage } from 'services/amqp';
-import { extractMatch } from 'utils/extractMatch';
-import { makePay } from 'utils/makePay';
-import { makeConfirmationReceipt } from 'views/makeConfirmationReceipt';
-import { makeMissingArgument } from 'views/makeMissingArgument';
-import { makeNoPendingDeposit } from 'views/makeNoPendingDeposit';
-import { makeUnregistered } from 'views/makeUnregistered';
+import { isEmpty, isNil } from 'lodash-es';
+import { Transaction } from 'models/Transaction.js';
+import { User } from 'models/User.js';
+import { sendChtwrsMessage } from 'services/amqp.js';
+import { extractMatch } from 'utils/extractMatch.js';
+import { makePay } from 'utils/makePay.js';
+import { makeConfirmationReceipt } from 'views/makeConfirmationReceipt.js';
+import { makeMissingArgument } from 'views/makeMissingArgument.js';
+import { makeNoPendingDeposit } from 'views/makeNoPendingDeposit.js';
+import { makeUnregistered } from 'views/makeUnregistered.js';
 
 import type { Context } from 'grammy';
-import type { TextMiddleware } from 'utils/types/TextMiddleware';
+import type { TextMiddleware } from 'utils/types/TextMiddleware.js';
 
 const confirm: TextMiddleware<Context> = async ctx => {
   const telegramId = ctx.from?.id;

@@ -1,10 +1,10 @@
-import { isEmpty, isNil } from 'lodash';
-import { User } from 'models/User';
-import { makeBalance } from 'views/makeBalance';
-import { makeUnregistered } from 'views/makeUnregistered';
+import { isEmpty, isNil } from 'lodash-es';
+import { User } from 'models/User.js';
+import { makeBalance } from 'views/makeBalance.js';
+import { makeUnregistered } from 'views/makeUnregistered.js';
 
 import type { Context } from 'grammy';
-import type { TextMiddleware } from 'utils/types/TextMiddleware';
+import type { TextMiddleware } from 'utils/types/TextMiddleware.js';
 
 const balance: TextMiddleware<Context> = async ctx => {
   const telegramId = ctx.from?.id;

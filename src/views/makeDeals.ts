@@ -1,6 +1,6 @@
-import { forEach, sortBy } from 'lodash';
+import { forEach, sortBy } from 'lodash-es';
 import { DateTime } from 'luxon';
-import type { Deal } from 'models/mod';
+import type { Deal } from 'models/mod.js';
 
 type MakeDealsOptions = {
   chtwrsId: string;

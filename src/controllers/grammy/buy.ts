@@ -1,19 +1,19 @@
-import { itemsFromId } from 'constants/itemsFromId';
-import { isEmpty, isFinite, isSafeInteger, isNil } from 'lodash';
+import { itemsFromId } from 'constants/itemsFromId.js';
+import { isEmpty, isFinite, isSafeInteger, isNil } from 'lodash-es';
 import { DateTime } from 'luxon';
-import { BuyOrder, Status, User } from 'models/mod';
-import { sendChtwrsMessage } from 'services/amqp';
-import { extractMatch } from 'utils/extractMatch';
-import { makeWantToBuy } from 'utils/makeWantToBuy';
-import { makeBadBuy } from 'views/makeBadBuy';
-import { makeBuyOrder } from 'views/makeBuyOrder';
-import { makeBuyOrderLimitExceeded } from 'views/makeBuyOrderLimitExceeded';
-import { makeDuplicateBuyOrder } from 'views/makeDuplicateBuyOrder';
-import { makeQuantityLimitExceeded } from 'views/makeQuantityLimitExceeded';
-import { makeUnregistered } from 'views/makeUnregistered';
+import { BuyOrder, Status, User } from 'models/mod.js';
+import { sendChtwrsMessage } from 'services/amqp.js';
+import { extractMatch } from 'utils/extractMatch.js';
+import { makeWantToBuy } from 'utils/makeWantToBuy.js';
+import { makeBadBuy } from 'views/makeBadBuy.js';
+import { makeBuyOrder } from 'views/makeBuyOrder.js';
+import { makeBuyOrderLimitExceeded } from 'views/makeBuyOrderLimitExceeded.js';
+import { makeDuplicateBuyOrder } from 'views/makeDuplicateBuyOrder.js';
+import { makeQuantityLimitExceeded } from 'views/makeQuantityLimitExceeded.js';
+import { makeUnregistered } from 'views/makeUnregistered.js';
 
 import type { Context } from 'grammy';
-import type { TextMiddleware } from 'utils/types/TextMiddleware';
+import type { TextMiddleware } from 'utils/types/TextMiddleware.js';
 
 const buy: TextMiddleware<Context> = async ctx => {
   const telegramId = ctx.from?.id;

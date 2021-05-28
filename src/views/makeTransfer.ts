@@ -1,4 +1,4 @@
-import type { User } from 'models/mod';
+import type { User } from 'models/mod.js';
 
 type MakeTransferOptions = {
   amount: number;

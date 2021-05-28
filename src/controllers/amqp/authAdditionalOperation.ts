@@ -1,4 +1,4 @@
-import { bot } from 'services/grammy';
+import { bot } from 'services/grammy.js';
 
 const authAdditionalOperation = async (content: any) => {
   const telegramId = content.payload.userId;

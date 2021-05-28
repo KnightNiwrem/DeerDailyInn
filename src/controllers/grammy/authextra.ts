@@ -1,14 +1,14 @@
-import { isEmpty, isNil } from 'lodash';
-import { User } from 'models/User';
-import { makeGrantAdditionalOperation } from 'utils/makeGrantAdditionalOperation';
-import { sendChtwrsMessage } from 'services/amqp';
-import { extractMatch } from 'utils/extractMatch';
-import { makeAuthorizationReceipt } from 'views/makeAuthorizationReceipt';
-import { makeMissingArgument } from 'views/makeMissingArgument';
-import { makeUnregistered } from 'views/makeUnregistered';
+import { isEmpty, isNil } from 'lodash-es';
+import { User } from 'models/User.js';
+import { makeGrantAdditionalOperation } from 'utils/makeGrantAdditionalOperation.js';
+import { sendChtwrsMessage } from 'services/amqp.js';
+import { extractMatch } from 'utils/extractMatch.js';
+import { makeAuthorizationReceipt } from 'views/makeAuthorizationReceipt.js';
+import { makeMissingArgument } from 'views/makeMissingArgument.js';
+import { makeUnregistered } from 'views/makeUnregistered.js';
 
 import type { Context } from 'grammy';
-import type { TextMiddleware } from 'utils/types/TextMiddleware';
+import type { TextMiddleware } from 'utils/types/TextMiddleware.js';
 
 const authextra: TextMiddleware<Context> = async ctx => {
   const telegramId = ctx.from?.id;

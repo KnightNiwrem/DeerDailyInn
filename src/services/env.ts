@@ -1,8 +1,9 @@
 import { config } from 'dotenv';
+import { URL } from 'url';
 
-const { error, parsed } = config({
-  path: 'configs/.env',
-});
+const envFileURL = new URL('../../configs/.env', import.meta.url);
+const envFilePath = envFileURL.pathname;
+const { error, parsed } = config({ path: envFilePath });
 if (error) {
   throw error;
 }

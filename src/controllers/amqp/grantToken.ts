@@ -1,5 +1,5 @@
-import { User } from 'models/mod';
-import { bot } from 'services/grammy';
+import { User } from 'models/mod.js';
+import { bot } from 'services/grammy.js';
 
 const grantToken = async (content: any) => {
   const userAttributes = {

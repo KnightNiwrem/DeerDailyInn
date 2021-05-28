@@ -20,9 +20,9 @@ import {
   unknown,
   withdraw,
   wtb,
-} from 'controllers/grammy/mod';
-import { bot } from 'services/grammy';
-import { buildHearsRegex } from 'utils/buildHearsRegex';
+} from 'controllers/grammy/mod.js';
+import { bot } from 'services/grammy.js';
+import { buildHearsRegex } from 'utils/buildHearsRegex.js';
 
 const loadBotRoutes = async () => {
   bot.api.config.use(apiThrottler());

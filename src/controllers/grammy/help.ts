@@ -1,7 +1,7 @@
-import { makeHelp } from 'views/makeHelp';
+import { makeHelp } from 'views/makeHelp.js';
 
 import type { Context } from 'grammy';
-import type { TextMiddleware } from 'utils/types/TextMiddleware';
+import type { TextMiddleware } from 'utils/types/TextMiddleware.js';
 
 const help: TextMiddleware<Context> = async ctx => {
   const text = makeHelp();

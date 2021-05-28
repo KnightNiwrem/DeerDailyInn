@@ -1,9 +1,9 @@
-import { itemsFromName } from 'constants/itemsFromName';
-import { isNil } from 'lodash';
+import { itemsFromName } from 'constants/itemsFromName.js';
+import { isNil } from 'lodash-es';
 import { DateTime } from 'luxon';
-import { BuyOrder, User } from 'models/mod';
-import { sendChtwrsMessage } from 'services/amqp';
-import { makeWantToBuy } from 'utils/makeWantToBuy';
+import { BuyOrder, User } from 'models/mod.js';
+import { sendChtwrsMessage } from 'services/amqp.js';
+import { makeWantToBuy } from 'utils/makeWantToBuy.js';
 
 const offers = async (content: any) => {
   const {

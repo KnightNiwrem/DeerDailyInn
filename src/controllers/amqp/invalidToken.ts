@@ -1,6 +1,6 @@
-import { isNil } from 'lodash';
-import { BuyOrder, User } from 'models/mod';
-import { bot } from 'services/grammy';
+import { isNil } from 'lodash-es';
+import { BuyOrder, User } from 'models/mod.js';
+import { bot } from 'services/grammy.js';
 
 const invalidToken = async (content: any) => {
   const chtwrsToken = content.payload.token;

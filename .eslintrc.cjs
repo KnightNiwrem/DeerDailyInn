@@ -15,7 +15,7 @@ const rules = {
   '@typescript-eslint/naming-convention': [
     'error',
     {
-      format: ['camelCase'],
+      format: ['camelCase', 'PascalCase'],
       leadingUnderscore: 'allow',
       selector: ['variable'],
     },
@@ -31,6 +31,7 @@ const rules = {
   ],
   'arrow-parens': ['error', 'as-needed'],
   'import/export': 'off',
+  'import/extensions': 'off',
   'import/prefer-default-export': 'off',
   'lines-between-class-members': 'off',
   'no-console': 'off',

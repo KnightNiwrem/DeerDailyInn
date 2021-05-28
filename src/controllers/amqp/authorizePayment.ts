@@ -1,7 +1,7 @@
-import { Transaction, User } from 'models/mod';
-import { bot } from 'services/grammy';
-import { makeConfirmation } from 'views/makeConfirmation';
-import { makeContact } from 'views/makeContact';
+import { Transaction, User } from 'models/mod.js';
+import { bot } from 'services/grammy.js';
+import { makeConfirmation } from 'views/makeConfirmation.js';
+import { makeContact } from 'views/makeContact.js';
 
 const authorizePayment = async (content: any) => {
   const { transactionId } = content.payload;

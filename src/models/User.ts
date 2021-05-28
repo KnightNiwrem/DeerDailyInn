@@ -1,6 +1,6 @@
-import { BetterModel } from 'models/BetterModel';
-import { Deal } from 'models/Deal';
-import { Subscription } from 'models/Subscription';
+import { BetterModel } from 'models/BetterModel.js';
+import { Deal } from 'models/Deal.js';
+import { Subscription } from 'models/Subscription.js';
 
 class User extends BetterModel {
   balance!: number;

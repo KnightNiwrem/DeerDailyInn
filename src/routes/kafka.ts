@@ -1,5 +1,5 @@
-import { deals, offers } from 'controllers/kafka/mod';
-import { kafkaConsumer } from 'services/kafka';
+import { deals, offers } from 'controllers/kafka/mod.js';
+import { kafkaConsumer } from 'services/kafka.js';
 
 import type { EachMessagePayload } from 'kafkajs';
 

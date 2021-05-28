@@ -1,10 +1,13 @@
-import { isSafeInteger } from 'lodash';
-import * as Models from 'models/mod';
-import { loadAMQPRoutes } from 'routes/amqp';
-import { loadBotRoutes } from 'routes/grammy';
-import { loadKafkaRoutes } from 'routes/kafka';
-import { env } from 'services/env';
-import { startREPLServer } from 'utils/startREPLServer';
+import { isSafeInteger } from 'lodash-es';
+import * as Models from 'models/mod.js';
+import { loadAMQPRoutes } from 'routes/amqp.js';
+import { loadBotRoutes } from 'routes/grammy.js';
+import { loadKafkaRoutes } from 'routes/kafka.js';
+import { loadDB } from 'services/database.js';
+import { env } from 'services/env.js';
+import { startREPLServer } from 'utils/startREPLServer.js';
+
+loadDB();
 
 const consolePort = Number(env.CONSOLE_PORT);
 if (isSafeInteger(consolePort)) {

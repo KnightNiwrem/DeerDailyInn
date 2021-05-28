@@ -1,9 +1,9 @@
-import { sendChtwrsMessage } from 'services/amqp';
-import { makeGetInfo } from 'utils/makeGetInfo';
-import { makeUnauthorized } from 'views/makeUnauthorized';
+import { sendChtwrsMessage } from 'services/amqp.js';
+import { makeGetInfo } from 'utils/makeGetInfo.js';
+import { makeUnauthorized } from 'views/makeUnauthorized.js';
 
 import type { Context } from 'grammy';
-import type { TextMiddleware } from 'utils/types/TextMiddleware';
+import type { TextMiddleware } from 'utils/types/TextMiddleware.js';
 
 const getinfo: TextMiddleware<Context> = async ctx => {
   if (ctx.from?.id !== 41284431) {

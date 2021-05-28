@@ -1,17 +1,17 @@
-import { coffeeCost } from 'constants/coffeeCost';
-import { isEmpty, isNil } from 'lodash';
+import { coffeeCost } from 'constants/coffeeCost.js';
+import { isEmpty, isNil } from 'lodash-es';
 import { DateTime } from 'luxon';
-import { Status } from 'models/Status';
-import { Transaction } from 'models/Transaction';
-import { User } from 'models/User';
-import { sendLog } from 'services/grammy';
-import { rollCoffeeCheck } from 'utils/rollCoffeeCheck';
-import { makeCoffee } from 'views/makeCoffee';
-import { makeInsufficientCoffeeBalance } from 'views/makeInsufficientCoffeeBalance';
-import { makeUnregistered } from 'views/makeUnregistered';
+import { Status } from 'models/Status.js';
+import { Transaction } from 'models/Transaction.js';
+import { User } from 'models/User.js';
+import { sendLog } from 'services/grammy.js';
+import { rollCoffeeCheck } from 'utils/rollCoffeeCheck.js';
+import { makeCoffee } from 'views/makeCoffee.js';
+import { makeInsufficientCoffeeBalance } from 'views/makeInsufficientCoffeeBalance.js';
+import { makeUnregistered } from 'views/makeUnregistered.js';
 
 import type { Context } from 'grammy';
-import type { TextMiddleware } from 'utils/types/TextMiddleware';
+import type { TextMiddleware } from 'utils/types/TextMiddleware.js';
 
 const coffee: TextMiddleware<Context> = async ctx => {
   const telegramId = ctx.from?.id;

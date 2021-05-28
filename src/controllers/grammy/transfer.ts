@@ -1,14 +1,14 @@
-import { isFinite, isInteger, isNil } from 'lodash';
-import { User } from 'models/User';
-import { Transaction } from 'models/Transaction';
-import { extractMatch } from 'utils/extractMatch';
-import { makeBadTransfer } from 'views/makeBadTransfer';
-import { makeInsufficientTransferBalance } from 'views/makeInsufficientTransferBalance';
-import { makeTransfer } from 'views/makeTransfer';
-import { makeTransferNotFound } from 'views/makeTransferNotFound';
+import { isFinite, isInteger, isNil } from 'lodash-es';
+import { User } from 'models/User.js';
+import { Transaction } from 'models/Transaction.js';
+import { extractMatch } from 'utils/extractMatch.js';
+import { makeBadTransfer } from 'views/makeBadTransfer.js';
+import { makeInsufficientTransferBalance } from 'views/makeInsufficientTransferBalance.js';
+import { makeTransfer } from 'views/makeTransfer.js';
+import { makeTransferNotFound } from 'views/makeTransferNotFound.js';
 
 import type { Context } from 'grammy';
-import type { TextMiddleware } from 'utils/types/TextMiddleware';
+import type { TextMiddleware } from 'utils/types/TextMiddleware.js';
 
 const transfer: TextMiddleware<Context> = async ctx => {
   const telegramId = ctx.from?.id;

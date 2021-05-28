@@ -1,4 +1,4 @@
-import { each } from 'lodash';
+import { each } from 'lodash-es';
 import * as net from 'net';
 import repl from 'repl';
 

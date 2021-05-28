@@ -1,15 +1,15 @@
-import { isEmpty, isFinite, isInteger, isNil } from 'lodash';
-import { Transaction } from 'models/Transaction';
-import { User } from 'models/User';
-import { sendChtwrsMessage } from 'services/amqp';
-import { extractMatch } from 'utils/extractMatch';
-import { makePayout } from 'utils/makePayout';
-import { makeBadWithdraw } from 'views/makeBadWithdraw';
-import { makeInsufficientWithdrawBalance } from 'views/makeInsufficientWithdrawBalance';
-import { makeUnregistered } from 'views/makeUnregistered';
+import { isEmpty, isFinite, isInteger, isNil } from 'lodash-es';
+import { Transaction } from 'models/Transaction.js';
+import { User } from 'models/User.js';
+import { sendChtwrsMessage } from 'services/amqp.js';
+import { extractMatch } from 'utils/extractMatch.js';
+import { makePayout } from 'utils/makePayout.js';
+import { makeBadWithdraw } from 'views/makeBadWithdraw.js';
+import { makeInsufficientWithdrawBalance } from 'views/makeInsufficientWithdrawBalance.js';
+import { makeUnregistered } from 'views/makeUnregistered.js';
 
 import type { Context } from 'grammy';
-import type { TextMiddleware } from 'utils/types/TextMiddleware';
+import type { TextMiddleware } from 'utils/types/TextMiddleware.js';
 
 const withdraw: TextMiddleware<Context> = async ctx => {
   const telegramId = ctx.from?.id;

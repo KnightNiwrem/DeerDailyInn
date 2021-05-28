@@ -1,6 +1,6 @@
 import knex from 'knex';
 import { Model } from 'objection';
-import { env } from 'services/env';
+import { env } from 'services/env.js';
 
 const config = {
   client: 'pg',
@@ -13,7 +13,9 @@ const config = {
   },
 };
 
-const knexInstance = knex(config);
-Model.knex(knexInstance);
+const loadDB = () => {
+  const knexInstance = knex(config);
+  Model.knex(knexInstance);
+};
 
-export { knexInstance as knex };
+export { loadDB };

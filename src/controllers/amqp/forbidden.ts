@@ -1,7 +1,7 @@
-import { isEmpty, isNil } from 'lodash';
-import { User } from 'models/mod';
-import { sendChtwrsMessage } from 'services/amqp';
-import { makeAuthAdditionalOperation } from 'utils/makeAuthAdditionalOperation';
+import { isEmpty, isNil } from 'lodash-es';
+import { User } from 'models/mod.js';
+import { sendChtwrsMessage } from 'services/amqp.js';
+import { makeAuthAdditionalOperation } from 'utils/makeAuthAdditionalOperation.js';
 
 const forbidden = async (content: any) => {
   const telegramId = content.payload.userId;

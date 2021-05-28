@@ -1,5 +1,5 @@
-import { BetterModel } from 'models/BetterModel';
-import { User } from 'models/User';
+import { BetterModel } from 'models/BetterModel.js';
+import { User } from 'models/User.js';
 
 class BuyOrder extends BetterModel {
   amountLeft!: number;

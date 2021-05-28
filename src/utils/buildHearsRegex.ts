@@ -1,4 +1,4 @@
-import { isFinite, range } from 'lodash';
+import { isFinite, range } from 'lodash-es';
 
 const buildHearsRegex = (command: string, maxArity: number) => {
   const regexParts = [

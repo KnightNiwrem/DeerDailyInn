@@ -8,7 +8,7 @@ import {
   keys,
   map,
   some,
-} from 'lodash';
+} from 'lodash-es';
 import { Model, ValidationError } from 'objection';
 import type { QueryBuilder, QueryContext } from 'objection';
 

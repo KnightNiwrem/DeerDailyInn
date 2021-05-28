@@ -1,14 +1,14 @@
-import { itemsFromName } from 'constants/itemsFromName';
-import { isEmpty, isNil } from 'lodash';
-import { Deal } from 'models/Deal';
-import { User } from 'models/User';
-import { normalizeItemName } from 'utils/normalizeItemName';
-import { makeDeals } from 'views/makeDeals';
-import { makeHistoryNotFound } from 'views/makeHistoryNotFound';
-import { makeUnregistered } from 'views/makeUnregistered';
+import { itemsFromName } from 'constants/itemsFromName.js';
+import { isEmpty, isNil } from 'lodash-es';
+import { Deal } from 'models/Deal.js';
+import { User } from 'models/User.js';
+import { normalizeItemName } from 'utils/normalizeItemName.js';
+import { makeDeals } from 'views/makeDeals.js';
+import { makeHistoryNotFound } from 'views/makeHistoryNotFound.js';
+import { makeUnregistered } from 'views/makeUnregistered.js';
 
 import type { Context } from 'grammy';
-import type { TextMiddleware } from 'utils/types/TextMiddleware';
+import type { TextMiddleware } from 'utils/types/TextMiddleware.js';
 
 const deals: TextMiddleware<Context> = async ctx => {
   const telegramId = ctx.from?.id;
