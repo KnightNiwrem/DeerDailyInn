@@ -4,7 +4,7 @@ import { BuyOrder } from 'models/BuyOrder.js';
 import { Status } from 'models/Status.js';
 import { User } from 'models/User.js';
 import { makeOrders } from 'views/makeOrders.js';
-import { makeUnregistered } from 'views/makeUnregistered';
+import { makeUnregistered } from 'views/makeUnregistered.js';
 
 import type { Context } from 'grammy';
 import type { TextMiddleware } from 'utils/types/TextMiddleware.js';
