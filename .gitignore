@@ -36,8 +36,12 @@ bower_components
 build/Release
 
 # Dependency directories
+.deno/
 node_modules/
 jspm_packages/
+
+# Compiled directories
+dist/
 
 # Typescript v1 declaration files
 typings/
@@ -58,7 +62,7 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
+*.env
 
 # next.js build output
 .next

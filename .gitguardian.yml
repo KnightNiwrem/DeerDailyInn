@@ -1,0 +1,3 @@
+paths-ignore:
+  - 'configs/*.example'
+  - 'configs/*.defaults'

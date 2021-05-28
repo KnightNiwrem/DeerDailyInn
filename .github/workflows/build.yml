@@ -1,0 +1,25 @@
+name: build
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Pull docker image
+        run: |
+          docker pull knightniwrem/ddi
+      - name: Build and update docker image
+        env:
+          DOCKER_HUB_ACCESS_TOKEN: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+        run: |
+          SHORT_COMMIT_HASH=$(git rev-parse --short HEAD)
+          docker login -u knightniwrem -p $DOCKER_HUB_ACCESS_TOKEN
+          docker build -t knightniwrem/ddi .
+          docker tag knightniwrem/ddi:latest knightniwrem/ddi:$SHORT_COMMIT_HASH
+          docker push knightniwrem/ddi:latest
+          docker push knightniwrem/ddi:$SHORT_COMMIT_HASH

@@ -1,29 +1,21 @@
-exports.up = function(knex, Promise) {
-  const hasBuyOrderTable = knex.schema.hasTable('buyOrders');
-  const changeBuyOrderTable = hasBuyOrderTable.then((hasTable) => {
-    let tableChanges = Promise.resolve();
-    if (hasTable) {
-      tableChanges = knex.schema.alterTable('buyOrders', (table) => {
-        table.index('amountLeft');
-        table.index('maxPrice');
-      });
-    }
-    return tableChanges;
-  });
-  return changeBuyOrderTable;  
+const up = async knex => {
+  const hasTable = await knex.schema.hasTable('buyOrders');
+  if (hasTable) {
+    await knex.schema.alterTable('buyOrders', (table) => {
+      table.index('amountLeft');
+      table.index('maxPrice');
+    });
+  }
 };
 
-exports.down = function(knex, Promise) {
-  const hasBuyOrderTable = knex.schema.hasTable('buyOrders');
-  const changeBuyOrderTable = hasBuyOrderTable.then((hasTable) => {
-    let tableChanges = Promise.resolve();
-    if (hasTable) {
-      tableChanges = knex.schema.alterTable('buyOrders', (table) => {
-        table.dropIndex('amountLeft');
-        table.dropIndex('maxPrice');
-      });
-    }
-    return tableChanges;
-  });
-  return changeBuyOrderTable; 
+const down = async knex => {
+  const hasTable = await knex.schema.hasTable('buyOrders');
+  if (hasTable) {
+    await knex.schema.alterTable('buyOrders', (table) => {
+      table.dropIndex('amountLeft');
+      table.dropIndex('maxPrice');
+    });
+  }
 };
+
+export { up, down };

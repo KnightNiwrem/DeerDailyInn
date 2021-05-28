@@ -1,20 +1,17 @@
-exports.up = function(knex, Promise) {
-  const hasFlashTable = knex.schema.hasTable('flashes');
-  const createFlashTable = hasFlashTable.then((hasTable) => {
-    let tableCreation = Promise.resolve();
-    if (!hasTable) {
-      tableCreation = knex.schema.createTable('flashes', (table) => {
-        table.increments();
-        table.string('chatId');
-        table.string('item');
-        table.timestamps(true, true);
-      });
-    }
-    return tableCreation;
-  });
-  return createFlashTable;  
+const up = async knex => {
+  const hasTable = await knex.schema.hasTable('flashes');
+  if (!hasTable) {
+    await knex.schema.createTable('flashes', (table) => {
+      table.increments();
+      table.string('chatId');
+      table.string('item');
+      table.timestamps(true, true);
+    });
+  }
 };
 
-exports.down = function(knex, Promise) {
-  return knex.schema.dropTable('flashes');
+const down = async knex => {
+  await knex.schema.dropTable('flashes');
 };
+
+export { up, down };

@@ -1,23 +1,20 @@
-exports.up = function(knex, Promise) {
-  const hasUserTable = knex.schema.hasTable('users');
-  const createUserTable = hasUserTable.then((hasTable) => {
-    let tableCreation = Promise.resolve();
-    if (!hasTable) {
-      tableCreation = knex.schema.createTable('users', (table) => {
-        table.increments();
-        table.string('chtwrsId');
-        table.string('chtwrsToken');
-        table.integer('telegramId');
-        table.timestamps(true, true);
+const up = async knex => {
+  const hasTable = await knex.schema.hasTable('users');
+  if (!hasTable) {
+    await knex.schema.createTable('users', (table) => {
+      table.increments();
+      table.string('chtwrsId');
+      table.string('chtwrsToken');
+      table.integer('telegramId');
+      table.timestamps(true, true);
 
-        table.unique('telegramId');
-      });
-    }
-    return tableCreation;
-  });
-  return createUserTable;
+      table.unique('telegramId');
+    });
+  }
 };
 
-exports.down = function(knex, Promise) {
-  return knex.schema.dropTable('users');
+const down = async knex => {
+  await knex.schema.dropTable('users');
 };
+
+export { up, down };

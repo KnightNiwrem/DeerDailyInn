@@ -1,29 +1,21 @@
-exports.up = function(knex, Promise) {
-  const hasStatusTable = knex.schema.hasTable('statuses');
-  const changeStatusTable = hasStatusTable.then((hasTable) => {
-    let tableChanges = Promise.resolve();
-    if (hasTable) {
-      tableChanges = knex.schema.alterTable('statuses', (table) => {
-        table.index('expireAt');
-        table.index('startAt');
-      });
-    }
-    return tableChanges;
-  });
-  return changeStatusTable;  
+const up = async knex => {
+  const hasTable = await knex.schema.hasTable('statuses');
+  if (hasTable) {
+    await knex.schema.alterTable('statuses', (table) => {
+      table.index('expireAt');
+      table.index('startAt');
+    });
+  }
 };
 
-exports.down = function(knex, Promise) {
-  const hasStatusTable = knex.schema.hasTable('statuses');
-  const changeStatusTable = hasStatusTable.then((hasTable) => {
-    let tableChanges = Promise.resolve();
-    if (hasTable) {
-      tableChanges = knex.schema.alterTable('statuses', (table) => {
-        table.dropIndex('expireAt');
-        table.dropIndex('startAt');
-      });
-    }
-    return tableChanges;
-  });
-  return changeStatusTable; 
+const down = async knex => {
+  const hasTable = await knex.schema.hasTable('statuses');
+  if (hasTable) {
+    await knex.schema.alterTable('statuses', (table) => {
+      table.dropIndex('expireAt');
+      table.dropIndex('startAt');
+    });
+  }
 };
+
+export { up, down };
