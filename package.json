@@ -17,9 +17,11 @@
     "start": "build && yarn docker:start"
   },
   "dependencies": {
+    "-": "^0.0.1",
     "@grammyjs/transformer-throttler": "^0.1.9",
     "amqplib": "^0.8.0",
     "dotenv": "^10.0.0",
+    "express": "^4.17.1",
     "grammy": "^1.1.5",
     "humanize-duration": "^3.26.0",
     "kafkajs": "^1.15.0",
@@ -34,6 +36,7 @@
   "devDependencies": {
     "@tsconfig/node14": "^1.0.0",
     "@types/amqplib": "^0.5.17",
+    "@types/express": "^4.17.12",
     "@types/humanize-duration": "^3.25.0",
     "@types/lodash-es": "^4.17.4",
     "@types/luxon": "^1.26.5",

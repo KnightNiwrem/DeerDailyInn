@@ -21,6 +21,9 @@ import {
   withdraw,
   wtb,
 } from 'controllers/grammy/mod.js';
+import express from 'express';
+import { webhookCallback } from 'grammy';
+import { env } from 'services/env.js';
 import { bot } from 'services/grammy.js';
 import { buildHearsRegex } from 'utils/buildHearsRegex.js';
 
@@ -51,7 +54,12 @@ const loadBotRoutes = async () => {
   textComposer.use(unknown);
 
   bot.catch(console.warn);
-  bot.start();
+
+  const app = express();
+  app.use(webhookCallback(bot));
+  app.listen(env.BOT_PORT, () => {
+    console.log(`Bot routes loaded and listening on ${env.BOT_PORT}`);
+  });
 };
 
 export { loadBotRoutes };
