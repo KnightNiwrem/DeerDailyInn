@@ -23,6 +23,8 @@ import {
 } from 'controllers/grammy/mod.js';
 import express from 'express';
 import { webhookCallback } from 'grammy';
+import { isEmpty, isSafeInteger } from 'lodash-es';
+import { connect } from 'ngrok';
 import { env } from 'services/env.js';
 import { bot } from 'services/grammy.js';
 import { buildHearsRegex } from 'utils/buildHearsRegex.js';
@@ -50,16 +52,27 @@ const loadBotRoutes = async () => {
   textComposer.hears(buildHearsRegex('transfer', 3), transfer);
   textComposer.hears(buildHearsRegex('withdraw', 1), withdraw);
   textComposer.hears(buildHearsRegex('wtb', 3), wtb);
-
   textComposer.use(unknown);
 
   bot.catch(console.warn);
 
+  const botPort = isSafeInteger(Number(env.BOT_PORT))
+    ? Number(env.BOT_PORT)
+    : 3000;
+  const botHost = !isEmpty(env.BOT_HOST)
+    ? env.BOT_HOST
+    : await connect(botPort);
+
   const app = express();
+  app.use(express.json());
   app.use(webhookCallback(bot));
-  app.listen(env.BOT_PORT, () => {
-    console.log(`Bot routes loaded and listening on ${env.BOT_PORT}`);
+  app.listen(botPort, () => {
+    console.log(`Bot routes loaded and listening on ${botPort}`);
   });
+
+  const webhook = `${botHost}/bot${env.BOT_TOKEN}`;
+  console.log(`Bot will listen on ${webhook}`);
+  await bot.api.setWebhook(webhook);
 };
 
 export { loadBotRoutes };
