@@ -1,9 +1,10 @@
-import { isNil } from 'lodash-es';
+import { isEmpty, isNil } from 'lodash-es';
 import { DateTime } from 'luxon';
 import { BuyOrder } from 'models/BuyOrder.js';
 import { Status } from 'models/Status.js';
 import { User } from 'models/User.js';
 import { makeOrders } from 'views/makeOrders.js';
+import { makeUnregistered } from 'views/makeUnregistered';
 
 import type { Context } from 'grammy';
 import type { TextMiddleware } from 'utils/types/TextMiddleware.js';
@@ -28,13 +29,21 @@ const orders: TextMiddleware<Context> = async ctx => {
     return;
   }
 
+  const user = await User.query().findOne({ telegramId });
+  const chtwrsId = user?.chtwrsId ?? '';
+  const isRegistered = !isNil(user) && !isEmpty(chtwrsId);
+  if (!isRegistered) {
+    const text = makeUnregistered();
+    await ctx.reply(text);
+    throw new Error(`Rejected in orders: User ${telegramId} is not registered.`);
+  }
+
   const buyOrders = await BuyOrder.query()
     .where('amountLeft', '>', 0)
     .andWhere('telegramId', telegramId);
   const ordersToAheadMap = await processOrders(buyOrders);
 
   const nowISO = DateTime.utc().toISO();
-  const user = await User.query().findOne({ telegramId });
   const sumResult = await Status.query()
     .whereNotNull('deltaBuyOrderLimit')
     .andWhere({ telegramId })

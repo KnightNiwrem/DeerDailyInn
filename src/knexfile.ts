@@ -8,7 +8,7 @@ const config = {
   client: 'pg',
   connection: {
     database: env.POSTGRES_DB,
-    host: env.POSTGERS_HOST,
+    host: env.POSTGRES_HOST,
     password: env.POSTGRES_PASSWORD,
     port: Number(env.POSTGRES_PORT),
     user: env.POSTGRES_USER,
