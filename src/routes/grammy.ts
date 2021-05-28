@@ -32,7 +32,7 @@ const loadBotRoutes = async () => {
   textComposer.hears(buildHearsRegex('authextra', 2), authextra);
   textComposer.hears(buildHearsRegex('balance', 0), balance);
   textComposer.hears(buildHearsRegex('buy', 3), buy);
-  textComposer.hears(buildHearsRegex('cancel', 0), cancel);
+  textComposer.hears(buildHearsRegex('cancel', 1), cancel);
   textComposer.hears(buildHearsRegex('coffee', 0), coffee);
   textComposer.hears(buildHearsRegex('confirm', 1), confirm);
   textComposer.hears(['deals', 'purchases', 'sales'].map(cmd => buildHearsRegex(cmd, Infinity)), deals);

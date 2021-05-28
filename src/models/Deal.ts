@@ -16,7 +16,6 @@ class Deal extends BetterModel {
       type: 'object',
       required: [
         ...super.jsonSchema.required,
-        'id',
         'buyerId',
         'item',
         'price',
