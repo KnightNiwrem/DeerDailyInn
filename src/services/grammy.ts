@@ -12,8 +12,8 @@ bot.api.config.use(async (prev, method, payload) => {
   }
 
   // @ts-ignore
-  const chatId = Number(payload.chat_id);
-  if (!isSafeInteger(chatId) || chatId < 0) {
+  const telegramId = Number(payload.chat_id);
+  if (!isSafeInteger(telegramId) || telegramId < 0) {
     return result;
   }
 
@@ -23,9 +23,9 @@ bot.api.config.use(async (prev, method, payload) => {
   }
 
   try {
-    await User.query().where({ telegramId: chatId }).patch({ canNotify: false });
+    await User.query().where({ telegramId }).patch({ canNotify: false });
   } catch (err) {
-    console.warn(`Error in patching canNotify for ${chatId}`);
+    console.warn(`Error in patching canNotify for ${telegramId}`);
   } finally {
     return result;
   }
