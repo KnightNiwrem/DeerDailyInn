@@ -22,13 +22,8 @@ bot.api.config.use(async (prev, method, payload) => {
     return result;
   }
 
-  try {
-    await User.query().where({ telegramId }).patch({ canNotify: false });
-  } catch (err) {
-    console.warn(`Error in patching canNotify for ${telegramId}`);
-  } finally {
-    return result;
-  }
+  await User.query().where({ telegramId }).patch({ canNotify: false });
+  return result;
 });
 bot.api.config.use(apiThrottler());
 
