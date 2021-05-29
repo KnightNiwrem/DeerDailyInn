@@ -1,4 +1,3 @@
-import { apiThrottler } from '@grammyjs/transformer-throttler';
 import {
   auth,
   authextra,
@@ -30,9 +29,9 @@ import { bot } from 'services/grammy.js';
 import { buildHearsRegex } from 'utils/buildHearsRegex.js';
 
 const loadBotRoutes = async () => {
-  bot.api.config.use(apiThrottler());
+  const errorComposer = bot.errorBoundary(err => console.warn(err));
 
-  const textComposer = bot.on('message:text');
+  const textComposer = errorComposer.on('message:text');
   textComposer.hears(buildHearsRegex('auth', 1), auth);
   textComposer.hears(buildHearsRegex('authextra', 2), authextra);
   textComposer.hears(buildHearsRegex('balance', 0), balance);
@@ -53,8 +52,6 @@ const loadBotRoutes = async () => {
   textComposer.hears(buildHearsRegex('withdraw', 1), withdraw);
   textComposer.hears(buildHearsRegex('wtb', 3), wtb);
   textComposer.use(unknown);
-
-  bot.catch(console.warn);
 
   const botPort = isSafeInteger(Number(env.BOT_PORT))
     ? Number(env.BOT_PORT)
