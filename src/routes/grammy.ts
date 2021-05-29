@@ -12,6 +12,7 @@ import {
   help,
   info,
   inspect,
+  notify,
   orders,
   start,
   status,
@@ -45,6 +46,7 @@ const loadBotRoutes = async () => {
   textComposer.hears(buildHearsRegex('help', 0), help);
   textComposer.hears(buildHearsRegex('info', 0), info);
   textComposer.hears(buildHearsRegex('inspect', 2), inspect);
+  textComposer.hears(buildHearsRegex('notify', 0), notify);
   textComposer.hears(buildHearsRegex('orders', 0), orders);
   textComposer.hears(buildHearsRegex('start', 0), start);
   textComposer.hears(buildHearsRegex('status', 0), status);

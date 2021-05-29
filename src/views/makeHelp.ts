@@ -15,6 +15,7 @@ Inn balance
 /inspect [item code] [price] - Displays the buy order quantity waiting \
 to purchase this item at that price
 /purchases (optional item name) - Displays your recent purchases
+/notify - Toggles notification setting for sales on the exchange
 /orders - Displays your current active orders
 /sales (optional item name) - Displays your recent sales
 /start - Gets authorization code from @chtwrsbot for registration
