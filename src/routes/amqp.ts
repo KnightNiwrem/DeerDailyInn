@@ -48,22 +48,22 @@ const eachMessage = async (message: ConsumeMessage | null) => {
   }
 
   const statusCode = content.result.toLowerCase();
+  let responder = unknown;
   if (statusCode === 'ok') {
-    const responder = inboundResponders.get(content.action) ?? unknown;
-    await responder(content);
-    return;
-  }
-  if (statusCode === 'forbidden') {
-    await forbidden(content);
-    return;
-  }
-  if (statusCode === 'invalidtoken') {
-    await invalidToken(content);
-    return;
+    responder = inboundResponders.get(content.action) ?? unknown;
+  } else if (statusCode === 'forbidden') {
+    responder = forbidden;
+  } else if (statusCode === 'invalidtoken') {
+    responder = invalidToken;
+  } else {
+    responder = inboundErrorResponders.get(content.action) ?? unknown;
   }
 
-  const responder = inboundErrorResponders.get(content.action) ?? unknown;
-  await responder(content);
+  try {
+    await responder(content);
+  } catch (err) {
+    console.warn(err);
+  }
 };
 
 const loadAMQPRoutes = () => {
