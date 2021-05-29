@@ -11,6 +11,7 @@ export { getinfo } from 'controllers/grammy/getinfo.js';
 export { help } from 'controllers/grammy/help.js';
 export { info } from 'controllers/grammy/info.js';
 export { inspect } from 'controllers/grammy/inspect.js';
+export { notify } from 'controllers/grammy/notify.js';
 export { orders } from 'controllers/grammy/orders.js';
 export { start } from 'controllers/grammy/start.js';
 export { status } from 'controllers/grammy/status.js';

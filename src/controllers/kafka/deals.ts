@@ -15,7 +15,7 @@ const deals = async (content: any) => {
   } = content;
 
   const seller = await User.query().findOne({ chtwrsId: sellerId });
-  if (!isNil(seller)) {
+  if (!isNil(seller) && seller.canNotify) {
     const message = makePurchased({
       buyerCastle,
       buyerName,

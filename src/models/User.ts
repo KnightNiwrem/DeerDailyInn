@@ -5,6 +5,7 @@ import { Subscription } from 'models/Subscription.js';
 class User extends BetterModel {
   balance!: number;
   buyOrderLimit!: number;
+  canNotify!: boolean;
   chtwrsId?: string;
   chtwrsToken?: string;
   telegramId!: number;
@@ -29,6 +30,9 @@ class User extends BetterModel {
         buyOrderLimit: {
           type: 'integer',
           default: 5,
+        },
+        canNotify: {
+          type: 'boolean',
         },
         chtwrsId: {
           type: ['string', 'null'],

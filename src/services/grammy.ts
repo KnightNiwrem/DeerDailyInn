@@ -1,8 +1,35 @@
 import { apiThrottler } from '@grammyjs/transformer-throttler';
 import { Bot } from 'grammy';
+import { isSafeInteger } from 'lodash-es';
+import { User } from 'models/mod.js';
 import { env } from 'services/env.js';
 
 const bot = new Bot(env.BOT_TOKEN);
+bot.api.config.use(async (prev, method, payload) => {
+  const result = await prev(method, payload);
+  if (!payload || !('chat_id' in payload)) {
+    return result;
+  }
+
+  // @ts-ignore
+  const chatId = Number(payload.chat_id);
+  if (!isSafeInteger(chatId) || chatId < 0) {
+    return result;
+  }
+
+  const isBotBlocked = !result.ok && result.error_code === 403;
+  if (!isBotBlocked) {
+    return result;
+  }
+
+  try {
+    await User.query().where({ telegramId: chatId }).patch({ canNotify: false });
+  } catch (err) {
+    console.warn(`Error in patching canNotify for ${chatId}`);
+  } finally {
+    return result;
+  }
+});
 bot.api.config.use(apiThrottler());
 
 const sendLog = async (text: string) => {
