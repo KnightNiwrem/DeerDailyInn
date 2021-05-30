@@ -1,6 +1,4 @@
-import { invalidRollbackStatusCodes } from 'constants/invalidRollbackStatusCodes.js';
 import { isNil } from 'lodash-es';
-import { BuyOrder } from 'models/mod.js';
 import { bot } from 'services/grammy.js';
 
 const wantToBuy = async (content: any) => {
@@ -13,7 +11,6 @@ const wantToBuy = async (content: any) => {
 
   const statusCode = content.result.toLowerCase();
   const isSuccessful = statusCode === 'ok';
-  const canRollback = !invalidRollbackStatusCodes.has(statusCode);
 
   if (isSuccessful) {
     const text = `Successfully purchased ${quantity} ${itemName}!`;
@@ -22,27 +19,16 @@ const wantToBuy = async (content: any) => {
     return;
   }
 
-  if (!canRollback) {
-    const text = hasDetails ? `Could not buy ${quantity} ${itemName}: ${content.result}` : `Could not access exchange: ${content.result}`;
+  if (!hasDetails) {
+    const text = `Could not access exchange: ${content.result}`;
     console.log(`${new Date()} | User ${telegramId} | ${text}`);
     await bot.api.sendMessage(telegramId, text);
     return;
   }
 
-  const targetBuyOrder = await BuyOrder
-    .query()
-    .where({ item: itemName, telegramId })
-    .orderBy('id', 'DESC')
-    .first();
-  if (isNil(targetBuyOrder)) {
-    return;
-  }
-
-  await BuyOrder
-    .query()
-    .patch({ amountLeft: targetBuyOrder.amountLeft + quantity })
-    .where('id', targetBuyOrder.id);
-  console.log(`${new Date()} | User ${telegramId} | Could not buy ${quantity} ${itemName}: ${content.result} + Rollback`);
+  const text = `Could not buy ${quantity} ${itemName}: ${content.result}`;
+  console.log(`${new Date()} | User ${telegramId} | ${text}`);
+  await bot.api.sendMessage(telegramId, text);
 };
 
 export { wantToBuy };
